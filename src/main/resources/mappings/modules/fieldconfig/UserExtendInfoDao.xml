@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.fieldconfig.dao.UserExtendInfoDao">
+    
+	<sql id="userExtendInfoColumns">
+		a.id AS "id",
+		a.extend_info AS "extendInfo"
+	</sql>
+	
+	<sql id="userExtendInfoJoins">		
+	</sql>
+	
+    
+	<select id="get" resultType="UserExtendInfo" >
+		SELECT 
+			<include refid="userExtendInfoColumns"/>
+		FROM user_extend_info a
+		<include refid="userExtendInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getColName" resultType="String" >
+		select COLUMN_NAME as colName from information_schema.COLUMNS where TABLE_NAME = 'user_extend_info'
+	</select>
+	
+	<select id="getExendInfoByGroupIdAndUserId" resultType="map" >
+		select * from user_extend_info where group_id = #{groupId} and user_id = #{userId}
+	</select>
+	
+	<insert id="insertColumn">
+		alter table user_extend_info add column ${colName} varchar(255)
+	</insert>
+	
+	
+	<insert id="insertExtendInfo">
+		INSERT INTO user_extend_info
+		<foreach collection="fieldRecord.columns" open="(" close=")" item="column" separator=","> 
+			${column.colName}  
+		</foreach> 
+		VALUES
+		<foreach collection="fieldRecord.columns" open="(" close=")" item="column" separator=","> 
+			#{column.value}  
+		</foreach>
+	</insert>
+	
+	<insert id="insert">
+		INSERT INTO user_extend_info(
+			id,
+			extend_info
+		) VALUES (
+			#{id},
+			#{extendInfo}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE user_extend_info SET 	
+			extend_info = #{extendInfo}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM user_extend_info
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据用户id删除该用户所有的扩展信息 -->
+	<update id="deleteExtendInfoByUserId">
+		DELETE FROM user_extend_info
+		WHERE user_id = #{userId}
+	</update>
+	
+</mapper>

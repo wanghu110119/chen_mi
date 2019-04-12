@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.swust.dao.SysCarDao">
+  <resultMap id="BaseResultMap" type="com.mht.modules.swust.entity.SysCar">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="car_id" jdbcType="VARCHAR" property="carId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="car_type" jdbcType="CHAR" property="carType" />
+    <result column="effective_time" jdbcType="INTEGER" property="effectiveTime" />
+    <result column="money" jdbcType="INTEGER" property="money" />
+    <result column="begin_time" jdbcType="DATE" property="beginTime" />
+    <result column="end_time" jdbcType="DATE" property="endTime" />
+    <result column="disable" jdbcType="VARCHAR" property="disable" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="del_flag" jdbcType="CHAR" property="delFlag" />
+      <association javaType="com.mht.modules.sys.entity.User" property="createBy" >
+   		 <result column="id" jdbcType="VARCHAR" property="id" />
+    	<result column="create_by" property="id" />
+    </association>
+    <association javaType="com.mht.modules.sys.entity.User" property="updateBy" >
+    	<result column="id" jdbcType="VARCHAR" property="id" />
+    	<result column="update_by" property="id" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, car_id, user_name, phone, car_type, effective_time, money, begin_time, end_time, 
+    disable, create_by, create_date, update_by, update_date, remarks, del_flag
+  </sql>
+  <sql id="sysCarJoins">
+		JOIN mht_oeg.sys_user  ON sys_user.id = create_by 
+	</sql>
+	
+	
+  <select id="get" parameterType="com.mht.modules.swust.entity.SysCar" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mht_oeg.sys_car 
+    where 1=1
+    <if test="carId != null and carId != ''">
+    AND car_id = #{carId,jdbcType=VARCHAR}
+    </if>
+    <if test="id != null and id != ''">
+    AND  id = #{id,jdbcType=VARCHAR}
+    </if>
+    <if test="disable != null and disable != ''">
+    AND  disable = #{disable,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="selectMaxRemark" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />
+    from mht_oeg.sys_car
+    where remarks >= (
+    select MAX(remarks)
+    from sys_car 
+    )
+  </select>
+  
+  	<delete id="batchDelete" >
+		DELETE FROM mht_oeg.sys_car 
+		<where>
+		 id
+		<foreach collection="ids" item="index" open="in(" close=")" separator=",">
+		#{index}
+		</foreach>
+		</where>
+	</delete>
+  
+  
+  
+  <select id="findList" parameterType="com.mht.modules.swust.entity.SysCar" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mht_oeg.sys_car 
+   <where>
+			mht_oeg.sys_car.del_flag = #{delFlag}
+			<if test="carId != null and carId != ''">
+				AND mht_oeg.sys_car.car_id LIKE 
+					<if test="dbName == 'oracle'">'%'||#{carId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{carId}+'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{carId}, '%')</if>
+			</if>
+			<if test="createBy != null and createBy.id != null and createBy.id != ''">
+				AND mht_oeg.sys_car.create_by  = #{createBy.id}
+			</if>
+			<if test="disable != null and disable != ''">
+    AND  disable = #{disable,jdbcType=VARCHAR}
+    </if>
+		</where>
+		ORDER BY mht_oeg.sys_car.update_date DESC
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from mht_oeg.sys_car
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.mht.modules.swust.entity.SysCar">
+    insert into mht_oeg.sys_car (id, car_id, user_name, 
+      phone, car_type, effective_time, 
+      money, begin_time, end_time, 
+      disable, create_by, create_date, 
+      update_by, update_date, remarks, 
+      del_flag)
+    values (#{id,jdbcType=VARCHAR}, #{carId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{carType,jdbcType=CHAR}, #{effectiveTime,jdbcType=INTEGER}, 
+      #{money,jdbcType=INTEGER}, #{beginTime,jdbcType=DATE}, #{endTime,jdbcType=DATE}, 
+      #{disable,jdbcType=VARCHAR}, #{createBy.id,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{updateBy.id,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, 
+      #{delFlag,jdbcType=CHAR})
+  </insert>
+  <update id="update" parameterType="com.mht.modules.swust.entity.SysCar">
+    update mht_oeg.sys_car
+    <set>
+      <if test="carId != null">
+        car_id = #{carId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="carType != null">
+        car_type = #{carType,jdbcType=CHAR},
+      </if>
+      <if test="effectiveTime != null">
+        effective_time = #{effectiveTime,jdbcType=INTEGER},
+      </if>
+      <if test="money != null">
+        money = #{money,jdbcType=INTEGER},
+      </if>
+      <if test="beginTime != null">
+        begin_time = #{beginTime,jdbcType=DATE},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=DATE},
+      </if>
+      <if test="disable != null">
+        disable = #{disable,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null and createBy.id!=''">
+        create_by = #{createBy.id,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy.id,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

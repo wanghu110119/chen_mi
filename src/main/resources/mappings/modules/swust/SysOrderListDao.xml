@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.swust.dao.SysOrderlistDao">
+
+	<sql id="orderColumns">
+		a.id,
+		a.user_id,
+		a.order_id,
+		b.id AS "office.id",
+		b.name AS "office.name",
+		a.company,
+		a.order_name,
+		a.order_phone,
+		a.car_number,
+		a.qr_code_image,
+		a.car_type,
+		a.begin_time,
+		a.qr_code_address,
+		a.end_time,
+		a.accredit_time, 
+		a.order_reason, 
+		a.pass, 
+		a.state, 
+		a.remarks,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		a.pay_for,
+		a.pay_money,
+		a.color,
+		a.disable
+	</sql>
+	
+	<select id="selectByCarId" resultType="SysOrderlist">
+		SELECT
+		a.id AS "id",
+		a.user_id,
+		a.order_id,
+		b.id AS "office.id",
+		b.name AS "office.name",
+		a.company,
+		a.order_name,
+		a.order_phone,
+		a.car_number,
+		a.qr_code_image,
+		a.car_type,
+		a.begin_time,
+		a.qr_code_address,
+		a.end_time,
+		a.accredit_time, 
+		a.order_reason, 
+		a.pass, 
+		a.state, 
+		a.remarks,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		a.pay_for,
+		a.pay_money,
+		a.color,
+		a.disable
+		FROM mht_oeg.sys_orderlist a
+		LEFT JOIN mht_oeg.sys_office b ON a.office_id = b.id
+		WHERE 
+		a.car_number = #{carNumber} 
+		AND a.office_id=b.id
+		<if test="pass != null and pass != ''">
+		AND a.pass=#{pass}
+		</if>
+		<if test="state != null and state != ''">
+		AND a.state=#{state}
+		</if>
+		AND a.del_flag='0'
+		ORDER BY a.update_date DESC
+	</select>
+	
+	<select id="get" resultType="SysOrderlist">
+		SELECT
+			<include refid="orderColumns"/>
+		FROM mht_oeg.sys_orderlist a 
+		LEFT JOIN mht_oeg.sys_office b ON a.office_id = b.id
+		WHERE 
+		a.id = #{id} 
+		AND a.office_id=b.id
+		AND a.del_flag = '0'
+		ORDER BY a.update_date DESC
+	</select>
+	
+	
+	<select id="selectSmsPhone" resultType="java.lang.String">
+		SELECT
+			a. mobile
+		FROM mht_oeg.sms_send_mobile a 
+		WHERE 
+		a.id = '1'
+	</select>
+	
+	
+	
+	<delete id="batchDelete" >
+		DELETE FROM mht_oeg.sys_orderlist 	
+		<where>
+		 id
+		<foreach collection="ids" item="index" open="in(" close=")" separator=",">
+		#{index}
+		</foreach>
+		</where>
+	</delete>
+	
+	
+	<select id="findList" resultType="SysOrderlist">
+		SELECT
+			<include refid="orderColumns"/>
+		FROM mht_oeg.sys_orderlist a
+		LEFT JOIN mht_oeg.sys_office b ON a.office_id = b.id
+		LEFT JOIN mht_oeg.sys_car_money c ON a.car_type = c.car_type_id
+		WHERE a.office_id=b.id AND a.del_flag = '0'
+		<if test="orderName != null and orderName != ''">
+			AND (a.order_name like 
+					<if test="dbName == 'oracle'">'%'||#{orderName}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{orderName}, '%')</if>
+				 or a.order_phone like
+				 	<if test="dbName == 'oracle'">'%'||#{orderName}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{orderName}, '%')</if>
+				 or a.car_number like
+				 	<if test="dbName == 'oracle'">'%'||#{orderName}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{orderName}, '%')</if>
+				 or b.name like
+				 	<if test="dbName == 'oracle'">'%'||#{orderName}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{orderName}, '%')</if>
+					or a.order_reason like
+				 	<if test="dbName == 'oracle'">'%'||#{orderName}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{orderName}, '%')</if>
+				 )
+		</if>
+		<if test="state != null and state !=''">
+			AND a.state =#{state}
+		</if>
+		<if test="userId != null and userId !=''">
+			AND a.user_id =#{userId}
+		</if>
+		<if test="carNumber != null and carNumber !=''">
+			AND a.car_number =#{carNumber}
+		</if>
+		<if test="color != null and color !=''">
+			AND a.color =#{color}
+		</if>
+		<if test="disable != null and disable !=''">
+			AND a.disable =#{disable}
+		</if>
+		<if test="carType != null and carType !=''">
+			AND a.car_type = #{carType}
+		</if>
+		<if test="beginTime != null and beginTime !=''">
+			AND a.begin_time <![CDATA[>]]> #{beginTime}
+		</if>
+		<if test="endTime != null and endTime !=''">
+			AND a.end_time  <![CDATA[<]]>  #{endTime}
+		</if>
+		<choose>
+			<when test="qrCodeImage != null and qrCodeImage =='notNull'">
+			AND a.qr_code_image IS NOT NULL
+			</when>
+			<otherwise>
+			AND (a.qr_code_image IS  NULL OR a.qr_code_image='')
+			</otherwise>
+		</choose>
+		<!-- 数据范围过滤 -->
+		ORDER BY a.create_date DESC
+	</select>
+			
+			
+			
+	<insert id="insert">
+		INSERT INTO mht_oeg.sys_orderlist(
+			id,
+			user_id,
+			order_id,
+			office_id,
+			company,
+			order_name,
+			<if test="orderPhone!=null and orderPhone!=''">
+			order_phone,
+			</if>
+			<if test="carNumber!=null and carNumber!=''">
+			car_number,
+			</if>
+			qr_code_image,
+			<if test="carType!=null and carType!=''">
+			car_type,
+			</if>
+			begin_time,
+			<if test="qrCodeAddress!=null and qrCodeAddress!=''">
+			qr_code_address,
+			</if>
+			end_time,
+			accredit_time, 
+			order_reason, 
+			pass, 
+			state, 
+			create_by, 
+			create_date, 
+			update_by, 
+			update_date, 
+			remarks, 
+			del_flag,
+			color,
+			disable
+		) VALUES (
+			#{id}, 
+			#{userId}, 
+			#{orderId}, 
+			#{office.id}, 
+			#{company},
+			#{orderName},
+			<if test="orderPhone!=null and orderPhone!=''"> 
+			#{orderPhone}, 
+			</if>
+			<if test="carNumber!=null and carNumber!=''">
+			#{carNumber}, 
+			</if>
+			#{qrCodeImage},
+			<if test="carType!=null and carType!=''">
+			#{carType}, 
+			</if>
+			#{beginTime}, 
+			<if test="qrCodeAddress!=null and qrCodeAddress!=''">
+			#{qrCodeAddress},
+			</if>
+			#{endTime}, 
+			#{accreditTime}, 
+			#{orderReason}, 
+			#{pass}, 
+			#{state}, 
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate}, 
+			#{remarks}, 
+			#{delFlag},
+			#{color},
+			#{disable}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE mht_oeg.sys_orderlist SET 
+			user_id = #{userId},
+			order_id = #{orderId},
+			office_id = #{office.id},
+			company=#{company},
+			order_name = #{orderName},
+			order_phone = #{orderPhone},
+			car_number = #{carNumber},
+			qr_code_image = #{qrCodeImage},
+			car_type = #{carType},
+			begin_time = #{beginTime},
+			qr_code_address = #{qrCodeAddress},
+			end_time = #{endTime},
+			accredit_time = #{accreditTime}, 
+			order_reason = #{orderReason}, 
+			pass = #{pass}, 
+			state = #{state}, 
+			create_by = #{createBy.id}, 
+			create_date = #{createDate}, 
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks},
+			color=#{color},
+			disable=#{disable}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM mht_oeg.sys_orderlist 
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteByLogic">
+		UPDATE mht_oeg.sys_orderlist SET 
+			del_flag = '1'
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteRemoveOrder">
+		DELETE FROM mht_oeg.sys_orderlist 	
+		<where>
+		 id
+		<foreach collection="list" item="index" open="in(" close=")" separator="," >
+		#{index.id}
+		</foreach>
+		</where>
+	</update>
+	
+	<select id="selectRemoveOrder" resultType="SysOrderlist">
+			SELECT
+			<include refid="orderColumns"/>
+		FROM mht_oeg.sys_orderlist a
+		LEFT JOIN mht_oeg.sys_office b ON a.office_id = b.id
+		LEFT JOIN mht_oeg.sys_car_money c ON a.car_type = c.car_type_id
+		WHERE 
+		a.end_time <![CDATA[<]]> #{0}
+	</select>
+	
+	
+</mapper>

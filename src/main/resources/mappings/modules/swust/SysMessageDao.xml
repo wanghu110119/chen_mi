@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.swust.dao.SysMessageDao">
+<sql id="TimeColumns">
+		a.id,
+		a.user_id,
+		a.artical,
+		a.total,
+		a.used,
+		a.surplus,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.remarks,
+		a.del_flag
+	</sql>
+	<select id="selectAllMessage" resultType="SysMessage">
+		SELECT
+			<include refid="TimeColumns"/>
+		FROM mht_oeg.sys_message a 
+		ORDER BY a.update_date DESC
+	</select>
+	
+	
+	<select id="get" resultType="SysMessage">
+		SELECT
+			<include refid="TimeColumns"/>
+		FROM mht_oeg.sys_message a 
+		WHERE a.id = #{id}
+		ORDER BY a.update_date DESC
+	</select>
+	
+	<insert id="insert">
+	INSERT INTO mht_oeg.sys_message(
+		id,
+		user_id,
+		artical,
+		total,
+		used,
+		surplus,
+		create_by AS "createBy.id",
+		create_date,
+		update_by AS "updateBy.id",
+		update_date,
+		remarks,
+		del_flag
+	
+	)VALUES (
+			#{id}, 
+			#{userId}, 
+			#{artical},
+			#{total}, 
+			#{used}, 
+			#{surplus},
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate}, 
+			#{remarks}, 
+			#{delFlag}
+	)
+	
+	</insert>
+	<update id="update">
+		UPDATE mht_oeg.sys_message SET 
+			user_id = #{userId},
+			artical = #{artical},
+			total = #{total},
+			used = #{used},
+			surplus = #{surplus},
+			create_by = #{createBy.id}, 
+			create_date = #{createDate}, 
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks} 
+		WHERE id = #{id}
+	</update>
+</mapper>
+

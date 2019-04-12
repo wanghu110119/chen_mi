@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.unifiedauth.dao.AuthRoleDao">
+    <sql id="columns">
+    	ar.id,
+    	a.id as 'apply.id',
+		a.name as 'apply.name',
+		ar.role_id as 'role.id',
+		sr.name as 'role.name',
+		ar.access_auth as 'accessAuth'
+    </sql>
+    
+    <sql id="joins">
+		left join auth_role ar on (a.id = ar.app_id and ar.role_id = #{roleId})
+		left join sys_role sr on ar.role_id = sr.id
+    </sql>
+	
+	
+	<select id="findListByRoleId" resultType="com.mht.modules.unifiedauth.entity.AuthRole">
+        SELECT 
+            <include refid="columns"/>
+        from ident_application a
+        LEFT JOIN auth_role ar on a.id = ar.app_id
+		<if test="roleId != null and roleId != ''">
+        	AND ar.role_id=#{roleId}
+        </if>
+        LEFT JOIN sys_role sr on ar.role_id = sr.id
+        WHERE a.del_flag='0'
+        <if test="parentIds != null and parentIds != '' and parentIds.size > 0">
+        	AND ar.role_id in
+        	<foreach item="item" index="index" collection="parentIds" open="(" separator="," close=")">  
+			  #{item}
+			</foreach>
+        </if>
+        AND a.type =#{type} 
+        AND a.status = #{status} 
+        AND a.access_way = #{accessway}
+        ORDER BY a.name DESC
+    </select>
+	
+	
+	<insert id="insert">
+		INSERT INTO auth_role (
+			id,
+	        role_id,
+	        access_auth,
+	        app_id
+		) VALUES (
+			#{id}, 
+            #{roleId},
+            #{accessAuth},
+			#{applyId}
+		)
+	</insert>
+	
+	<delete id="deleteByRoleId">
+		delete from auth_role where role_id = #{roleId}
+	</delete>
+	
+	<select id="findRolesByName" resultType="com.mht.modules.sys.entity.Role">
+		SELECT 
+		sr.id,
+		sr.office_id as 'office.id',
+		sr.name,
+		sr.enname,
+		sr.role_type as 'roleType',
+		sr.data_scope as 'dataScope',
+		sr.is_sys as 'sysData',
+		sr.useable,
+		sr.remarks,
+		sr.del_flag as 'delFlag'
+		FROM sys_role sr where sr.`name` like CONCAT("%",#{roleName},"%")
+		and sr.useable = '1'
+		and sr.del_flag = '0'
+	</select>
+</mapper>

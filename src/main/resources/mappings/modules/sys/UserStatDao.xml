@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.sys.dao.UserStatDao">
+    <sql id="userStatColumns">
+    	a.id,
+    	a.operation_ip,
+    	a.operation_type AS "operationType.id",
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		a.remarks,
+		a.user_id AS "user.id",
+		u.name AS "user.name",
+		u.login_name AS "user.loginName",
+		d.label AS "operationType.label",
+		u2.login_name AS "createBy.loginName"
+    </sql>
+    
+    <sql id="userJoins">
+		LEFT JOIN sys_dict d ON d.id=a.operation_type 
+		LEFT JOIN sys_user u ON u.id=a.user_id
+		LEFT JOIN sys_user u2 ON u2.id=a.create_by
+    </sql>
+	
+	<!-- 根据编号获得用户 -->
+	<select id="get" resultType="UserStat">
+		SELECT
+			<include refid="userStatColumns"/><!-- ,
+			ro.office_id AS "roleList.officeList.id" -->
+		FROM sys_user_stat a 
+		<include refid="userJoins"/><!-- 
+		LEFT JOIN sys_role_office ro ON ro.role_id = r.id -->
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="UserStat">
+        SELECT 
+            <include refid="userStatColumns"/>
+        FROM sys_user_stat a 
+        <include refid="userJoins"/>
+        WHERE a.create_date BETWEEN #{beginDate} AND #{endDate}
+        <if test="remarks != null and remarks != ''">
+            AND a.title LIKE 
+                    <if test="dbName == 'oracle'">'%'||#{remarks}||'%'</if>
+                    <if test="dbName == 'mysql'">CONCAT('%', #{remarks}, '%')</if>
+        </if>
+        <if test="createBy != null and createBy.loginName != null and createBy.loginName != ''">
+            AND u2.login_name = #{createBy.loginName}
+        </if>
+        ORDER BY a.create_date DESC
+    </select>
+	
+	
+	<!-- 查询全部用户数目 -->
+	<select id="findAllCount" resultType="long">
+		SELECT
+			COUNT(1)
+		FROM sys_user a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<!-- 插入用户 -->
+	<insert id="insert">
+		INSERT INTO sys_user_stat(
+			id,
+	        operation_ip,
+	        operation_type,
+	        create_by,
+	        create_date,
+	        update_by,
+	        update_date,
+	        del_flag,
+	        remarks,
+	        user_id
+		) VALUES (
+			#{id}, 
+            #{operationIp},
+            #{operationType.id},
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate},
+			#{delFlag},
+			#{remarks},
+			#{user.id}
+		)
+	</insert>
+	
+	
+	<update id="update">
+		UPDATE sys_user_stat SET 
+			operation_ip = #{operationIp}, 
+			operation_type = #{operationType.id}, 
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks},
+			user_id = #{user.id}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="delete">
+		DELETE FROM sys_user_stat 
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="deleteByLogic">
+		UPDATE sys_user_stat SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+</mapper>

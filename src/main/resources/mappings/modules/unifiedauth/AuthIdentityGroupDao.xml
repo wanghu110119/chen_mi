@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.unifiedauth.dao.AuthIdentityGroupDao">
+    <sql id="columns">
+    	aig.id,
+    	a.id as 'apply.id',
+		a.name as 'apply.name',
+		aig.identity_group_id as 'identityGroup.id',
+		ig.group_name as 'identityGroup.groupName',
+		aig.access_auth as 'accessAuth'
+    </sql>
+    
+    <sql id="joins">
+		left join auth_identity_group aig on (a.id = aig.app_id and aig.identity_group_id = #{identityGroupId})
+		left join t_identity_group ig on aig.identity_group_id = ig.id
+    </sql>
+	
+	
+	<select id="findListByIdentityGroupId" resultType="com.mht.modules.unifiedauth.entity.AuthIdentityGroup">
+        SELECT 
+            <include refid="columns"/>
+        from ident_application a
+        <include refid="joins"/>
+        WHERE a.del_flag='0'
+        AND a.type =#{type} 
+        AND a.status = #{status} 
+        AND a.access_way = #{accessway}
+        ORDER BY a.name DESC
+    </select>
+	
+	
+	<insert id="insert">
+		INSERT INTO auth_identity_group (
+			id,
+	        identity_group_id,
+	        access_auth,
+	        app_id
+		) VALUES (
+			#{id}, 
+            #{identityGroupId},
+            #{accessAuth},
+			#{applyId}
+		)
+	</insert>
+	
+	<delete id="deleteByIdentityGroupId">
+		delete from auth_identity_group where identity_group_id = #{identityGroupId}
+	</delete>
+	
+	<select id="findIdentityGroupsByName" resultType="com.mht.modules.ident.entity.IdentityGroup">
+		SELECT 
+		ig.id,
+		ig.group_name as 'groupName',
+		ig.description,
+		ig.create_by as 'createBy.id',
+		ig.create_date as 'createDate',
+		ig.update_by as 'updateBy.id',
+		ig.update_date as 'updateDate',
+		ig.remarks,
+		ig.del_flag as 'delFlag'
+		FROM t_identity_group ig where ig.group_name like CONCAT("%",#{identityGroupName},"%")
+		and ig.del_flag = '0'
+	</select>
+</mapper>

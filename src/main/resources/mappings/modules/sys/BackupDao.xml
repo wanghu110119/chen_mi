@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.sys.dao.BackupDao">
+
+	<sql id="backupColumns">
+		a.id,
+		a.sys_project_id AS "sysPorject.id",
+		a.backup_execute,
+		a.restore_execute,
+		a.host,
+		a.username,
+		a.password,
+		a.dataname,
+		a.target,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag
+	</sql>
+	
+	<sql id="backupJoins">
+		LEFT JOIN ident_sys_project d ON d.id = a.sys_project_id
+    </sql>
+    
+	<select id="get" resultType="Backup">
+		SELECT 
+			<include refid="backupColumns"/>
+		FROM sys_backup AS a
+		<include refid="backupJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Backup">
+		SELECT 
+			<include refid="backupColumns"/>
+		FROM sys_backup AS a
+		<include refid="backupJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} 
+		<!-- 数据范围过滤 -->
+		${sqlMap.dsf}
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findBySysProject"  resultType="Backup">
+		SELECT 
+			<include refid="backupColumns"/>
+		FROM sys_backup AS a
+		<include refid="backupJoins"/>
+		WHERE a.sys_project_id = #{sysProject.id}
+	</select>
+	
+	
+	<insert id="insert">
+		INSERT INTO sys_backup(
+			id, 
+			sys_project_id, 
+			backup_execute, 
+			restore_execute, 
+			host, 
+			username, 
+			password, 
+			dataname, 
+			target, 
+			create_by, 
+			create_date, 
+			update_by, 
+			update_date, 
+			remarks, 
+			del_flag
+		) VALUES (
+			#{id}, 
+			#{sysProject.id}, 
+			#{backupExecute}, 
+			#{restoreExecute}, 
+			#{host}, 
+			#{username}, 
+			#{password}, 
+			#{dataname}, 
+			#{target}, 
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate}, 
+			#{remarks}, 
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_backup SET 
+			sys_project_id = #{sysProject.id}, 
+			backup_execute = #{backupExecute}, 
+			restore_execute = #{restoreExecute}, 
+			host = #{host}, 
+			username = #{username}, 
+			password = #{password}, 
+			dataname = #{dataname}, 
+			target = #{target}, 
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM sys_backup 
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteByLogic">
+		UPDATE sys_backup SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

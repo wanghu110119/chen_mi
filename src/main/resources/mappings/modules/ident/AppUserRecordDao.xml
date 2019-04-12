@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.ident.dao.AppUserRecordDao">
+    
+	<sql id="appUserRecordColumns">
+    	a.id,
+    	a.user_id,
+    	a.app_id,
+		a.create_by AS "createBy.id",
+		a.office_id AS "office.id",
+		so.name AS "office.name",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		a.remarks,
+		um.name AS "user.name",
+		um.login_name AS "user.loginName",
+		ap.access_way AS "application.accessWay",
+		ap.url AS "application.url",
+		ap.name AS "application.name",
+		uc.name AS "createBy.name"
+    </sql>
+    
+    <sql id="appUserRecordUserJoins">
+		LEFT JOIN sys_user um ON um.id = a.user_id
+    	LEFT JOIN ident_application ap ON ap.id = a.app_id
+		LEFT JOIN sys_user uc ON uc.id = a.create_by
+		LEFT JOIN sys_office AS so ON so.id = a.office_id
+    </sql>
+	
+	<select id="get" resultType="AppUserRecord">
+		SELECT
+			<include refid="appUserRecordColumns"/>
+		FROM ident_user_app_record a 
+		<include refid="appUserRecordUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="AppUserRecord">
+		SELECT 
+			<include refid="appUserRecordColumns"/>
+		FROM ident_user_app_record a  
+        <include refid="appUserRecordUserJoins"/>
+		WHERE a.create_date BETWEEN #{beginDate} AND #{endDate}
+		<if test="user != null and user.name != null and user.name != ''">
+			AND um.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{user.name}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{user.name}, '%')</if>
+			or um.login_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{user.name}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{user.name}, '%')</if>
+		</if>
+		<if test="office != null and office .name != null and office.name != ''">
+            AND so.name LIKE 
+                    <if test="dbName == 'mysql'">CONCAT('%', #{office.name}, '%')</if>
+        </if>
+		<if test="application != null and application.id != null and application.id != ''">
+            AND a.app_id = #{application.id}
+        </if>
+        <if test="user != null and user.id != null and user.id  != ''">
+            AND a.user_id = #{user.id}
+        </if>
+		ORDER BY a.create_date DESC
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ident_user_app_record(
+			id,
+			user_id,
+			app_id,
+			office_id,
+	        create_by,
+	        create_date,
+	        update_by,
+	        update_date,
+	        del_flag,
+	        remarks
+		) VALUES (
+			#{id}, 
+            #{user.id},
+            #{application.id},
+            #{office.id},
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate},
+			#{delFlag},
+			#{remarks}
+		)
+	</insert>
+	
+	
+	<update id="delete">
+		DELETE FROM ident_user_app_record 
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

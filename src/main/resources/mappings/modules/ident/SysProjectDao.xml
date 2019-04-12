@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.ident.dao.SysProjectDao">
+    
+	<sql id="sysProjectColumns">
+    	a.id,
+    	a.name,
+    	a.url,
+    	a.code,
+    	a.ip,
+    	a.status,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		a.remarks,
+		uc.name AS "createBy.name"
+    </sql>
+    
+    <sql id="sysProjectJoins">
+		LEFT JOIN sys_user uc ON uc.id = a.create_by
+    </sql>
+	
+	<select id="get" resultType="SysProject">
+		SELECT
+			<include refid="sysProjectColumns"/>
+		FROM ident_sys_project a 
+		<include refid="sysProjectJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SysProject">
+        SELECT 
+            <include refid="sysProjectColumns"/>
+        FROM ident_sys_project a  
+        <include refid="sysProjectJoins"/>
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+        <if test="createBy != null and createBy.id != null">
+        	AND a.create_by = #{createBy.id}
+        </if>
+        <if test="name != null and name != ''">
+            AND a.name LIKE 
+                    <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+        </if>
+        <if test="url != null and url != ''">
+            AND a.url LIKE 
+                    <if test="dbName == 'mysql'">CONCAT('%', #{url}, '%')</if>
+        </if>
+        <if test="status != null and status != ''">
+            AND a.status = #{status}
+        </if>
+        ${sqlMap.dsf}
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date
+			</otherwise>
+		</choose>
+    </select>
+    
+	<!-- 插入应用 -->
+	<insert id="insert">
+		INSERT INTO ident_sys_project(
+			id,
+	        name,
+	        ip,
+	        url,
+	        code,
+	        status,
+	        create_by,
+	        create_date,
+	        update_by,
+	        update_date,
+	        del_flag,
+	        remarks
+		) VALUES (
+			#{id}, 
+            #{name},
+            #{ip},
+            #{url},
+            #{code},
+            #{status},
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate},
+			#{delFlag},
+			#{remarks}
+		)
+	</insert>
+	
+	
+	<update id="update">
+		UPDATE ident_sys_project SET 
+			name = #{name}, 
+			ip = #{ip}, 
+			url = #{url},
+			code = #{code},
+			status = #{status},
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="delete">
+		DELETE FROM ident_sys_project 
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="deleteByLogic">
+		UPDATE ident_sys_project SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findAll" resultType="SysProject">
+		SELECT
+			<include refid="sysProjectColumns"/>
+		FROM ident_sys_project a 
+			<include refid="sysProjectJoins"/>
+		WHERE a.del_flag = 0
+		AND a.status = 1
+	</select>
+	
+</mapper>

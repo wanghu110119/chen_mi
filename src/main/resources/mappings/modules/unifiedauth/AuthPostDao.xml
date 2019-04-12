@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.unifiedauth.dao.AuthPostDao">
+	
+	<sql id="columns">
+    	ap.id,
+    	a.id as 'apply.id',
+		a.name as 'apply.name',
+		ap.close_type as 'closeType',
+		ap.post_id as 'post.id',
+		sp.name as 'post.name',
+		ap.access_auth as 'accessAuth'
+    </sql>
+    
+    <sql id="joins">
+		left join auth_post ap on (a.id = ap.app_id and ap.post_id = #{postId})
+		left join sys_post sp on ap.post_id = sp.id
+    </sql>
+	<select id="findListByPostId" resultType="com.mht.modules.unifiedauth.entity.AuthPost">
+		SELECT 
+            <include refid="columns"/>
+        from ident_application a
+        left join auth_post ap on a.id = ap.app_id 
+        <if test="postId != null and postId != ''">
+	        and ap.post_id = #{postId}
+        </if>
+		left join sys_post sp on ap.post_id = sp.id
+		 WHERE a.del_flag='0'
+        <if test="parentIds != null and parentIds != ''">
+        	AND ap.post_id in
+        	<foreach item="item" index="index" collection="parentIds" open="(" separator="," close=")">  
+			  #{item}
+			</foreach>
+        </if>
+        AND a.type =#{type} 
+        AND a.status = #{status} 
+        AND a.access_way = #{accessway}
+        ORDER BY a.name DESC
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO auth_post (
+			id,
+	        post_id,
+	        access_auth,
+	        close_type,
+	        app_id
+		) VALUES (
+			#{id}, 
+            #{postId},
+            #{accessAuth},
+            #{closeType},
+			#{applyId}
+		)
+	</insert>
+	
+	<delete id="deleteByPostId">
+		DELETE FROM auth_post WHERE post_id = #{postId}
+	</delete>
+
+
+	<select id="findPostsByParent" resultType="com.mht.modules.sys.entity.Post">
+		select 
+		p.id,
+		p.name,
+		p.code,
+		p.sort,
+		p.parent_ids as 'parentIds',
+		p.parent_id as 'parent.id',
+		p.create_by as "createBy.id",
+		p.create_date,
+		p.update_by AS "updateBy.id",
+		p.update_date,
+		p.del_flag,
+		p.remarks
+		from sys_post p
+		where p.parent_id = #{parentId} and p.del_flag='0'
+	</select>
+	
+	<select id="findPostsByName" resultType="com.mht.modules.sys.entity.Post">
+		select 
+		p.id,
+		p.name,
+		p.code,
+		p.sort,
+		p.parent_ids as 'parentIds',
+		p.parent_id as 'parent.id',
+		p.create_by as "createBy.id",
+		p.create_date,
+		p.update_by AS "updateBy.id",
+		p.update_date,
+		p.del_flag,
+		p.remarks
+		from sys_post p
+		where p.name like concat('%',#{parentId},'%') and p.del_flag='0'
+	</select>
+</mapper>

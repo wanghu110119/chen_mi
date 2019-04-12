@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.swust.dao.UnitDao">
+    <sql id="UnitColumns">
+      a.id,
+      a.organization,
+      a.organizationYIN,
+      a.contacter,
+      a.telnumber
+    </sql>    		
+	<select id="getAll" resultType="com.mht.modules.swust.entity.Unit">
+		SELECT
+	<include refid="UnitColumns"/>		
+		FROM mht_oeg.t_unit a 		
+	</select>
+	<update id="update" >
+		UPDATE mht_oeg.t_unit   SET 
+		organization=#{organization},
+		organizationYIN=#{organizationYIN},
+		contacter=#{contacter},
+		telnumber=#{telnumber}
+	</update>	 
+	<update id="updateStatus">
+	    UPDATE mht_oeg.t_unit SET
+	    status=#{status}
+	</update>	 
+	<insert id="inset">
+	    insert into mht_oeg.t_unit SET (organization,organizationYIN,contacter,telnumber)
+	     value (#{organization},#{organizationYIN},#{contacter},#{telnumber})
+	</insert>	 
+	<select id="listByOrganization">  
+	     SELECT <include refid="UnitColumns"/>		
+		 FROM mht_oeg.t_unit a 		
+		 WHERE a.organization=#{organization}
+	</select>
+	
+</mapper>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.sys.dao.IpFireWallDao">
+
+	<sql id="ipFireWallColumns">
+		a.id,
+		a.dict_id AS "dict.id",
+		a.ip AS "ip",
+		a.max_ip,
+		a.ip_type,
+		a.derc,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		d.label AS "dict.label",
+		d.value AS "dict.value"
+	</sql>
+	
+	<sql id="ipFireWallJoins">
+		LEFT JOIN sys_dict d ON d.id = a.dict_id
+    </sql>
+    
+	<select id="get" resultType="IpFireWall">
+		SELECT 
+			<include refid="ipFireWallColumns"/>
+		FROM sys_ip_fire_wall AS a
+		<include refid="ipFireWallJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="IpFireWall">
+		SELECT 
+			<include refid="ipFireWallColumns"/>
+		FROM sys_ip_fire_wall AS a
+		<include refid="ipFireWallJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} 
+		<if test="derc != null and derc != ''">
+			AND (a.ip LIKE 
+					<if test="dbName == 'mysql'">CONCAT('%', #{derc}, '%')</if>
+			or a.derc LIKE 
+					<if test="dbName == 'mysql'">CONCAT('%', #{derc}, '%')</if>
+			)
+		</if>
+		<!-- 数据范围过滤 -->
+		${sqlMap.dsf}
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date
+			</otherwise>
+		</choose>
+	</select>
+	<insert id="insert">
+		INSERT INTO sys_ip_fire_wall(
+			id, 
+			dict_id, 
+			ip, 
+			max_ip, 
+			ip_type, 
+			derc, 
+			create_by, 
+			create_date, 
+			update_by, 
+			update_date, 
+			remarks, 
+			del_flag
+		) VALUES (
+			#{id}, 
+			#{dict.id}, 
+			#{ip}, 
+			#{maxIp}, 
+			#{ipType}, 
+			#{derc}, 
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate}, 
+			#{remarks}, 
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_ip_fire_wall SET 
+			dict_id = #{dict.id}, 
+			ip = #{ip}, 
+			max_ip = #{maxIp}, 
+			ip_type = #{ipType}, 
+			derc = #{derc}, 
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM sys_ip_fire_wall 
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteByLogic">
+		UPDATE sys_ip_fire_wall SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

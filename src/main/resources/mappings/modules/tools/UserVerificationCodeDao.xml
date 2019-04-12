@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.tools.dao.UserVerificationCodeDao">
+    
+	<sql id="userVerificationCodeColumns">
+		a.id,
+    	a.operation_type AS "operationType.id",
+    	a.verificationCode AS "verificationCode",
+    	a.expireDate AS "expireDate",
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		a.remarks,
+		a.user_id AS "user.id",
+		u.name AS "user.name",
+		u.login_name AS "user.loginName"
+    </sql>
+    
+    <sql id="userVerificationCodeJoins">
+		LEFT JOIN sys_user u ON u.id=a.user_id
+    </sql>
+    
+	<select id="get" resultType="UserVerificationCode">
+		SELECT 
+			<include refid="userVerificationCodeColumns"/>
+		FROM sys_user_verificationcode a
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 根据登录名查询用户 -->
+	<select id="getByUserId" resultType="UserVerificationCode" parameterType="User">
+		SELECT
+			<include refid="userVerificationCodeColumns"/>
+		FROM sys_user_verificationcode a
+		<include refid="userVerificationCodeJoins"/>
+		WHERE u.id = #{user.id}
+	</select>
+	
+	<select id="findList" resultType="UserVerificationCode">
+		SELECT 
+			<include refid="userVerificationCodeColumns"/>
+		FROM sys_user_verificationcode a
+		<include refid="userVerificationCodeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="UserVerificationCode">
+		SELECT 
+			<include refid="userVerificationCodeColumns"/>
+		FROM sys_user_verificationcode a
+		<include refid="userVerificationCodeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_user_verificationcode(
+			id,
+			verificationCode,
+			expireDate
+		) VALUES (
+			#{id},
+			#{verificationCode},
+			#{expireDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_user_verificationcode SET 	
+			verificationCode = #{verificationCode},
+			expireDate = #{expireDate}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM sys_user_verificationcode
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE sys_user_verificationcode SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="UserVerificationCode" statementType="STATEMENT">
+		select * FROM sys_user_verificationcode  where ${propertyName} = '${value}'
+	</select>
+</mapper>

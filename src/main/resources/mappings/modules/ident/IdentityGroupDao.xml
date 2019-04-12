@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.ident.dao.IdentityGroupDao">
+
+	<resultMap id="identityGroupResult" type="com.mht.modules.ident.entity.IdentityGroup">
+		<id property="id" column="id" />
+		<result property="groupName" column="group_name" />
+		<result property="description" column="description" />
+		<!-- <result property="createBy" column="createBy.id"/> -->
+		<result property="createDate" column="create_date" />
+		<!-- <result property="updateBy" column="updateBy.id"/> -->
+		<result property="updateDate" column="update_date" />
+		<result property="delFlag" column="del_flag" />
+		<result property="remarks" column="remarks" />
+	</resultMap>
+
+	<sql id="identityGroupColumns">
+		a.id,
+		a.group_name,
+		a.description,
+		a.remarks,
+		a.create_by AS
+		"createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag
+	</sql>
+
+	<select id="get" resultMap="identityGroupResult">
+		SELECT
+		<include refid="identityGroupColumns" />
+		FROM t_identity_group a
+		WHERE a.id = #{id}
+		AND a.del_flag = 0
+	</select>
+
+	<select id="findByName" resultMap="identityGroupResult">
+		SELECT
+		<include refid="identityGroupColumns" />
+		FROM t_identity_group a
+		WHERE a.group_name = #{groupName} AND
+		a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+
+	<select id="findList" resultMap="identityGroupResult">
+		SELECT
+		<include refid="identityGroupColumns" />
+		FROM t_identity_group a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="groupName != null and groupName != ''">
+			AND a.group_name like 
+					<if test="dbName == 'oracle'">'%'||#{groupName}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{groupName}, '%')</if>
+		</if>
+		<!-- 数据范围过滤 -->
+		${sqlMap.dsf}
+		ORDER BY a.update_date desc
+	</select>
+
+	<insert id="insert">
+		INSERT INTO t_identity_group(
+		id,
+		group_name,
+		description,
+		create_by,
+		create_date,
+		update_by,
+		update_date,
+		remarks,
+		del_flag
+		) VALUES (
+		#{id},
+		#{groupName},
+		#{description},
+		#{createBy.id},
+		#{createDate},
+		#{updateBy.id},
+		#{updateDate},
+		#{remarks},
+		#{delFlag}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE t_identity_group SET
+		group_name = #{groupName},
+		description = #{description},
+		update_by = #{updateBy.id},
+		update_date =
+		#{updateDate},
+		remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM t_identity_group
+		WHERE id = #{id}
+	</update>
+
+	<update id="deleteByLogic">
+		UPDATE t_identity_group SET
+		del_flag =
+		#{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<sql id="userColumns">
+		a.id,
+		a.company_id AS "company.id",
+		a.office_id AS "office.id",
+		a.login_name,
+		a.password,
+		a.no,
+		a.name,
+		a.email,
+		a.phone,
+		a.mobile,
+		a.user_type,
+		a.login_ip,
+		a.login_date,
+		a.remarks,
+		a.login_flag,
+		a.photo,
+		a.qrcode,
+		a.sign,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		c.name AS
+		"company.name"
+	</sql>
+
+	<sql id="userJoins">
+		LEFT JOIN sys_office c ON c.id = a.company_id
+	</sql>
+
+	<select id="findUserByIdentityGroup" resultType="com.mht.modules.sys.entity.User">
+		SELECT
+		<include refid="userColumns" />
+		FROM sys_user a
+		<include refid="userJoins" />
+		WHERE a.id IN (SELECT igu.user_id FROM t_identity_group_user igu WHERE
+		igu.identity_group_id = #{id} AND igu.del_flag = 0)
+		AND a.del_flag = 0
+		ORDER BY a.name DESC
+	</select>
+
+	<insert id="insertIdentityGroupUser">
+		INSERT INTO t_identity_group_user(
+		id,
+		user_id,
+		identity_group_id
+		) VALUES (
+		#{id},
+		#{userId},
+		#{identityGroupId}
+		)
+	</insert>
+
+	<update id="deleteIdentityGroupUser">
+	    <!-- UPDATE t_identity_group_user SET
+        del_flag = 1
+        WHERE user_id = #{userId}
+        AND identity_group_id = #{identityGroupId} -->
+		DELETE FROM t_identity_group_user WHERE user_id =
+		#{userId}
+		AND identity_group_id = #{identityGroupId}
+	</update>
+
+	<insert id="insertIdentityGroupRecord">
+		INSERT INTO t_identity_group_record(
+		id,
+		user_id,
+		identity_group_id,
+		action,
+		create_by,
+		create_date,
+		remarks,
+		del_flag
+		)
+		VALUES (
+		#{id},
+		#{user.id},
+		#{identityGroup.id},
+		#{action},
+		#{createBy.id},
+		#{createDate},
+		#{remarks},
+		#{delFlag}
+		)
+	</insert>
+
+	<select id="findWeekList" resultType="com.mht.modules.ident.entity.StatictisData">
+		select WEEKDAY(a.create_date)+1 as time,COUNT(*) as value from t_identity_group_record a 
+		where  WEEKOFYEAR(a.create_date) = WEEKOFYEAR(#{currentDate})
+		and a.action = #{action}
+		<if test="group != null and group !=''">
+			and a.identity_group_id = #{group}
+		</if>
+		and a.del_flag = 0
+		GROUP BY WEEKDAY(a.create_date)+1
+	</select>
+	
+	<select id="findMonthList" resultType="com.mht.modules.ident.entity.StatictisData">
+        SELECT DATE_FORMAT(a.create_date, '%d') as time,COUNT(*) as value from t_identity_group_record a 
+        where DATE_FORMAT(a.create_date, '%m') = DATE_FORMAT(#{currentDate}, '%m')
+        and a.action = #{action}
+        <if test="group != null and group !=''">
+            and a.identity_group_id = #{group}
+        </if>
+        and a.del_flag = 0
+        GROUP BY DATE_FORMAT(create_date, '%d') ORDER BY DATE_FORMAT(a.create_date, '%d')
+    </select>
+    
+    <select id="findYearList" resultType="com.mht.modules.ident.entity.StatictisData">
+       SELECT DATE_FORMAT(a.create_date, '%m') as time,COUNT(*) as value from t_identity_group_record a 
+        where DATE_FORMAT(a.create_date, '%Y') = DATE_FORMAT(#{currentDate}, '%Y')
+        and a.action = #{action}
+        <if test="group != null and group !=''">
+            and a.identity_group_id = #{group}
+        </if>
+        and a.del_flag = 0
+        GROUP BY DATE_FORMAT(create_date, '%m') ORDER BY DATE_FORMAT(a.create_date, '%m');
+    </select>
+    
+    <select id="findByIdentityGroupIdAndUserId" resultType="com.mht.modules.ident.entity.IdentityGroupUser">
+        SELECT igu.id,
+        igu.create_by as createBy,
+        igu.create_date as createDate,
+        igu.update_by as updateBy,
+        igu.update_date as updateDate,
+        igu.remarks,
+        igu.del_flag as delFlag,
+        igu.user_id as 'user.id',
+        igu.identity_group_id as 'identityGroup.id' 
+        FROM t_identity_group_user igu 
+        WHERE igu.identity_group_id = #{identityGroup.id} 
+        AND igu.user_id = #{user.id}
+        AND igu.del_flag = 0
+    </select>
+</mapper>

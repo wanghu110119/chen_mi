@@ -1,0 +1,114 @@
+#nav {
+	border: 0;
+	background: linear-gradient(to right, #5398ff, #6dc5ff)
+}
+
+#nav .navbar-brand {
+	font-size: 20px
+}
+
+@media ( max-width :768px) {
+	#nav .navbar-brand {
+		font-size: 16px;
+	}
+	#nav #login-head>li:first-child{
+		margin-left:15px;
+	}
+}
+
+#nav a {
+	color: #fff
+}
+
+#nav #login-head span.caret {
+	position: relative;
+	bottom: 4px
+}
+
+#nav #login-head li {
+	line-height: 50px;
+	height: 50px;
+	position: relative
+}
+
+
+#nav #login-head li a {
+	height: 50px;
+	line-height: 30px;
+	margin-right: 20px
+}
+
+#nav #login-head li a img {
+	position: relative;
+	bottom: 3px
+}
+
+#nav #login-head input {
+	background: #fff;
+	border-radius: 14px;
+	padding-left: 10px;
+	height: 0;
+	width: 0;
+	transition: all .5s linear
+}
+
+#nav #login-head button {
+	position: absolute;
+	top: 15px;
+	right: 10px;
+	color: #ccc;
+	height: 25px;
+	line-height: 25px;
+	text-align: center
+}
+
+#nav #login-head a:hover {
+	background: none !important
+}
+
+#nav #login-head a:focus {
+	background: 0
+}
+
+#nav .dropdown-menu li a {
+	color: #5a6472;
+	line-height: 50px !important
+}
+
+#nav .dropdown-menu li:hover {
+	background: #5398ff
+}
+
+#nav .dropdown-menu li:hover a {
+	color: #fff
+}
+
+.change-long {
+	height: 30px !important;
+	width: 160px !important
+}
+
+.nav .open>a {
+	background: transparent !important
+}
+
+@media screen and (max-width:692px) {
+	#my-collapse {
+		height: 200px !important
+	}
+}
+
+#nav #login-head input {
+	position: relative;
+	top: 10px !important;
+}
+
+#nav #login-head button {
+	position: absolute;
+	top: 12px;
+	right: 7px;
+	color: #ccc;
+	height: 25px;
+	line-height: 25px;
+	text-align: center;
+}

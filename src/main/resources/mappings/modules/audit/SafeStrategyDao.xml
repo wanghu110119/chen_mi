@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.audit.dao.SafeStrategyDao">
+    
+	<sql id="safeStrategyColumns">
+		a.id AS "id",
+		a.dict_id AS "dict.id",
+		d.label AS "dict.label",
+		d.type AS "dict.type",
+		a.label AS "label",
+		a.code AS "code",
+		a.value AS "value",
+		a.param_type AS "paramType",
+		a.param_value AS "paramValue",
+		a.default_value AS "defaultValue",
+		a.dcr AS "dcr",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="safeStrategyJoins">
+		LEFT JOIN sys_dict AS d ON d.id = a.dict_id
+	</sql>
+    
+	<select id="get" resultType="SafeStrategy">
+		SELECT 
+			<include refid="safeStrategyColumns"/>
+		FROM audit_safe_strategy a
+		<include refid="safeStrategyJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SafeStrategy">
+		SELECT 
+			<include refid="safeStrategyColumns"/>
+		FROM audit_safe_strategy a
+		<include refid="safeStrategyJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="dict != null and dict.id != null and dict.id != ''">
+			AND a.dict_id = #{dict.id}
+		</if>
+	</select>
+	
+	<select id="findTypeList" resultType="SafeStrategy">
+		SELECT
+			a.dict_id AS "dict.id",
+			d.label AS "dict.label"
+		FROM audit_safe_strategy a
+		<include refid="safeStrategyJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		GROUP BY dict_id
+		ORDER BY dict_id DESC
+	</select>
+	
+	<update id="update">
+		UPDATE audit_safe_strategy SET 
+			dict_id = #{dict.id},
+			label = #{label},
+			code = #{code},
+			value = #{value},
+			param_type = #{paramType},
+			param_value = #{paramValue},
+			default_value = #{defaultValue},
+			dcr = #{dcr},
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

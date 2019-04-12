@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.ident.dao.AutRecordDao">
+
+	<resultMap id="autRecordResult" type="AutRecord">
+		<id property="id" column="id" />
+		<result property="user.id" column="user.id" />
+		<result property="ip" column="ip" />
+		<result property="isSuccess" column="isSuccess" />
+		<result property="user.loginName" column="user.loginName" />
+	</resultMap>
+
+	<sql id="autRecordColumns">
+		a.id,
+		a.user_id AS "user.id",
+		a.ip,
+		a.is_success,
+		a.create_by
+		AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.remarks,
+		a.del_flag,
+		u.login_name AS "user.loginName"
+	</sql>
+
+	<sql id="autRecordJoins">
+		LEFT JOIN sys_user u ON u.id = a.user_id
+	</sql>
+
+	<select id="get" resultMap="autRecordResult">
+		SELECT
+		<include refid="autRecordColumns" />
+		FROM ident_aut_record a
+		<include refid="autRecordJoins" />
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="findDateList" resultType="AutRecordData">
+		SELECT
+		HOUR(a.create_date) AS "time",
+		COUNT(a.id) AS "autCount"
+		FROM ident_aut_record a
+		<include refid="autRecordJoins" />
+		WHERE 1 = 1
+		<if test="dayDate != null and dayDate != ''">
+			and DATE_FORMAT(a.create_date, '%Y-%m-%d') = DATE_FORMAT(#{dayDate}, '%Y-%m-%d') 
+		</if>
+		<if test="isSuccess != null and isSuccess != ''">
+			AND is_success = #{isSuccess}
+		</if>
+		GROUP BY HOUR(a.create_date) 
+		ORDER BY a.create_date
+	</select>
+
+	<select id="findWeekList" resultType="AutRecordData">
+		SELECT 
+		WEEKDAY(a.create_date) AS "time",
+		COUNT(a.id) AS "autCount"
+		FROM ident_aut_record a
+		<include refid="autRecordJoins" />
+		WHERE 1 = 1
+		<if test="dayDate != null and dayDate != ''">
+			and WEEKOFYEAR(a.create_date) = WEEKOFYEAR(#{dayDate})
+		</if>
+		<if test="isSuccess != null and isSuccess != ''">
+			AND is_success = #{isSuccess}
+		</if>
+		GROUP BY WEEKDAY(a.create_date) 
+		ORDER BY a.create_date
+	</select>
+
+	<select id="findMothList" resultType="AutRecordData">
+		SELECT
+		DATE_FORMAT(a.create_date, '%e') AS "time",
+		COUNT(a.id) AS "autCount" 
+		FROM ident_aut_record a
+		<include refid="autRecordJoins" />
+		WHERE 1 = 1
+		<if test="dayDate != null and dayDate != ''">
+			and DATE_FORMAT(a.create_date, '%m') = DATE_FORMAT(#{dayDate}, '%m')
+		</if>
+		<if test="isSuccess != null and isSuccess != ''">
+			AND is_success = #{isSuccess}
+		</if>
+		GROUP BY DATE_FORMAT(a.create_date, '%Y-%m-%d') 
+		ORDER BY a.create_date
+	</select>
+	
+	<select id="findYearList" resultType="AutRecordData">
+		SELECT 
+		DATE_FORMAT(a.create_date, '%m') AS "time",
+		COUNT(a.id) AS "autCount"
+		FROM ident_aut_record a
+		<include refid="autRecordJoins" />
+		WHERE 1 = 1
+		<if test="dayDate != null and dayDate != ''">
+			and DATE_FORMAT(a.create_date, '%Y') = DATE_FORMAT(#{dayDate}, '%Y')
+		</if>
+		<if test="isSuccess != null and isSuccess != ''">
+			AND is_success = #{isSuccess}
+		</if>
+		GROUP BY DATE_FORMAT(create_date, '%m') 
+		ORDER BY a.create_date
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ident_aut_record(
+			id, 
+			user_id, 
+			ip, 
+			is_success, 
+			create_by, 
+			create_date, 
+			update_by, 
+			update_date, 
+			remarks, 
+			del_flag
+		) VALUES (
+			#{id}, 
+			#{user.id}, 
+			#{ip}, 
+			#{isSuccess}, 
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate}, 
+			#{remarks}, 
+			#{delFlag}
+		)
+	</insert>
+
+</mapper>

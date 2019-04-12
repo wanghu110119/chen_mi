@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.fieldconfig.dao.FieldGroupDao">
+    
+	<sql id="fieldGroupColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.group_name AS "groupName",
+		a.group_c_name AS "groupCName",
+		a.group_type AS "groupType",
+		a.group_role AS "groupRole"
+	</sql>
+	
+	<sql id="fieldGroupJoins">
+	</sql>
+	
+	<select id="get" resultType="FieldGroup" >
+		SELECT 
+			<include refid="fieldGroupColumns"/>
+		FROM field_group a
+		<include refid="fieldGroupJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="FieldGroup" >
+		SELECT 
+			<include refid="fieldGroupColumns"/>
+		FROM field_group a
+		<include refid="fieldGroupJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="FieldGroup" >
+		SELECT 
+			<include refid="fieldGroupColumns"/>
+		FROM field_group a
+		<include refid="fieldGroupJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findFieldGroupByGroupRole" resultType="FieldGroup" >
+		SELECT 
+			<include refid="fieldGroupColumns"/>
+		FROM field_group a
+		<include refid="fieldGroupJoins"/>
+		<where>
+			a.group_role = #{groupRole}
+		</where>		
+	</select>
+	
+	<!-- 通过分组名获取分组-->
+	<select id="getFieldGroupByGroupName" resultType="FieldGroup" parameterType="FieldGroup">
+		SELECT
+			<include refid="fieldGroupColumns"/>
+		FROM field_group a
+		<include refid="fieldGroupJoins"/>
+		WHERE a.group_name = #{groupName} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO field_group(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			group_name,
+			group_c_name,
+			group_type,
+			group_role
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{groupName},
+			#{groupCName},
+			#{groupType},
+			#{groupRole}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE field_group SET 	
+			group_name = #{groupName},
+			group_c_name = #{groupCName},
+			group_type = #{groupType},
+			group_role = #{groupRole}
+		WHERE id = #{id}
+	</update>
+	
+	<insert id="insertGroupConfig">
+		INSERT INTO field_group_config(
+			id,
+			field_group_id,
+			field_config_id
+		) VALUES (
+			#{id},
+			#{groupId},
+			#{fieldId}
+		)
+	</insert>
+	
+	<!--物理删除-->
+	<update id="deleteGroupConfigByGroup">
+		DELETE FROM field_group_config
+		WHERE field_group_id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM field_group
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE field_group SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="FieldGroup" statementType="STATEMENT">
+		select * FROM field_group  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

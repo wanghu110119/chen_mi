@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.sys.dao.SSOConfigDao">
+    
+	<sql id="ssoConfigColumns">
+		a.id AS "id",
+		a.name,
+		a.field,
+		a.status,
+		a.remarks AS "remarks"
+	</sql>
+	
+	<select id="get" resultType="SSOConfig">
+		SELECT 
+			<include refid="ssoConfigColumns"/>
+		FROM sys_sso_config a
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SSOConfig">
+		SELECT 
+			<include refid="ssoConfigColumns"/>
+		FROM sys_sso_config a
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="status != null and status != ''">
+			and a.status = #{status}
+		</if>
+	</select>
+	
+	<update id="update">
+		UPDATE sys_sso_config SET 
+			name = #{name},
+			field = #{field},
+			status = #{status},
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

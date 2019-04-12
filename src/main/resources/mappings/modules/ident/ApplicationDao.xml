@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.ident.dao.ApplicationDao">
+    
+	<sql id="applicationColumns">
+    	a.id,
+    	a.access_way,
+    	a.serial,
+    	a.name,
+    	a.url,
+    	a.ip_strategy,
+    	a.ip,
+    	a.max_ip,
+    	a.pic,
+    	a.type,
+    	a.status,
+    	a.sort,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		a.remarks,
+		uc.name AS "createBy.name"
+    </sql>
+    
+    <sql id="applicationJoins">
+		LEFT JOIN sys_user uc ON uc.id = a.create_by
+    </sql>
+	
+	<select id="get" resultType="Application">
+		SELECT
+			<include refid="applicationColumns"/>
+		FROM ident_application a 
+		<include refid="applicationJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findByName" resultType="Application">
+		SELECT
+			<include refid="applicationColumns"/>
+		FROM ident_application a 
+		<include refid="applicationJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="name != null and name != ''">
+			AND a.name = #{name}
+		</if>
+		<if test="type != null and type != ''">
+			AND a.type = #{type}
+		</if>
+	</select>
+	
+	<select id="findList" resultType="Application">
+        SELECT 
+            <include refid="applicationColumns"/>
+        FROM ident_application a  
+        <include refid="applicationJoins"/>
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+        <if test="createBy != null and createBy.id != null">
+        	AND a.create_by = #{createBy.id}
+        </if>
+        <if test="name != null and name != ''">
+            AND a.name LIKE 
+                    <if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+        </if>
+        <if test="url != null and url != ''">
+            AND a.url LIKE 
+                    <if test="dbName == 'mysql'">CONCAT('%', #{url}, '%')</if>
+        </if>
+        <if test="status != null and status != ''">
+            AND a.status = #{status}
+        </if>
+        AND a.type = #{type}
+        ${sqlMap.dsf}
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date
+			</otherwise>
+		</choose>
+    </select>
+    
+    <select id="findSys" resultType="Application">
+    	SELECT 
+            <include refid="applicationColumns"/>
+        FROM ident_application a  
+        <include refid="applicationJoins"/>
+        LEFT JOIN ident_user_application ua ON a.id = ua.application_id
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+        <if test="createBy != null and createBy.id != null and createBy.id != ''">
+        	AND ua.user_id = #{createBy.id}
+        </if>
+        <if test="status != null and status != ''">
+            AND a.status = #{status}
+        </if>
+        AND a.type = #{type}
+        ORDER BY a.create_date DESC
+    </select>
+    
+    <select id="findManagerUser" resultType="User">
+    	SELECT
+    		a.id,
+    		a.name
+    	FROM sys_user a
+    	LEFT JOIN ident_user_application ua ON a.id = ua.user_id
+    	WHERE 1=1
+    	<if test="application.id != null and application.id != ''">
+    		AND ua.application_id = #{application.id}
+    	</if>
+    	<if test="userId != null and userId !=''">
+    		AND ua.user_id = #{userId}
+    	</if>
+    </select>
+	
+	<!-- 插入应用 -->
+	<insert id="insert">
+		INSERT INTO ident_application(
+			id,
+	        serial,
+	        name,
+	        ip_strategy,
+	        ip,
+	        max_ip,
+	        pic,
+	        url,
+	        type,
+	        status,
+	        create_by,
+	        create_date,
+	        update_by,
+	        update_date,
+	        del_flag,
+	        remarks,
+	        access_way
+		) VALUES (
+			#{id}, 
+            #{serial},
+            #{name},
+            #{ipStrategy},
+            #{ip},
+            #{maxip},
+            #{pic},
+            #{url},
+            #{type},
+            #{status},
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate},
+			#{delFlag},
+			#{remarks},
+			#{accessWay}
+		)
+	</insert>
+	
+	
+	<update id="update">
+		UPDATE ident_application SET 
+			access_way = #{accessWay}, 
+			name = #{name}, 
+			ip_strategy = #{ipStrategy}, 
+			ip = #{ip}, 
+			max_ip = #{maxip},
+			pic = #{pic}, 
+			url = #{url},
+			type = #{type}, 
+			status = #{status},
+			sort = #{sort},
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="delete">
+		DELETE FROM ident_application 
+		WHERE id = #{id}
+		AND type = #{type}
+	</update>
+	
+	
+	<update id="deleteByLogic">
+		UPDATE ident_application SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findByUserAndType" resultType="Application">
+		SELECT
+			<include refid="applicationColumns"/>
+		FROM ident_application a 
+			<include refid="applicationJoins"/>
+		WHERE a.create_by = #{0}
+		AND a.type = #{1}
+		AND a.del_flag = 0
+		AND a.status = 1
+		ORDER BY a.sort ASC
+	</select>
+	
+	<select id="findAllSystemApps" resultType="Application">
+		SELECT
+			<include refid="applicationColumns"/>
+		FROM ident_application a 
+			<include refid="applicationJoins"/>
+		WHERE a.type = 1
+		AND a.del_flag = 0
+		AND a.status = 1
+		ORDER BY a.sort ASC
+	</select>
+	
+</mapper>

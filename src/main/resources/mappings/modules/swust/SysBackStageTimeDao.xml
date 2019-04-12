@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.swust.dao.BackstageTimeDao">
+<sql id="TimeColumns">
+		a.id,
+		a.user_id,
+		a.begin_time,
+		a.end_time,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.sum,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.remarks,
+		a.del_flag
+	</sql>
+	
+	<select id="selectByDisable" resultType="SysBackstageTime">
+		SELECT
+			<include refid="TimeColumns"/>
+		FROM mht_oeg.sys_backstage_time a 
+		<where>
+			AND disable='1'
+		</where>
+		ORDER BY a.update_date DESC
+	</select>
+	<select id="selectByRemark" resultType="SysBackstageTime">
+		SELECT
+			<include refid="TimeColumns"/>
+		FROM mht_oeg.sys_backstage_time a 
+		<where>
+			AND disable=#{i}
+		</where>
+		ORDER BY a.update_date DESC
+	</select>
+	
+	<select id="selectBackstageTime" resultType="SysBackstageTime">
+		SELECT
+			<include refid="TimeColumns"/>
+		FROM mht_oeg.sys_backstage_time a 
+		<where>
+			AND id='1'
+		</where>
+		ORDER BY a.update_date DESC
+	</select>
+	
+	
+	<select id="get" resultType="SysBackstageTime">
+		SELECT
+			<include refid="TimeColumns"/>
+		FROM mht_oeg.sys_backstage_time a 
+		WHERE a.id = #{id}
+		ORDER BY a.update_date DESC
+	</select>
+	
+	<insert id="insert">
+	INSERT INTO mht_oeg.sys_backstage_time(
+		id,
+		user_id,
+		begin_time,
+		end_time,
+		create_by AS "createBy.id",
+		create_date,
+		update_by AS "updateBy.id",
+		update_date,
+		sum,
+		remarks,
+		del_flag
+	
+	)VALUES (
+			#{id}, 
+			#{userId}, 
+			#{beginTime}, 
+			#{endTime}, 
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate}, 
+			#{sum}, 
+			#{remarks}, 
+			#{delFlag}
+	)
+	</insert>
+	
+	<update id="notEqualsId">
+		UPDATE mht_oeg.sys_backstage_time SET 
+		
+			disable="2"
+		WHERE id <![CDATA[ <> ]]> #{id}
+	</update>
+	<update id="update">
+		UPDATE mht_oeg.sys_backstage_time 
+		<set> 
+		<if test="userId!=null and userId!=''">
+		user_id = #{userId},
+		</if>
+			<if test="beginTime!=null and beginTime!=''">
+			begin_time = #{beginTime},
+			</if>
+			<if test="endTime!=null and endTime!=''">
+			end_time = #{endTime},
+			</if>
+			<if test="sum!=null and sum!=''">
+			sum = #{sum},
+			</if>
+			<if test="createBy!=null and createBy.id!=null and createBy.id!=''">
+			create_by = #{createBy.id},
+			</if>
+			<if test="createDate!=null and createDate!=''">
+			create_date = #{createDate}, 
+			</if>
+			<if test="updateBy!=null and updateBy.id!=null and updateBy.id!=''">
+			update_by = #{updateBy.id},
+			</if>
+			<if test="updateDate!=null and updateDate!=''">
+			update_date = #{updateDate},
+			</if>
+			<if test="remarks!=null and remarks!=''">
+			remarks = #{remarks} ,
+			</if> 
+			<if test="disable!=null and disable!=''">
+			disable = #{disable} 
+			</if> 
+			</set>
+		WHERE id = #{id}
+	</update>
+</mapper>
+

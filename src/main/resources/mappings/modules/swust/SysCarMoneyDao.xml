@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.swust.dao.SysCarMoneyDao">
+  <resultMap id="BaseResultMap" type="com.mht.modules.swust.entity.SysCarMoney">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="car_type_id" jdbcType="CHAR" property="carTypeId" />
+    <result column="time_times" jdbcType="VARCHAR" property="timeTimes" />
+    <result column="add_money" jdbcType="VARCHAR" property="addMoney" />
+    <result column="default_time" jdbcType="VARCHAR" property="defaultTime" />
+    <result column="max_money" jdbcType="CHAR" property="maxMoney" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="money_month" jdbcType="VARCHAR" property="moneyMonth" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, car_type_id, time_times, add_money, default_time, max_money, remarks, money_month
+  </sql>
+  
+  
+  <select id="selectAll"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List"/>
+    from mht_oeg.sys_car_money
+  </select>
+  
+  <select id="selectByCarTypeId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List"/>
+    from mht_oeg.sys_car_money
+    where car_type_id = #{carTypeId}
+  </select>
+   <insert id="insert" parameterType="com.mht.modules.swust.entity.SysCarMoney">
+    insert into mht_oeg.sys_car_money (id, car_type_id, time_times, 
+      add_money, default_time, max_money, 
+      remarks, money_month)
+    values (#{id,jdbcType=VARCHAR}, #{carTypeId,jdbcType=CHAR}, #{timeTimes,jdbcType=VARCHAR}, 
+      #{addMoney,jdbcType=VARCHAR}, #{defaultTime,jdbcType=VARCHAR}, #{maxMoney,jdbcType=CHAR}, 
+      #{remarks,jdbcType=VARCHAR}, #{moneyMonth,jdbcType=VARCHAR})
+  </insert>
+  <update id="update" parameterType="com.mht.modules.swust.entity.SysCarMoney">
+    update mht_oeg.sys_car_money
+    set car_type_id = #{carTypeId,jdbcType=CHAR},
+      time_times = #{timeTimes,jdbcType=VARCHAR},
+      add_money = #{addMoney,jdbcType=VARCHAR},
+      default_time = #{defaultTime,jdbcType=VARCHAR},
+      max_money = #{maxMoney,jdbcType=CHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      money_month = #{moneyMonth,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="get" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mht_oeg.sys_car_money
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  </mapper>

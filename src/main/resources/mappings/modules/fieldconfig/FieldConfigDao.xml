@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.fieldconfig.dao.FieldConfigDao">
+    
+	<sql id="fieldConfigColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.field_name AS "fieldName",
+		a.field_c_name AS "fieldCName",		
+		a.data_type AS "dataType",		
+		a.is_necessary AS "isNecessary",
+		a.is_modify AS "isModify",
+		a.is_usable AS "isUsable",
+		a.list_value AS "listValue",
+		a.expression AS "expression",
+		a.length AS "length",
+		a.col_name AS "colName"
+	</sql>
+	
+	<sql id="fieldConfigJoins">		
+	</sql>
+	
+    
+	<select id="get" resultType="FieldConfig" >
+		SELECT 
+			<include refid="fieldConfigColumns"/>
+		FROM field_config a
+		<include refid="fieldConfigJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="FieldConfig" >
+		SELECT 
+			<include refid="fieldConfigColumns"/>
+		FROM field_config a
+		<include refid="fieldConfigJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<if test="fieldName != null and fieldName != ''">
+			AND a.field_name like 
+					<if test="dbName == 'oracle'">'%'||#{fieldName}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{fieldName}, '%')</if>
+		</if>
+		<if test="dataType != null and dataType != ''">
+			AND a.data_type = #{dataType}
+		</if>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="FieldConfig" >
+		SELECT 
+			<include refid="fieldConfigColumns"/>
+		FROM field_config a
+		<include refid="fieldConfigJoins"/>		
+	</select>
+	
+	<select id="findUsableFieldConfigList" resultType="FieldConfig" >
+		SELECT
+			<include refid="fieldConfigColumns"/>
+		FROM field_config a 
+		<where> 
+			a.is_usable = 1 AND NOT EXISTS (
+				select gc.field_config_id FROM field_group_config gc LEFT JOIN field_group g on gc.field_group_id = g.id
+				<where> 
+					<if test="groupId != null and groupId != ''">
+						gc.field_group_id &lt;&gt; #{groupId} 
+					</if>
+					<if test="groupRole != null and groupRole != ''">
+						AND g.group_role = #{groupRole}  
+					</if>
+					AND a.id = gc.field_config_id  
+				</where>
+			) 
+			<if test="fieldName != null and fieldName != ''">
+				AND a.field_name like <if test="dbName == 'mysql'">CONCAT('%', #{fieldName}, '%')</if> 
+			</if>
+			<if test="dataType != null and dataType != ''">
+				AND a.data_type = #{dataType}
+			</if>
+		</where>		
+	</select>
+	
+	<select id="findListByFieldType" resultType="FieldConfig" >
+		SELECT 
+			<include refid="fieldConfigColumns"/>
+		FROM field_config a
+		<include refid="fieldConfigJoins"/>
+		<where>
+			a.is_usable = 1
+		</where>
+	</select>
+	
+	<select id="getFieldConfigByGroup" resultType="FieldConfig" >
+		SELECT 
+			<include refid="fieldConfigColumns"/>
+		FROM field_config a
+		LEFT JOIN field_group_config gc on a.id = gc.field_config_id
+		<where>
+			gc.field_group_id = #{id}
+			AND a.is_usable = 1
+		</where>
+	</select>
+	
+	
+	<select id="getGroupByFieldConfig" resultType="FieldConfig" >
+		SELECT 
+			<include refid="fieldConfigColumns"/>
+		FROM field_config a
+		LEFT JOIN field_group_config gc on a.id = gc.field_config_id
+		<where>
+			gc.field_config_id = #{id}
+			AND a.is_usable = 1
+		</where>
+	</select>
+	
+	<!-- 通过字段名获取字段配置-->
+	<select id="getFieldConfigByFieldName" resultType="FieldConfig" parameterType="FieldConfig">
+		SELECT
+			<include refid="fieldConfigColumns"/>
+		FROM field_config a
+		<include refid="fieldConfigJoins"/>
+		WHERE a.field_name = #{fieldName} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO field_config(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			field_name,
+			field_c_name,		
+			data_type,			
+			is_necessary,
+			is_modify,
+			is_usable,
+			list_value,
+			expression,
+			length,
+			col_name
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{fieldName},
+			#{fieldCName},			
+			#{dataType},			
+			#{isNecessary},
+			#{isModify},
+			#{isUsable},
+			#{listValue},
+			#{expression},
+			#{length},
+			#{colName}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE field_config SET 	
+			field_name = #{fieldName},
+			field_c_name = #{fieldCName},			
+			data_type = #{dataType},			
+			is_necessary = #{isNecessary},
+			is_modify = #{isModify},
+			is_usable = #{isUsable},
+			list_value = #{listValue},
+			expression = #{expression},
+			length = #{length},
+			col_name = #{colName}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM field_config
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE field_config SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="FieldConfig" statementType="STATEMENT">
+		select * FROM field_config  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

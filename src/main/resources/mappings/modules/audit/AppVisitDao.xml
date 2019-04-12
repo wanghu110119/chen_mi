@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.audit.dao.AppVisitDao">
+
+	<sql id="appVisitColumns">
+		a.id,
+		a.user_id,
+		a.app_id,
+		a.create_by AS "createBy.id",
+		a.office_id AS "office.id",
+		so.name AS "office.name",
+		a.create_date,
+		a.update_by AS
+		"updateBy.id",
+		a.update_date,
+		a.del_flag,
+		a.remarks,
+		um.name AS
+		"user.name",
+		ap.name AS "application.name",
+		uc.name AS "createBy.name"
+	</sql>
+
+	<sql id="appVisitJoins">
+		LEFT JOIN sys_user um ON um.id = a.user_id
+		LEFT JOIN ident_application ap ON ap.id = a.app_id
+		LEFT JOIN sys_user uc ON
+		uc.id = a.create_by
+		LEFT JOIN sys_office AS so ON so.id = a.office_id
+	</sql>
+
+	<select id="findList" resultType="AppUserRecord">
+		SELECT
+		<include refid="appVisitColumns" />
+		FROM ident_user_app_record a
+		<include refid="appVisitJoins" />
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="application.id != null and application.id != ''">
+			AND a.app_id = #{application.id}
+		</if>
+		<if test="user != null and user.id != null and user.id  != ''">
+			AND a.user_id = #{user.id}
+		</if>
+		<if test="user != null and user.name != null and user.name != ''">
+            AND um.name LIKE 
+                    <if test="dbName == 'mysql'">CONCAT('%', #{user.name}, '%')</if>
+        </if>
+        <if test="office != null and office .name != null and office.name != ''">
+            AND so.name LIKE 
+                    <if test="dbName == 'mysql'">CONCAT('%', #{office.name}, '%')</if>
+        </if>
+		ORDER BY a.create_date DESC
+	</select>
+
+	<select id="findVisitStatistics" resultType="AppUserRecordData">
+		SELECT
+		ia.`name` AS "name",
+		uar.`value` AS "value"
+		FROM ident_application as ia LEFT JOIN (
+		SELECT
+		a.app_id AS "app_id",
+		COUNT(a.id) AS "value"
+		FROM
+		ident_user_app_record AS a
+		LEFT JOIN sys_office AS so ON so.id = a.office_id
+		WHERE 1=1
+		<if
+			test="beginDate != null and beginDate != '' 
+				  and endDate != null and endDate != ''">
+			 AND a.create_date BETWEEN #{beginDate} AND #{endDate}
+		</if>
+		<if test="office != null and office.grade != null and office.grade != ''">
+			AND office_id is not null
+			AND so.grade = #{office.grade}
+		</if>
+		GROUP BY
+		a.app_id ) AS uar ON uar.app_id = ia.id
+		WHERE ia.del_flag &lt;&gt; '1' AND ia.type = '1';
+	</select>
+
+	<select id="findVisitAmount" resultType="AppUserRecordData">
+		SELECT
+		ia.`name` AS "name",
+		IFNULL(uar.`value`, "0") AS "value",
+		IFNULL(uar.percent, "0%") AS "percent"
+		FROM ident_application as ia LEFT JOIN (
+		SELECT
+		a.app_id AS "app_id",
+		COUNT(a.id) AS "value",
+		CONCAT(ROUND(COUNT(a.id) / st.scount * 100,2),'%') AS "percent"
+		FROM
+		ident_user_app_record AS a
+		INNER JOIN (SELECT COUNT(upr.id) AS scount FROM
+		ident_user_app_record as upr LEFT JOIN 
+		ident_application as ia ON upr.app_id = ia.id 
+		WHERE
+		ia.del_flag = '0') AS st
+		GROUP BY
+		a.app_id
+		DESC) as uar ON uar.app_id = ia.id
+		WHERE ia.del_flag &lt;&gt; '1' AND ia.type = '1'
+		ORDER BY
+		uar.`value` desc
+		<if test="limit != null and limit != ''">
+			LIMIT #{limit}
+		</if>
+	</select>
+	
+	<select id="findOfficeAmount" resultType="AppUserRecordData">
+		SELECT
+			ia.`name` AS "name",
+			IFNULL(uar.`value`, "0") AS "value",
+			IFNULL(uar.percent, "0%") AS "percent"
+		FROM sys_office as ia LEFT JOIN (
+			SELECT
+			a.office_id AS "office_id",
+			COUNT(a.id) AS "value",
+			CONCAT(ROUND(COUNT(a.id) / st.scount * 100,2),'%') AS "percent"
+			FROM
+			ident_user_app_record AS a
+			INNER JOIN (SELECT COUNT(upr.id) AS scount FROM
+			ident_user_app_record as upr
+			LEFT JOIN 
+			ident_application as iapp ON upr.app_id = iapp.id 
+			WHERE
+			iapp.del_flag = '0'
+			AND upr.office_id is not null) AS st
+			WHERE a.office_id is not null
+			GROUP BY
+			a.office_id
+			DESC) as uar ON uar.office_id = ia.id
+		WHERE ia.del_flag &lt;&gt; '1' 
+		<if test="grade != null and grade != ''">
+			AND ia.grade = #{grade}
+		</if>
+		ORDER BY
+		uar.`value` desc
+		<if test="limit != null and limit != ''">
+			LIMIT #{limit}
+		</if>
+	</select>
+
+	<select id="findVisitUser" resultType="AppUserRecordData">
+		SELECT 
+			ia.`name`, 
+			IFNULL(a.`value`,'0') as "value",
+			IFNULL(a.ivalue,'0') as "yvalue",
+			IFNULL(a.percent,'0%') as "percent"
+		FROM ident_application as ia left JOIN (
+			SELECT ap.id AS "app_id",
+				   ap.`name` AS "name",
+				   COUNT(a.id) AS "value",
+				   CONCAT(ROUND(COUNT(DISTINCT a.user_id) / st.scount * 100, 2), '%') AS "percent",
+				   sa.ivalue
+			FROM
+			ident_user_app_record AS a
+			LEFT JOIN ident_application AS ap ON a.app_id = ap.id
+			INNER JOIN (
+				SELECT
+					COUNT(su.id) AS scount
+				FROM
+				sys_user AS su) AS st
+			LEFT JOIN (
+				SELECT
+					iuar.app_id AS "app_id",
+					COUNT(iuar.id) AS "ivalue"
+				FROM
+				ident_user_app_record AS iuar
+				WHERE iuar.create_date BETWEEN DATE_SUB(CURDATE(),INTERVAL 1 DAY) AND
+				CURDATE()
+				GROUP BY
+				iuar.app_id) as sa
+				ON sa.app_id = a.app_id
+				WHERE a.create_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(),INTERVAL 1
+				DAY)
+		GROUP BY
+		a.app_id
+		ORDER BY
+		COUNT(a.id) DESC ) AS a ON a.app_id = ia.id where ia.del_flag &lt;&gt; '1' AND ia.type
+		= '1' GROUP BY ia.id ORDER BY a.percent DESC 
+		<if test="limit != null and limit != ''">
+			LIMIT #{limit};
+		</if>
+	</select>
+	
+	<select id="findOfficeUser" resultType="AppUserRecordData">
+		SELECT 
+			ia.`name`, 
+			IFNULL(a.`value`,'0') as "value",
+			IFNULL(a.ivalue,'0') as "yvalue",
+			IFNULL(a.percent,'0%') as "percent"
+		FROM sys_office as ia left JOIN (
+			SELECT ap.id AS "office_id",
+				   ap.`name` AS "name",
+				   COUNT(a.id) AS "value",
+				   CONCAT(ROUND(COUNT(DISTINCT a.user_id) / st.scount * 100, 2), '%') AS "percent",
+				   sa.ivalue
+			FROM
+			ident_user_app_record AS a
+			LEFT JOIN sys_office AS ap ON a.office_id = ap.id
+			INNER JOIN (
+				SELECT
+					COUNT(su.id) AS scount
+				FROM
+				sys_user AS su) AS st
+			LEFT JOIN (
+				SELECT
+					iuar.office_id AS "office_id",
+					COUNT(iuar.id) AS "ivalue"
+				FROM
+				ident_user_app_record AS iuar
+				WHERE iuar.create_date BETWEEN DATE_SUB(CURDATE(),INTERVAL 1 DAY) AND
+				CURDATE()
+				AND iuar.office_id is not null
+				GROUP BY
+				iuar.office_id) as sa
+				ON sa.office_id = a.office_id
+				WHERE a.create_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(),INTERVAL 1
+				DAY)
+		GROUP BY
+		a.office_id
+		ORDER BY
+		COUNT(a.id) DESC ) AS a ON a.office_id = ia.id where ia.del_flag &lt;&gt; '1' 
+		<if test="grade != null and grade != ''">
+			AND ia.grade = #{grade}
+		</if>
+		GROUP BY ia.id ORDER BY a.percent DESC 
+		<if test="limit != null and limit != ''">
+			LIMIT #{limit};
+		</if>
+	</select>
+	
+	<select id="findVisitTrend"  resultType="AppUserRecordData">
+		SELECT
+			a.`name` AS "name",
+			IFNULL(ya.yvalue,"0") AS "yvalue",
+			IFNULL(da.yvalue,"0") AS "value"
+		FROM
+			ident_application AS a
+		LEFT JOIN (
+			SELECT
+				ya.app_id AS "app_id",
+				yap.`name` AS "name",
+				COUNT(ya.id) AS "yvalue"
+			FROM
+				ident_user_app_record AS ya
+			LEFT JOIN ident_application AS yap ON ya.app_id = yap.id
+			WHERE
+				ya.create_date BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+			AND CURDATE()
+			GROUP BY
+				ya.app_id
+		) AS ya ON a.id = ya.app_id
+		LEFT JOIN (
+			SELECT
+				ya.app_id AS "app_id",
+				yap.`name` AS "name",
+				COUNT(ya.id) AS "yvalue"
+			FROM
+				ident_user_app_record AS ya
+			LEFT JOIN ident_application AS yap ON ya.app_id = yap.id
+			WHERE
+				ya.create_date BETWEEN CURDATE()
+			AND DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+			GROUP BY
+				ya.app_id
+		) AS da ON da.app_id = a.id
+		WHERE
+			a.del_flag &lt;&gt; '1'
+		AND a.type = '1'
+		GROUP BY
+			a.id
+		ORDER BY
+			da.yvalue DESC
+		<if test="limit != null and limit != ''">
+			LIMIT #{limit};
+		</if>
+	</select>
+	
+	<select id="findDepartTrend"  resultType="AppUserRecordData">
+		SELECT
+			a.`name` AS "name",
+			IFNULL(ya.yvalue,"0") AS "yvalue",
+			IFNULL(da.yvalue,"0") AS "value"
+		FROM
+			sys_office AS a
+		LEFT JOIN (
+			SELECT
+				ya.office_id AS "office_id",
+				yap.`name` AS "name",
+				COUNT(ya.id) AS "yvalue"
+			FROM
+				ident_user_app_record AS ya
+			LEFT JOIN sys_office AS yap ON ya.app_id = yap.id
+			WHERE
+				ya.create_date BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+			AND CURDATE()
+			AND ya.office_id is not null
+			GROUP BY
+				ya.office_id
+		) AS ya ON a.id = ya.office_id
+		LEFT JOIN (
+			SELECT
+				ya.office_id AS "office_id",
+				yap.`name` AS "name",
+				COUNT(ya.id) AS "yvalue"
+			FROM
+				ident_user_app_record AS ya
+			LEFT JOIN sys_office AS yap ON ya.office_id = yap.id
+			WHERE
+				ya.create_date BETWEEN CURDATE()
+			AND DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+			AND ya.office_id is not null
+			GROUP BY
+				ya.office_id
+		) AS da ON da.office_id = a.id
+		WHERE
+			a.del_flag &lt;&gt; '1'
+		<if test="grade != null and grade !=''">
+			AND a.grade = #{grade}
+		</if>
+		GROUP BY
+			a.id
+		ORDER BY
+			da.yvalue DESC
+		<if test="limit != null and limit != ''">
+			LIMIT #{limit};
+		</if>
+	</select>
+	
+	<select id="findVisitHistory" resultType="AppUserRecordData">
+		SELECT
+			a.`name` AS "name",
+			IFNULL(yesa.`value`, "0") AS "yvalue",
+			IFNULL(ta.`value`, "0") AS "value",
+			IFNULL(wa.`value`, "0") AS "wvalue",
+			IFNULL(ma.`value`, "0") AS "mvalue",
+			IFNULL(yea.`value`, "0") AS "yeavalue",
+			IFNULL(yall.`value`, "0") AS "yallvalue"
+		FROM
+			ident_application AS a
+		LEFT JOIN (
+			SELECT
+				ya.app_id AS "app_id",
+				COUNT(ya.id) AS "value"
+			FROM
+				ident_user_app_record AS ya
+			WHERE
+				ya.create_date BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND CURDATE()
+			GROUP BY
+				ya.app_id
+		) AS yesa ON a.id = yesa.app_id
+		LEFT JOIN (
+			SELECT
+				ya.app_id AS "app_id",
+				COUNT(ya.id) AS "value"
+			FROM
+				ident_user_app_record AS ya
+			WHERE
+				ya.create_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+			GROUP BY
+				ya.app_id
+		) AS ta ON a.id = ta.app_id
+		LEFT JOIN (
+			SELECT
+				ya.app_id AS "app_id",
+				COUNT(ya.id) AS "value"
+			FROM
+				ident_user_app_record AS ya
+			WHERE
+				WEEKOFYEAR(ya.create_date) = WEEKOFYEAR(CURDATE())
+			GROUP BY
+				ya.app_id
+		) AS wa ON a.id = wa.app_id
+		LEFT JOIN (
+		SELECT
+				ya.app_id AS "app_id",
+				COUNT(ya.id) AS "value"
+			FROM
+				ident_user_app_record AS ya
+			WHERE
+				DATE_FORMAT(ya.create_date, '%m') = DATE_FORMAT(CURDATE(), '%m')
+			GROUP BY
+				ya.app_id
+		) AS ma ON a.id = ma.app_id
+		LEFT JOIN (
+		SELECT
+				ya.app_id AS "app_id",
+				COUNT(ya.id) AS "value"
+			FROM
+				ident_user_app_record AS ya
+			WHERE
+				DATE_FORMAT(ya.create_date, '%Y') = DATE_FORMAT(CURDATE(), '%Y')
+			GROUP BY
+				ya.app_id
+		) AS yea ON a.id = yea.app_id 
+		LEFT JOIN (
+		SELECT
+				ya.app_id AS "app_id",
+				COUNT(ya.id) AS "value"
+			FROM
+				ident_user_app_record AS ya
+			GROUP BY
+				ya.app_id
+		) AS yall ON a.id = yall.app_id 
+		WHERE
+			a.del_flag &lt;&gt; '1'
+		AND a.type = '1';
+	</select>
+	
+	<select id="findAppRealTime" resultType="AppUserRecordData">
+		SELECT
+			COUNT(iuar.id) AS "value",
+			<choose>  
+	            <when test="type !=null and type != '' and type == '1'.toString()">  
+	                DATE_FORMAT(iuar.create_date,'%H:%i:%s') AS "name"
+	            </when >  
+	            <when test="type !=null and type != '' and type == '2'.toString()">  
+	                DATE_FORMAT(iuar.create_date,'%H:%i') AS "name"
+	            </when >  
+	            <when test="type !=null and type != '' and type == '3'.toString()">  
+	                DATE_FORMAT(iuar.create_date,'%H:%i') AS "name"
+	            </when >  
+	            <when test="type !=null and type != '' and type == '4'.toString()">  
+	                DATE_FORMAT(iuar.create_date,'%H') AS "name"
+	            </when >  
+	            <when test="type !=null and type != '' and type == '5'.toString()">  
+	                DATE_FORMAT(iuar.create_date,'%Y-%m-%d') AS "name"
+	            </when >  
+	            <otherwise>
+	            	iuar.create_date
+	            </otherwise>  
+	        </choose> 
+		FROM
+			ident_user_app_record AS iuar
+		LEFT JOIN sys_user AS su ON iuar.user_id = su.id
+		LEFT JOIN sys_user_office AS suo ON suo.user_id = su.id
+		LEFT JOIN sys_office AS so ON so.id = suo.office_id
+		WHERE 1=1
+		<if test="oid != null and oid != ''" >
+			AND (FIND_IN_SET(#{oid},so.parent_ids)
+			OR so.id = #{oid})
+		</if>
+		<if test="startDate != null and startDate != '' 
+				and endDate != null and endDate !=''">
+			AND iuar.create_date BETWEEN #{startDate} AND #{endDate}	
+		</if>
+		<if test="aid != null and aid != ''">
+			AND
+			app_id = #{aid}
+		</if>
+		<if test="searchType != null and searchType != '' and searchType == '1'.toString()">
+			<choose>  
+	            <when test="type !=null and type != '' and type == '1'.toString()">  
+	                GROUP BY
+					FLOOR(SECOND(iuar.create_date))
+	            </when >  
+	            <when test="type !=null and type != '' and type == '2'.toString()">  
+	                GROUP BY
+					MINUTE(iuar.create_date)
+	            </when >  
+	            <when test="type !=null and type != '' and type == '3'.toString()">  
+	                GROUP BY
+					FLOOR(MINUTE(iuar.create_date))
+	            </when >  
+	            <when test="type !=null and type != '' and type == '4'.toString()">  
+	                GROUP BY
+					FLOOR(HOUR(iuar.create_date))
+	            </when >  
+	            <when test="type !=null and type != '' and type == '5'.toString()">  
+	                GROUP BY
+					DAY(iuar.create_date)
+	            </when >  
+	            <otherwise>
+	            </otherwise>  
+	        </choose> 
+        </if>
+	</select>
+</mapper>

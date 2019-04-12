@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.sys.dao.SysConfigDao">
+    
+	<sql id="sysConfigColumns">
+		a.id AS "id",
+		a.sys_project_id AS "sysProject.id",
+		a.dict_id AS "dict.id",
+		a.label AS "label",
+		d.label AS "dict.label",
+		d.value AS "dict.value",
+		d.type AS "dict.type",
+		a.value AS "value",
+		a.param_type AS "paramType",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="sysConfigJoins">
+		LEFT JOIN sys_dict AS d ON d.id = a.dict_id
+		LEFT JOIN ident_sys_project i ON i.id = a.sys_project_id
+	</sql>
+    
+	<select id="get" resultType="SysConfig">
+		SELECT 
+			<include refid="sysConfigColumns"/>
+		FROM sys_config a
+		<include refid="sysConfigJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SysConfig">
+		SELECT 
+			<include refid="sysConfigColumns"/>
+		FROM sys_config a
+		<include refid="sysConfigJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="dict != null and dict.id != null and dict.id != ''">
+			AND a.dict_id = #{dict.id}
+		</if>
+	</select>
+	
+	<select id="findTypeList" resultType="SysConfig">
+		SELECT
+			a.dict_id AS "dict.id",
+			d.label AS "dict.label",
+			d.value AS "dict.value"
+		FROM sys_config a
+		<include refid="sysConfigJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		GROUP BY dict_id
+		ORDER BY dict_id DESC
+	</select>
+	
+	<update id="update">
+		UPDATE sys_config SET 
+			sys_project_id = #{sysProject.id},
+			dict_id = #{dict.id},
+			value = #{value},
+			param_type = #{paramType},
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

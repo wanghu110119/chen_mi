@@ -1,0 +1,181 @@
+html, body, div, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
+	blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn,
+	em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup,
+	tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, input,
+	textarea, select, button, label, legend, table, caption, tbody, tfoot,
+	thead, tr, th, td {
+	background: transparent;
+	border: 0;
+	font-weight: normal;
+	margin: 0;
+	outline: 0;
+	padding: 0;
+	list-style: none
+}
+
+body {
+	font-family: "黑体", "Microsoft Yahei", sans-serif, Heiti,
+		"Lucida Grande";
+	color: #000;
+	background: #fff;
+	padding-top: 50px
+}
+
+*::selection {
+	background: #00b3ee
+}
+
+select, input, img, select {
+	vertical-align: middle
+}
+
+a {
+	color: #fff;
+	text-decoration: none
+}
+
+* {
+	box-sizing: border-box
+}
+
+html {
+	font-size: 12px
+}
+.pr{
+	position:relative;
+}
+.modal-dialog {
+	position: absolute;
+	left: 50%;
+	top: 30%;
+	transform: translate(-50%, -50%) !important
+}
+
+.modal-dialog .text-center {
+	text-align: center
+}
+
+.modal-dialog .modal-header {
+	border-bottom: 0
+}
+
+.modal-dialog .modal-footer {
+	padding: 15px;
+	border-top: 0
+}
+
+.modal-dialog h3.modal-title {
+	color: #5398ff
+}
+
+.modal-dialog .confirm {
+	background: #5398ff;
+	color: #fff;
+	width: 120px;
+	height: 40px
+}
+
+.modal-dialog form {
+	padding-right: 10px
+}
+
+body {
+	background: url(../images/login-back1.jpg) 0 0 no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+	background-position: center
+}
+
+.login-box {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	max-width: 450px;
+	text-align: center
+}
+.login-box h2 {
+	color: #2aa0e6;
+	margin: 1rem 0 4rem 0
+}
+
+form {
+	position: relative
+}
+
+form input {
+	display: block;
+	height: 40px;
+	width: 80%;
+	margin-left: 10%;
+	border-radius: 20px;
+	background: #fff;
+	margin-bottom: 1.5rem;
+	padding-left: 45px;
+}
+
+form ::-webkit-input-placeholder {
+	color: #ccc
+}
+
+form :-moz-placeholder {
+	color: #ccc
+}
+
+form ::-moz-placeholder {
+	color: #ccc
+}
+
+form :-ms-input-placeholder {
+	color: #ccc
+}
+
+form span.user {
+	position: absolute;
+	left: 13%;
+	top: 19%;
+	width: 20px;
+	height: 21px
+}
+
+form span.user img {
+	width: 100%
+}
+
+form span.password {
+	position: absolute;
+	left: 13%;
+	top: 20%;
+	width: 20px;
+	height: 21px
+}
+
+form span.password img {
+	width: 100%
+}
+
+form button {
+	width: 80%;
+	border-radius: 20px;
+	background: #2aa0e6;
+	color: #fff;
+	height: 40px;
+	font-size: 14px;
+	margin-top: 2rem;
+	font-weight: bold
+}
+
+@media screen and (max-width:767px) {
+	h2 {
+		font-size: 14px;
+		margin-bottom: 1rem !important
+	}
+	input {
+		padding-left: 52px !important;
+		width: 100% !important;
+		margin-left: 0 !important
+	}
+	button {
+		width: 100% !important
+	}
+}

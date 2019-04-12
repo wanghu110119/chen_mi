@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.swust.dao.ManagerDao">
+	
+    <sql id="managerColumns">
+      a.id,
+      a.username,
+      a.password,
+      a.rode
+    </sql>   	
+	<!-- 根据编号获得用户 -->
+	<select id="findAll" resultType="com.mht.modules.swust.entity.Manager">
+		select
+			<include refid="managerColumns"/>		
+		from mht_oeg.t_manager 		
+	</select> 	
+	
+	<update id="update">
+		UPDATE t_manager SET 
+		username=#{username},
+		password=#{password},
+		rode=#{rode}
+	</update>
+	<select id="findByOrganization" parameterType="String" resultType="com.mht.modules.swust.entity.Manager">
+	    select <include refid="managerColumns"/> from mht_oeg.t_manager a  where a.Organization
+	</select>
+	
+</mapper>

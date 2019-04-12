@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.sys.dao.PostDao">
+
+	<sql id="postColumns">
+		a.id,
+		a.parent_id AS "parent.id",
+		a.parent_ids AS "parentIds",
+		a.code,
+		a.name,
+		a.sort,
+		a.remarks,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		p.name AS "parent.name"
+	</sql>
+	
+	<sql id="postJoins">
+		LEFT JOIN sys_post p ON p.id = a.parent_id
+    </sql>
+    
+	<select id="get" resultType="Post">
+		SELECT
+			<include refid="postColumns"/>
+		FROM sys_post a
+		<include refid="postJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByCode" resultType="Office">
+		SELECT
+			<include refid="postColumns"/>
+		FROM sys_office a
+		<include refid="postJoins"/>
+		
+		WHERE a.code = #{code}
+	</select>
+	<select id="findList" resultType="Post">
+		SELECT
+			<include refid="postColumns"/>
+		FROM sys_post a
+		<include refid="postJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="parent !=null and parent.id != null and parent.id != ''">
+			AND (a.id = #{parent.id} OR a.parent_ids LIKE #{parentIds})
+		</if>
+		<if test="name != null and name != ''">
+			AND a.name like 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+		</if>
+		<!-- 数据范围过滤 -->
+		${sqlMap.dsf}
+		<if test="currentUser.office != null and currentUser.office != ''">
+			OR a.id = #{currentUser.office.id}
+		</if>
+		ORDER BY a.create_date
+	</select>
+			
+	<select id="findAllList" resultType="Post">
+		SELECT
+			<include refid="postColumns"/>
+		FROM sys_post a
+		<include refid="postJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		ORDER BY a.create_date
+	</select>
+	
+	<select id="findByParentIdsLike" resultType="Post">
+		SELECT
+			<include refid="postColumns"/>
+		FROM sys_post a
+		<include refid="postJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.parent_ids LIKE #{parentIds}
+		ORDER BY a.code
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_post(
+			id, 
+			parent_id, 
+			parent_ids, 
+			code, 
+			name, 
+			sort, 
+			create_by, 
+			create_date, 
+			update_by, 
+			update_date, 
+			remarks, 
+			del_flag
+		) VALUES (
+			#{id}, 
+			#{parent.id}, 
+			#{parentIds}, 
+			#{code}, 
+			#{name}, 
+			#{sort},
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate}, 
+			#{remarks}, 
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_post SET 
+			parent_id = #{parent.id}, 
+			parent_ids = #{parentIds}, 
+			code = #{code}, 
+			name = #{name}, 
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateParentIds">
+		UPDATE sys_post SET 
+			parent_id = #{parent.id}, 
+			parent_ids = #{parentIds}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM sys_post 
+		WHERE id = #{id} OR parent_ids LIKE 
+					<if test="dbName == 'oracle'">'%,'||#{id}||',%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
+	</update>
+	
+	<update id="deleteByLogic">
+		UPDATE sys_post SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id} OR parent_ids LIKE 
+					<if test="dbName == 'oracle'">'%,'||#{id}||',%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
+	</update>
+	
+	<select id="findPostByOffice" resultType="com.mht.modules.sys.entity.Post">
+		SELECT
+			<include refid="postColumns"/>
+		from sys_office_post sp
+		LEFT JOIN sys_post p ON p.id = sp.post_id
+		LEFT JOIN sys_post a ON p.parent_id = a.id
+		WHERE
+			sp.office_id = #{officeId}
+		AND a.del_flag = '0'
+		ORDER BY
+			a.sort ASC
+	</select>
+	
+</mapper>

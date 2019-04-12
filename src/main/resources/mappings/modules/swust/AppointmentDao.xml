@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.swust.dao.AppointmentDao">
+
+	<sql id="appointmentColumns">
+		a.id ,
+		a.number_plates,
+		a.contacts_name,
+		a.telephone_number,
+		a.timelicense_plate,
+		a.vehicle_type,
+		a.start_time,
+		a.end_time,
+		a.privileged_time,
+		a.abutment_company,
+		a.contacts_thing,
+		a.audit_status,
+		a.remarks,
+		a.del_flag,
+		a.state
+	</sql>
+
+	<select id="findList" resultType="com.mht.modules.swust.entity.Appointment">
+		SELECT
+		<include refid="appointmentColumns" />
+		FROM mht_oeg.t_appointment_users a
+		<if test="state != null and state !=''">
+			AND a.state = #{state}
+		</if>
+		<if test="abutmentCompany != null and abutmentCompany != ''">
+			AND a.contacts_name like
+			<if test="dbName == 'oracle'">'%'||#{contactsName}||'%'</if>
+			<if test="dbName == 'mysql'">CONCAT('%', #{contactsName}, '%')</if>
+		</if>
+		ORDER BY a.create_date asc
+	</select>
+	
+	
+	
+	<select id="get" resultType="com.mht.modules.swust.entity.Appointment">
+		SELECT
+		<include refid="appointmentColumns" />
+		FROM mht_oeg.t_appointment_users a
+		WHERE a.id = #{id}
+		ORDER BY a.id asc
+	</select>
+	<update id="update">
+		UPDATE t_appointment_users a SET
+		a.audit_status=#{auditStatus}
+		where a.id=#{id}
+		ORDER BY a.id asc
+	</update>
+	<select id="findByMaxId">
+		select max(appointment_id) as id from mht_oeg.t_appointment_users
+	</select>
+	<select id="findCheckStatus" resultType="com.mht.modules.swust.entity.Appointment">
+		SELEcT
+		<include refid="appointmentColumns" />
+		FROM mht_oeg.t_appointment_users a
+		WHERE a.audit_status = -1
+		ORDER BY a.id asc
+	</select>
+	<select id="findUnCheckStatus" resultType="com.mht.modules.swust.entity.Appointment">
+		SELEcT
+		<include refid="appointmentColumns" />
+		FROM mht_oeg.t_appointment_users a
+		WHERE a.audit_status > -1
+		ORDER BY a.id asc
+	</select>
+	<select id="findByAbutmentCompany" resultType="com.mht.modules.swust.entity.Appointment">
+		SELEcT
+		<include refid="appointmentColumns" />
+		FROM mht_oeg.t_appointment_users a
+		WHERE a.abutment_company > #{abutmentCompany}
+		ORDER BY a.id asc
+	</select>
+
+
+
+</mapper>

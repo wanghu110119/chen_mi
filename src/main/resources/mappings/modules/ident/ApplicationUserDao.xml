@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.ident.dao.ApplicationUserDao">
+    
+	<sql id="applicationUserColumns">
+    	a.id,
+    	a.user_id,
+    	a.application_id,
+    	a.type,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag,
+		a.remarks,
+		um.name AS "user.name",
+		ap.name AS "application.name",
+		uc.name AS "createBy.name"
+    </sql>
+    
+    <sql id="applicationUserJoins">
+		LEFT JOIN sys_user um ON um.id = a.user_id
+    	LEFT JOIN ident_application ap ON ap.id = a.application_id
+		LEFT JOIN sys_user uc ON uc.id = a.create_by
+    </sql>
+	
+	<select id="get" resultType="ApplicationUser">
+		SELECT
+			<include refid="applicationUserColumns"/>
+		FROM ident_user_application a 
+		<include refid="applicationUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ApplicationUser">
+        SELECT 
+            <include refid="applicationUserColumns"/>
+        FROM ident_user_application a  
+        <include refid="applicationUserJoins"/>
+        WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+        <if test="application.id != null and application.id != ''">
+            AND a.application_id = #{application.id}
+        </if>
+        <if test="user.id != null and user.id  != ''">
+            AND a.user_id = #{user.id}
+        </if>
+        ORDER BY a.create_date DESC
+    </select>
+	
+	<insert id="insert">
+		INSERT INTO ident_user_application(
+			id,
+			user_id,
+			application_id,
+			type,
+	        create_by,
+	        create_date,
+	        update_by,
+	        update_date,
+	        del_flag,
+	        remarks
+		) VALUES (
+			#{id}, 
+            #{user.id},
+            #{application.id},
+            #{type},
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate},
+			#{delFlag},
+			#{remarks}
+		)
+	</insert>
+	
+	
+	<update id="update">
+		UPDATE ident_user_application SET 
+			user_id = #{user.id}, 
+			application_id = #{application.id}, 
+			type = #{type}, 
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="delete">
+		DELETE FROM ident_user_application 
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="deleteByLogic">
+		UPDATE ident_user_application SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -33,10 +33,11 @@
             <!--导航栏右侧-->
             <ul class="nav navnar-nav navbar-right" id="login-head">
                <li class="pull-left">
-                   <input type="search" id="reaserch" onchange="reaserch()" placeholder="输入来访人或电话">
+                   <input type="search" id="reaserch" onchange="reaserch()" placeholder="输入姓名或电话">
                    <button class="search" >
                    		<img src="${ctxStatic }/swust/images/whiteSearch.png"/>
                    </button>
+                   <input type="hidden" value="" id="hiddenType"/>
                    <input type="hidden" value="" id="hiddenkey"/>
                    <input type="hidden" value="" id="statekey"/>
                </li>
@@ -112,7 +113,7 @@
         </div>
     </div>
     
-    
+    <script src="${ctxStatic }/swust/js/jquery.min.js"></script>
     <script
 	src="${ctxStatic}/jquery-validation/1.14.0/jquery.validate.min.js"
 	type="text/javascript"></script>
@@ -120,6 +121,18 @@
 	src="${ctxStatic}/jquery-validation/1.14.0/jquery.form.js"
 	type="text/javascript"></script>
 <script type="text/javascript">
+function model(type) {
+	if(type=='2'){
+		$("#hiddenType").val("2");
+		location.href="${ctx}/swust/car/portal";
+	}else{
+		$("#hiddenType").val("1");
+		location.href="${ctx}/swust/order";
+	}
+}
+
+
+
 function changePwdS() {
 	var validateFormC;
 	validateFormC = $("#changeform").validate({
@@ -204,35 +217,6 @@ function changePwdS() {
 
 
 
-
-
-
-
-
-
-
-function request () {
-    $.ajax({
-       url:'https:api.weishao.com.cn/oauth/token',
-        type:'POST',
-        dataType:"json",
-        data:{
-            grant_type:"client_credentials",
-            app_key:"a1df9a1985bc3b85",
-            app_secret:"86149db2bcac4ba5df2bb3cd296a2328",
-            scope:"base_api"
-         },
-        success:function(res){
-            console.log(res.access_token);
-        },
-        error:function(err){
-            console.log(err);
-        }
-    })
-}
-$(function(){
-	request();
-})
 		//初始化修改密码模态框
 		function init(){
 			$("#authentication").html("");

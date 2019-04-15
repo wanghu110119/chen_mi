@@ -1,7 +1,7 @@
 $(function () {
   $("#nav").on("click",".search",function () {
     $(this).siblings("input").addClass("change-long");
-    $(this).children("img").attr("src","/mht_oeg/static/swust/images/graySearch.png");
+    $(this).children("img").attr("src","/chen_mi/static/swust/images/graySearch.png");
   }).on("click",".modifyPwd",function () {
         $("#modal-pwd").modal("show");
   });

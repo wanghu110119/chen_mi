@@ -29,6 +29,8 @@ public class SysCar extends  DataEntity<SysCar>{
     
     private List<String> carTypeList;
     
+    private int costMoney;
+    
     private Integer effectiveTime;
     
     private String effectiveTimeList;
@@ -53,6 +55,14 @@ public class SysCar extends  DataEntity<SysCar>{
 		return "SysCar [id=" + id + ", carId=" + carId + ", userName=" + userName + ", phone=" + phone + ", carType="
 				+ carType + ", effectiveTime=" + effectiveTime + ", money=" + money + ", beginTime=" + beginTime
 				+ ", endTime=" + endTime + ", updateBy=" + updateBy + ", createBy=" + createBy  + ", disable=" + disable + "]";
+	}
+
+	public int getCostMoney() {
+		return costMoney;
+	}
+
+	public void setCostMoney(int costMoney) {
+		this.costMoney = costMoney;
 	}
 
 	public String getId() {

@@ -78,10 +78,16 @@
    <where>
 			mht_oeg.sys_car.del_flag = #{delFlag}
 			<if test="carId != null and carId != ''">
-				AND mht_oeg.sys_car.car_id LIKE 
+				AND (mht_oeg.sys_car.car_id LIKE 
 					<if test="dbName == 'oracle'">'%'||#{carId}||'%'</if>
 					<if test="dbName == 'mssql'">'%'+#{carId}+'%'</if>
 					<if test="dbName == 'mysql'">CONCAT('%', #{carId}, '%')</if>
+					OR mht_oeg.sys_car.user_name LIKE
+					<if test="dbName == 'oracle'">'%'||#{carId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{carId}+'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{carId}, '%')</if>
+					)
+					
 			</if>
 			<if test="createBy != null and createBy.id != null and createBy.id != ''">
 				AND mht_oeg.sys_car.create_by  = #{createBy.id}

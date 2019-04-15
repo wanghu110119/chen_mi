@@ -3,13 +3,13 @@
 <%@ page isELIgnored="false" %>
 <html>
 <head lang="zh-cn">
-	<title>我的预约</title>
+	<title>会员管理</title>
 	<meta charset="UTF-8">
     <!--2 viewport-->
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
     <!--3、x-ua-compatible-->
     <meta http-equiv="x-ua-compatible" content="IE=edge">
-    <title>预约</title>
+    <title>会员管理</title>
     <!--4、引入两个兼容文件-->
     <!--[if lt IE 9]>
     <script src="js/html5shiv.min.js"></script>
@@ -71,25 +71,24 @@
     <div class="container-fluid change-padding">
         <div class="row">
             <div class="col-xs-12">
-                <p class="my-booking" style="cursor: pointer;"><span onclick="model('1')">我的预约  </span>         <span onclick="model('2')">会员管理</span></p>
+                <p class="my-booking" ><span style="cursor: pointer;" onclick="model('1')">我的预约  </span>&nbsp;     &nbsp;       <span style="cursor: pointer;" onclick="model('2')">会员管理</span></p>
                 
                 <ul class="state-menu">
                     <li class="active">
-                    	<a style="cursor: pointer;"  btype="1" data-toggle="tab">待审核</a>
+                    	<p style=" font-size: 23px"   >会员列表</p>
                     </li>
+<!--                     <li> -->
+<!-- 						<a style="cursor: pointer;"  btype="2" data-toggle="tab">已审核</a> -->
+<!--                     </li> -->
+<!--                     <li> -->
+<!-- 						<select  id="orderSelect" style="text-align: center"> -->
+<!-- 							<option style="text-align: center" onchange="search('',1)" value="" >全部</option> -->
+<!-- 							<option onchange="search('',1)" value="0">正常预约</option> -->
+<!-- 							<option onchange="search('red',1)" value="red">超时预约</option> -->
+<!-- 						</select> -->
+<!--                     </li> -->
                     <li>
-						<a style="cursor: pointer;"  btype="2" data-toggle="tab">已审核</a>
-                    </li>
-                    <li>
-						<select  id="orderSelect" style="text-align: center">
-							<option style="text-align: center" onchange="search('',1)" value="" >全部</option>
-							<option onchange="search('',1)" value="0">正常预约</option>
-							<option onchange="search('red',1)" value="red">超时预约</option>
-						</select>
-                    </li>
-                    <li>
-                        <button class="glyphicon glyphicon-plus" onclick="add()"> 新增预约</button>
-                        <button class="glyphicon glyphicon-plus" onclick="importOrder()" id="hide-it"> 批量导入</button>
+                        <button class="glyphicon glyphicon-plus"  > 新增会员</button>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -123,59 +122,115 @@
             </div>
         </div>
     </div>
-    
-    <!--导入-->
-<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
-	id="orderimport">
-    <div class="modal-dialog modal-sm modal-sm2" role="document">
+
+<!--新增  -->
+<div class="modal fade" tabindex="-1" id="msg-reminder">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h3 class="modal-title text-center" id="textChange">新增会员卡服务</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<form class="form-horizontal" id="formSubmitAdd" action="" novalidate="novalidate">
+						<div class="col-xs-12 col-sm-6">
+							<div class="form-group">
+								<label for="smsCarId" class="col-sm-5 control-label"><span style="color:red">* </span>会员卡号:</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control required valid" name="name" id="smsCarId" maxlength="15" aria-required="true">
+									<input type="hidden" id="oldcompany" value="流体力学">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="smsCarType" class="col-sm-5 control-label">会员等级:</label>
+								<div class="col-sm-7">
+									<select name="carType" id="smsCarType" class="form-control">
+										<option value="1">黄金会员</option>
+										<option value="2">铂金会员</option>
+										<option value="3">钻石会员</option>
+										<option value="4">爸爸豁茶</option>
+									</select>
+<!-- 									<input type="text" class="form-control " name="carType" id="carType"> -->
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="smsServiceTime" class="col-sm-5 control-label">剩余次数(次):</label>
+								<div class="col-sm-7">
+									<input  class="form-control " name="serviceTime" id="smsServiceTime" maxlength="15"  >
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-6">
+							<div class="form-group">
+								<label for="smsOwner" class="col-sm-5 control-label"><span style="color:red">* </span>会员姓名:</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control valid" value="" name="owner" maxlength="15" id="smsOwner" aria-required="true">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="smsPhone" class="col-sm-5 control-label"><span style="color:red">* </span>联系方式:</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control" maxlength="12" name="phone" id="smsPhone">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="money" class="col-sm-5 control-label">添加金额:</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control " maxlength="15" name="money" id="money">
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="modal-footer text-center">
+			<button type="button" class="btn btn-md confirm" onclick="doSubmit()">确认</button>
+				<button type="button" class="btn btn-md confirm"
+					data-dismiss="modal">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!--警示框-->
+<div class="modal fade bs-example-modal-lg warning-box" tabindex="-1" role="dialog"
+	id="smsreminderWarning">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title text-center">
-                	请选择导入的EXCEL
-                </h3>
+                <h3 class="modal-title text-center" id="smsdiswarningModal">确认操作？</h3>
             </div>
-            <div class="modal-body text-center">
-               <label for="orderchoose-excel" id="orderchoose-label">
-                	<span class="glyphicon glyphicon-plus"></span>
-                </label>
-                
-                <form class="form-horizontal" id="orderjvForm" action="${ctx}/swust/appointment/import" method="post" enctype="multipart/form-data" >
-                	<input type="file" name="file" id="orderchoose-excel" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />	
-                	<span id="orderfile-name"></span>
-            	</form>
-            	
+            <div class="modal-body">
+                <h5 class="text-center text-danger" id="smsreminderModal"></h5>
             </div>
             <div class="modal-footer text-center">
-            	<input type="hidden" id="ordersubmitOnly" />
-                <button type="button" class="btn btn-md confirm" data-dismiss="modal" id="orderimport-result">确认</button>
-                <button  class="btn btn-md confirm" onclick="exportOrder()">下载模板</button>
+            	<button type="button" class="btn btn-md confirm"  id="smsdissubmitModal">确认</button>
+                <button type="button" class="btn btn-md confirm" data-dismiss="modal" >关闭</button>
             </div>
         </div>
     </div>
 </div>
 
 
-<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
-	id="orderimport-info">
-    <div class="modal-dialog modal-md">
+<div class="modal fade bs-example-modal-lg" id="success-box">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title text-center">
-                	导入结果
-                </h3>
-            </div>
-            <div class="modal-body text-center">
-            	<p class='text-danger' id = "ordergetResult"></p>
+                <h3 class="modal-title text-center">成功</h3>
             </div>
             <div class="modal-footer text-center">
-                <button type="button" class="btn btn-md confirm" data-dismiss="modal" >确认</button>
+                <button type="button" class="btn btn-md confirm" data-dismiss="modal">完成</button>
             </div>
         </div>
     </div>
 </div>
-    
 </body>
 <script src="${ctxStatic }/swust/js/jquery.min.js"></script>
 <script src="${ctxStatic }/swust/js/bootstrap.min.js"></script>
@@ -185,6 +240,17 @@
 
 
 
+ 
+
+function clearList(){
+	$("#oid").val("");
+	$("#smsCarId").val("");
+	$("#smsOwner").val("");
+	$("#smsPhone").val("");
+	$("#smsServiceTime").val("");
+	$("#smsCarType").val("");
+	$("#money").val("");
+}
 
 function changePwdS() {
 	var validateFormC;
@@ -244,7 +310,6 @@ function changePwdS() {
         }
         return false;   
     }, $.validator.format("新密码不能与旧密码一致"));
-	
 		//验证通过后的执行方法
         if($("#changeform").valid()){
         	 $.ajax({
@@ -265,66 +330,34 @@ function changePwdS() {
         });
         }
 	};
-
-
-
-
-
-
-
-
-/**
- * 导出模板
- */
-function exportOrder() {
-	location.href="${ctx}/swust/appointment/exportModel";
-}
-/**
- * 导入
- */
-$('#orderimport-result').click(function(){
-	if($('#orderfile-name')[0].innerHTML===""){
-		return true;
+	function searchMsg(pageNo) {
+		$.ajax({
+			type:"POST",
+			url:"${ctx}/swust/car/portalList",
+			data:"name="+$("#reaserch").val()+"&pageNo="+pageNo,
+			success:function(date){
+				$("#reaserch").attr("onchange","openwin('0','1')");
+				$("#reaserch").attr("placeholder","输入姓名或卡号");
+				$("#not-check").empty();
+				$("#not-check").html(date);
+				$(".buttons:button:nth-child(3)").addClass("active");
+			}
+		});
 	}
-	else{
-		var formData = new FormData($("#orderjvForm")[0]);
-        $.ajax({  
-        	          url: "${ctx}/swust/appointment/import" ,  
-        	          type: 'POST',  
-        	          data: formData,  
-        	          async: false,  
-        	          cache: false,  
-        	          contentType: false,  
-        	          processData: false,  
-        	          success: function (data) { 
-        	        	  $("#ordergetResult").html(data.msg);
-        	        	  openwin("0","${page.pageNo}");
-        	          },  
-             });
-		$("#orderimport-info").modal('show');
-	}
-})
-
-$('#orderchoose-excel').change(function(){
-		var fileName=$(this).val();
-		var start=fileName.lastIndexOf('\\');
-		var result=fileName.slice(start+1);
-		if(result.indexOf(".xlsx")>=0){
-			$('#orderfile-name').html(result);
-		}else{
-		alert("请上传正确的文件格式（.xlsx文件）");
-		}
-	})
-
-
-function importOrder() {
-	$("#orderfile-name").html("");
-	$("#orderchoose-excel").val("");
-	$('#orderimport').modal('show');
-}
-
-
 		$(function(){
+			
+			$('button:contains("新增")').click(function(){
+				clearList();
+				$("#smsCarId-error").html("");
+				$("#smsOwner-error").html("");
+				$("#smsPhone-error").html("");
+				$("#smsCarId").attr("class","form-control required");
+			      $("#smsOwner").attr("class","form-control required");
+			      $("#smsPhone").attr("class","form-control required");
+				$("#smsCarId").removeData("previousValue"); 
+				$('#msg-reminder').modal('show');
+			});
+			
 			var userAgent=window.navigator.userAgent.toLowerCase();
 			if(userAgent.indexOf("firefox")>=1){
 				$('#nav #login-head #reaserch').css({
@@ -427,27 +460,117 @@ function importOrder() {
 					}
 			}
 	 $(function(){
-		//初始化
 		openwin("0","${page.pageNo}");
 	});
 	function openwin(a,b) {
 		$.ajax({
 			type:"POST",
-			url:"${ctx}/swust/order/list",
-			data:"state="+a+"&pageNo="+b,
+			url:"${ctx}/swust/car/portalList",
+			data:"name="+$("#reaserch").val()+"&pageNo="+b,
 			success:function(date){
+				$("#reaserch").attr("onchange","openwin('0','1')");
+				$("#reaserch").attr("placeholder","输入姓名或卡号");
 				$("#not-check").empty();
 				$("#not-check").html(date);
 				$(".buttons:button:nth-child(3)").addClass("active");
-				search(0,1);
 			}
 		});
 	} 
 	function start() {
-		location.href = "${ctx}/swust/order";
+		location.href = "${ctx}/swust/Member";
 	}
 	function add() {
-		location.href = "${ctx}/swust/order/add";
+		location.href = "${ctx}/swust/Member/addList";
+	}
+	var validateFormH;
+	function doSubmit(){
+		
+		validateFormH = $("#formSubmitAdd").validate({
+			rules:{
+				name:{
+					checkName:false,
+					required:true,
+					number:true
+				},
+				owner:{
+					checkName:true,
+					required:true
+				},
+				serviceTime:{
+					required:false,
+					number:true,
+					checkName:false
+				},
+				phone:{
+					required:true,
+					rangelength:[11,11],
+					number:true
+				},
+				money:{
+					number:true
+				}
+			},
+			messages:{
+				name:{
+					required:"请输入会员卡号",
+					rangelength:"请输入正确的会员卡号"
+				},
+				owner:{
+					required:"请输入会员姓名"
+				},
+				serviceTime:{
+					number:"请输入数字"
+				},
+				phone:{
+					rangelength:"请输入正确的联系方式",
+					required:"请输入联系方式",
+					number:"请输入正确的联系方式"
+				},
+				money:{
+					number:"请输入数字"
+				}
+
+			}
+		});
+		jQuery.validator.addMethod("checkName", function(value, element) {
+	        var char = /^[a-zA-Z\u4e00-\u9fa5]+$/;
+	        return this.optional(element) || char.test(value);   
+	    }, $.validator.format("只能输入中文、英文"));
+		
+		
+		
+		
+		
+	  if($("#formSubmitAdd").valid()){
+		  $.ajax({
+				type : "POST",
+				url : "${ctx}/swust/car/insertSysCar",
+				data : {
+					id:$("#oid").val(),
+					money:$("#money").val(),
+					carId:$("#smsCarId").val(),
+					userName:$("#smsOwner").val(),
+					phone:$("#smsPhone").val(),
+					disable:'1',
+					carType:$("#smsCarType").val(),
+					effectiveTime:$("#smsServiceTime").val()
+				},
+				success : function(data) {
+					$("#msg-reminder").modal("hide");
+					$("#managerModal").modal("hide");
+					$("#smsdissubmitModal").hide();
+					$("#smsdiswarningModal").html("消息提示！");
+					$("#smsreminderModal").html(data.msg);
+					$("#success-box").modal("show");
+					setTimeout(function(){
+						$("#success-box").modal("hide");
+					},1000);
+					openwin("0","1");
+				}
+			});
+		  return true;
+	  }
+	  return false;
 	}
 </script>
 

@@ -112,7 +112,7 @@
 										<option value="1">黄金会员</option>
 										<option value="2">铂金会员</option>
 										<option value="3">钻石会员</option>
-										<option value="4">土豪爸爸</option>
+										<option value="4">爸爸豁茶</option>
 									</select>
 <!-- 									<input type="text" class="form-control " name="carType" id="carType"> -->
 								</div>
@@ -129,7 +129,6 @@
 								<label for="smsOwner" class="col-sm-5 control-label"><span style="color:red">* </span>会员姓名:</label>
 								<div class="col-sm-7">
 									<input type="text" class="form-control valid" value="" name="owner" maxlength="15" id="smsOwner" aria-required="true">
-									<input type="hidden" id="oldcompanyName" value="ltlx">
 								</div>
 							</div>
 							<div class="form-group">
@@ -423,7 +422,7 @@ function exportSMS() {
 				$("#carList").empty();
 				$("#carList").html(date);
 			}
-		})
+		});
 	}
 	
 	function page(n,s){
@@ -550,7 +549,7 @@ function exportSMS() {
 		      $("#smsPhone").attr("class","form-control required");
 			$("#smsCarId").removeData("previousValue"); 
 			$('#msg-reminder').modal('show');
-		})
+		});
 		
 		
 		

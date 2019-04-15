@@ -4,18 +4,17 @@
                             <thead>
                                 <tr>
                                     <th>序号</th>
-                                    <th>来访人</th>
-                                    <th>手机号码</th>
-                                    <th>车牌号码</th>
-                                    <th>车辆类型</th>
+                                    <th>玩家姓名</th>
+                                    <th>联系方式</th>
+                                    <th>玩家来源</th>
+                                    <th>预约房间</th>
                                     <th>起始时间</th>
-                                    <th>截止时间</th>
+                                    <th>结束时间</th>
                                     <th>授权时间</th>
-                                    <th>校内对接单位</th>
-                                    <th>是否收费</th>
+                                    <th>剧本主题</th>
                                    <c:if test="${page.list[0].state eq '1'}"><th>收费金额</th></c:if> 
                                     <th>预约事由</th>
-                                    <th>审核状态</th>
+                                    <th>进行状态</th>
                                 </tr>
                             </thead>
                             <tbody id="unpass">
@@ -30,10 +29,10 @@
 			 <td><span style="color:red;">${list.carNumber }</span></td> 
 			 <td>
 			 <span style="color:red;">
-			 <c:if test="${list.carType eq '1'}">小型车辆</c:if>
-			 <c:if test="${list.carType eq '2'}">大（中）型客车</c:if>
-			 <c:if test="${list.carType eq '3'}">大型货车</c:if>
-			 <c:if test="${list.carType eq '4'}">其他车辆</c:if>
+			 <c:if test="${list.carType eq '1'}">恐怖主题房（6）</c:if>
+			 <c:if test="${list.carType eq '2'}">古风主题房（7）</c:if>
+			 <c:if test="${list.carType eq '3'}">摩洛哥主题房（8）</c:if>
+			 <c:if test="${list.carType eq '4'}">不给钱，蹲客厅</c:if>
 			</span>
 			 </td> 
 			 <td><span style="color:red;"><fmt:formatDate value="${list.beginTime }" pattern="MM-dd HH:mm"/></span></td> 
@@ -41,49 +40,21 @@
 			 <td><span style="color:red;">${list.accreditTime }(小时)</span></td> 
 			 <td><span style="color:red;">${list.office.name }</span></td> 
 			 <td><span style="color:red;">
-			 <c:choose>
-			 	<c:when test="${list.state eq '0'}">\</c:when>
-			 	<c:otherwise>
-			 	<c:choose>
-			 	<c:when test="${list.pass eq '2'}">\</c:when>
-			 	<c:otherwise>
-			 	<c:if test="${list.payFor eq '0' ||list.payFor eq ''||list.payFor eq null }">是</c:if>
-			 	<c:if test="${list.payFor eq '1'}">否</c:if>
-			 	</c:otherwise>
-			 	</c:choose>
-			 	</c:otherwise>
-			 </c:choose>
 			 </td> 
 			 
-			 <c:choose>
-			 	<c:when test="${list.state eq '0'}"></c:when>
-			 	<c:otherwise>
-			 	 <td><span style="color:red;">
-			 	<c:choose>
-			 	<c:when test="${list.pass eq '2'}">\</c:when>
-			 	<c:otherwise>
-			 	<c:if test="${list.payFor eq '1'}">免费</c:if>
-			 	<c:if test="${list.payFor ne '1' && list.pass ne '3'}">待收费</c:if>
-			 	<c:if test="${list.payFor ne '1' && list.pass eq '3'}">${list.payMoney }</c:if>
-			 	</c:otherwise>
-			 	</c:choose>
-			 	</span>
-			 	</td> 
-			 	</c:otherwise>	
-			 </c:choose>
 			 
 			 <td><button class="check-view" id="${list.id }" onclick="detail('${list.id }')" value="${list.id }">查看</button></td> 
 			 <td>
 			 <c:choose >
 			 <c:when test="${list.state eq '0'}">
-				<span style="color: #EEB422;">待审核</span>
+				<span style="color: #EEB422;">未到达</span>
 			 </c:when>
 			 <c:otherwise>
 			<c:if test="${list.pass eq '1'}">
-				<span style="color: #3CB371;">已通过</span>
+				<span style="color: #3CB371;">已收费</span>
 			</c:if>
 			<c:if test="${list.pass eq '2'}">
-				<span style="color: #EE6A50;">未通过</span>
+				<span style="color: #EE6A50;">未收费</span>
 			</c:if>
 			<c:if test="${list.pass eq '3'}">
 				<span style="color: black;">已完成</span>
@@ -102,58 +73,27 @@
 			 <td>${list.orderPhone }</td> 
 			 <td>${list.carNumber }</td> 
 			 <td>
-			 <c:if test="${list.carType eq '1'}">小型车辆</c:if>
-			 <c:if test="${list.carType eq '2'}">大（中）型客车</c:if>
-			 <c:if test="${list.carType eq '3'}">大型货车</c:if>
-			 <c:if test="${list.carType eq '4'}">其他车辆</c:if>
+			 <c:if test="${list.carType eq '1'}">恐怖主题房（6）</c:if>
+			 <c:if test="${list.carType eq '2'}">古风主题房（7）</c:if>
+			 <c:if test="${list.carType eq '3'}">摩洛哥主题房（8）</c:if>
+			 <c:if test="${list.carType eq '4'}">不给钱，蹲客厅</c:if>
 			 </td> 
 			 <td><fmt:formatDate value="${list.beginTime }" pattern="MM-dd HH:mm"/></td> 
 			 <td><fmt:formatDate value="${list.endTime }" pattern="MM-dd HH:mm"/></td> 
 			 <td>${list.accreditTime }(小时)</td> 
 			 <td>${list.office.name }</td> 
-			 <td>
-			 <c:choose>
-			 	<c:when test="${list.state eq '0'}">\</c:when>
-			 	<c:otherwise>
-			 	<c:choose>
-			 	<c:when test="${list.pass eq '2'}">\</c:when>
-			 	<c:otherwise>
-			 	<c:if test="${list.payFor eq '0' ||list.payFor eq ''||list.payFor eq null }">是</c:if>
-			 	<c:if test="${list.payFor eq '1'}">否</c:if>
-			 	</c:otherwise>
-			 	</c:choose>
-			 	</c:otherwise>
-			 </c:choose>
-			 </td> 
-			 
-			 <c:choose>
-			 	<c:when test="${list.state eq '0'}"></c:when>
-			 	<c:otherwise>
-			 	 <td>
-			 	<c:choose>
-			 	<c:when test="${list.pass eq '2'}">\</c:when>
-			 	<c:otherwise>
-			 	<c:if test="${list.payFor eq '1'}">免费</c:if>
-			 	<c:if test="${list.payFor ne '1' && list.pass ne '3'}">待收费</c:if>
-			 	<c:if test="${list.payFor ne '1' && list.pass eq '3'}">${list.payMoney }</c:if>
-			 	</c:otherwise>
-			 	</c:choose>
-			 	</td> 
-			 	</c:otherwise>	
-			 </c:choose>
-			 
 			 <td><button class="check-view" id="${list.id }" onclick="detail('${list.id }')" value="${list.id }">查看</button></td> 
 			 <td>
 			 <c:choose >
 			 <c:when test="${list.state eq '0'}">
-				<span style="color: #EEB422;">待审核</span>
+				<span style="color: #EEB422;">未达到</span>
 			 </c:when>
 			 <c:otherwise>
 			<c:if test="${list.pass eq '1'}">
-				<span style="color: #3CB371;">已通过</span>
+				<span style="color: #3CB371;">已收费</span>
 			</c:if>
 			<c:if test="${list.pass eq '2'}">
-				<span style="color: #EE6A50;">未通过</span>
+				<span style="color: #EE6A50;">未收费</span>
 			</c:if>
 			<c:if test="${list.pass eq '3'}">
 				<span style="color: black;">已完成</span>

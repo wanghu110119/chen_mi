@@ -66,8 +66,6 @@
 					<button class="edit-info">
 						<input type="hidden" value="${row.id}" /> 消费
 					</button>
-					<button style="color: red" onclick="deleteSms('${row.id}')">
-						删除</button>
 				</td>
 			</tr>
 		</c:forEach>
@@ -268,6 +266,9 @@ function page(a,b,detail) {
 		}
 	});
 } 
+
+
+
 
 
 	function detail(id){

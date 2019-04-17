@@ -53,57 +53,64 @@ label.error {
 				<div class="col-xs-12 col-sm-5">
 					<div class="form-group">
 						<label for="orderName"><span class="red">*&nbsp;</span>玩家姓名：</label>
-						<input type="text" class="form-control required"
-							id="orderName" name="orderName">
+						<input type="text" class="form-control required" id="orderName"
+							name="orderName">
 					</div>
 					<div class="form-group">
-						<label for="company">具体人数：</label> <input type="text" placeholder="2男2女"
-							class="form-control" id="company.name" name="company">
+						<label for="company">具体人数：</label> <input type="text"
+							placeholder="2男2女" class="form-control" id="company.name"
+							name="company">
 					</div>
 					<div class="form-group">
 						<label for="car-number"><span class="red">*&nbsp;</span>玩家来源：</label>
 						<input type="text" placeholder="例：大众，微信"
-							class="form-control required" id="carNumber"
-							name="carNumber">
+							class="form-control required" id="carNumber" name="carNumber">
 					</div>
 					<c:choose>
 						<c:when test="${requestScope.redio.id eq '1' }">
-						<div class="form-group">
-					                    	<label for="car-number"><span class="red">*&nbsp;</span>起始时间：  请于<span  id="requestBeginTime"><fmt:formatDate value="${requestScope.beginTimeShow }" pattern="HH:mm:ss"/></span>之后</label>
-						                    <div id="form_start_time" class="input-group date form_datetime required" data-date-format="yyyy-mm-dd hh:ii:ss" data-link-format="yyyy-mm-dd hh:ii:ss">
-												<input class="form-control parameter required" value="${requestScope.beginTime }" type="text" id="beginTime" name="beginTime" readonly >
-												<span class="input-group-addon">
-													<span class="glyphicon glyphicon-calendar"></span>
-												</span>
-											</div>
-											<label id = "beginTime-error" class="error" for="beginTime"></label>
-					                    </div>
+							<div class="form-group">
+								<label for="car-number"><span class="red">*&nbsp;</span>起始时间：
+									请于<span id="requestBeginTime"><fmt:formatDate
+											value="${requestScope.beginTimeShow }" pattern="HH:mm:ss" /></span>之后</label>
+								<div id="form_start_time"
+									class="input-group date form_datetime required"
+									data-date-format="yyyy-mm-dd hh:ii:ss"
+									data-link-format="yyyy-mm-dd hh:ii:ss">
+									<input class="form-control parameter required"
+										value="${requestScope.beginTime }" type="text" id="beginTime"
+										name="beginTime" readonly> <span
+										class="input-group-addon"> <span
+										class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+								<label id="beginTime-error" class="error" for="beginTime"></label>
+							</div>
 						</c:when>
 						<c:otherwise>
-						<div class="form-group">
-						<label for="car-number"><span class="red">*&nbsp;</span>起始日期</label>
-						<div id="form_start_Date"
-							class="input-group date form_datetime required"
-							data-date-format="yyyy-mm-dd" data-link-format="yyyy-mm-dd">
-							<input class="form-control parameter required"
-								value="${requestScope.beginDate }" type="text" id="beginDate"
-								name="beginTime" readonly> <span
-								class="input-group-addon"> <span
-								class="glyphicon glyphicon-calendar"></span>
-							</span>
-						</div>
-						<label id="beginDate-error" class="error" for="beginTime"></label>
-					</div>
+							<div class="form-group">
+								<label for="car-number"><span class="red">*&nbsp;</span>起始日期</label>
+								<div id="form_start_Date"
+									class="input-group date form_datetime required"
+									data-date-format="yyyy-mm-dd hh:ii:ss" data-link-format="yyyy-mm-dd hh:ii:ss">
+									<input class="form-control parameter required"
+										value="${requestScope.beginDate }" type="text" id="beginDate"
+										name="beginTime" readonly> <span
+										class="input-group-addon"> <span
+										class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+								<label id="beginDate-error" class="error" for="beginTime"></label>
+							</div>
 						</c:otherwise>
 					</c:choose>
 					<div class="form-group">
 						<label for="Reservations"><span class="red">*&nbsp;</span>玩家剧本数量：</label>
 						<select name="orderReason" class="form-control">
-								<option value="懵逼新手">1.懵逼新手</option>
-								<option value="也就几个本">2.也就几个本</option>
-								<option value="还在路上">3.还在路上</option>
-								<option value="老司机带路">4.老司机带路</option>
-								<option value="上单打爆一切">5.上单打爆一切</option>
+							<option value="懵逼新手">1.懵逼新手</option>
+							<option value="也就几个本">2.渐入佳境</option>
+							<option value="还在路上">3.还在路上</option>
+							<option value="老司机带路">4.老司机带路</option>
+							<option value="上单打爆一切">5.上单打爆一切</option>
 						</select>
 					</div>
 				</div>
@@ -134,34 +141,41 @@ label.error {
 					</div>
 					<c:choose>
 						<c:when test="${requestScope.redio.id eq '1' }">
-						<div class="form-group">
-											<input type="hidden" value="">
-					                    	<label for="car-number"><span class="red">*&nbsp;</span>截止时间： 请于<span  id="requestEndTime"><fmt:formatDate value="${requestScope.endTimeShow }" pattern="HH:mm:ss"/></span>之前</td>    </label>
-						                    <div id="form_end_time" class="input-group date form_datetime required" data-date-format="yyyy-mm-dd hh:ii:ss" data-link-format="yyyy-mm-dd hh:ii:ss">
-												<input class="form-control parameter" value="${requestScope.endTime }" id="endTime" name="endTime" type="text"  readonly >
-												<span class="input-group-addon">
-													<span class="glyphicon glyphicon-calendar"></span>
-												</span>
-											</div>
-											<label id = "endTime-error" class="error" for="endTime"></label>
-					                    </div>
+							<div class="form-group">
+								<input type="hidden" value=""> <label for="car-number"><span
+									class="red">*&nbsp;</span>截止时间： 请于<span id="requestEndTime"><fmt:formatDate
+											value="${requestScope.endTimeShow }" pattern="HH:mm:ss" /></span>之前
+									</td> </label>
+								<div id="form_end_time"
+									class="input-group date form_datetime required"
+									data-date-format="yyyy-mm-dd hh:ii:ss"
+									data-link-format="yyyy-mm-dd hh:ii:ss">
+									<input class="form-control parameter"
+										value="${requestScope.endTime }" id="endTime" name="endTime"
+										type="text" readonly> <span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+								<label id="endTime-error" class="error" for="endTime"></label>
+							</div>
 						</c:when>
 						<c:otherwise>
 							<div class="form-group">
-						<label for="car-number"><span class="red">*&nbsp;</span>截止日期： 预约时长请于${requestScope.redio.sum }天之内
-							</td> </label>
-						<div id="form_end_Date"
-							class="input-group date form_datetime required"
-							data-date-format="yyyy-mm-dd" data-link-format="yyyy-mm-dd">
-							<input class="form-control parameter"
-								value="${requestScope.endDate }" id="endDate" name="endTime"
-								type="text" readonly> <span class="input-group-addon">
-								<span class="glyphicon glyphicon-calendar"></span>
-							</span>
-						</div>
-						<input type="hidden" name="disable" value="2">
-						<label id="endDate-error" class="error" for="endTime"></label>
-					</div>
+								<label for="car-number"><span class="red">*&nbsp;</span>截止日期：
+									预约时长请于${requestScope.redio.sum }天之内
+									</td> </label>
+								<div id="form_end_Date"
+									class="input-group date form_datetime required"
+									data-date-format="yyyy-mm-dd hh:ii:ss" data-link-format="yyyy-mm-dd hh:ii:ss">
+									<input class="form-control parameter"
+										value="${requestScope.endDate }" id="endDate" name="endTime"
+										type="text" readonly> <span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+								<input type="hidden" name="disable" value="2"> <label
+									id="endDate-error" class="error" for="endTime"></label>
+							</div>
 						</c:otherwise>
 					</c:choose>
 					<div class="form-group">
@@ -198,223 +212,239 @@ label.error {
 		src="${ctxStatic }/swust/js/bootstrap-datetimepicker.zh-CN.js"
 		charset="UTF-8"></script>
 	<script type="text/javascript">
-var index = true;
-var order = false;
-function timeValidate(where,time) {
-	$.ajax({
-		cache: true,
-		type:"POST",
-		url:"${ctx}/swust/order/timeValidate",
-		 data:{
-			 time:time,
-			 startTime:$("#beginTime").val(),
-			finishTime:$("#endTime").val()
-			 },
-         dataType:'json',
-         error: function(request) {
-             alert(request);
-         },
-         success: function(data) {
-        	 if(!data.success){
-        		index = !data.success;
-        		 $("#"+where).html(data.msg);
-        	 }else{
-        		index = !data.success;
-        		 $("#"+where).html(data.msg);
-        		 $("#"+where).attr("style","color: red;");
-        	 }
-         }
-	});
-}
-
-
-function DateValidate(where,time) {
-	$.ajax({
-		cache: true,
-		type:"POST",
-		url:"${ctx}/swust/order/dateValidate",
-		 data:{
-			 time:time,
-			 beginDate:'${requestScope.beginDate}',
-			 endDate:'${requestScope.endDate}'
-			 },
-         dataType:'json',
-         error: function(request) {
-             alert(request);
-         },
-         success: function(data) {
-        	 if(!data.success){
-        		index = !data.success;
-        		 $("#"+where).html(data.msg);
-        	 }else{
-        		index = !data.success;
-        		 $("#"+where).html(data.msg);
-        		 $("#"+where).attr("style","color: red;");
-        	 }
-         }
-	});
-}
-
-function formsubmit() {
-	$("#form").validate({
-		rules:{
-			orderName:{
-				rangelength:[2,20]
-			},
-			"company.name":"required",
-			"office.id":"required",
-			carType:"required"
-		},
-		messages:{
-			orderName:{
-				rangelength:"请输入长度在{0}到{1}之间的汉字或者字母"
-			},
-			"company.name":"请输入单位名称",
-			orderPhone:{
-				required:"请输入玩家手机号码"
-			},
-			"office.id":"请选择接剧本",
-			carType:"请选择开本房间"
-
+		var index = true;
+		var order = false;
+		function timeValidate(where, time) {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "${ctx}/swust/order/timeValidate",
+				data : {
+					time : time,
+					startTime : $("#beginTime").val(),
+					finishTime : $("#endTime").val()
+				},
+				dataType : 'json',
+				error : function(request) {
+					alert(request);
+				},
+				success : function(data) {
+					if (!data.success) {
+						index = !data.success;
+						$("#" + where).html(data.msg);
+					} else {
+						index = !data.success;
+						$("#" + where).html(data.msg);
+						$("#" + where).attr("style", "color: red;");
+					}
+				}
+			});
 		}
-});
-	order=$("#form").valid();
-	if(index&&order){
-	$.ajax({
-		cache: true,
-		type:"POST",
-		url:"${ctx}/swust/order/addOrder",
-		 data:$('#form').serialize(),// 你的formid
-         async: false,
-         dataType:'json',
-         error: function(request) {
-             alert("Connection error");
-         },
-         success: function(data) {
-            location.href = "${ctx}";
-         }
-	});
-	}
-}
-Date.prototype.Format = function (fmt) {  
-    var o = {  
-        "M+": this.getMonth()+1, //月份   
-        "d+": this.getDate(), //日   
-        "h+": this.getHours(), //小时   
-        "m+": this.getMinutes(), //分   
-        "s+": this.getSeconds(), //秒   
-        "q+": Math.floor((this.getMonth()+3)/3),  
-        "S": this.getMilliseconds() 
-    };  
-    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));  
-    for (var k in o)  
-    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));  
-    return fmt;  
-}  
-  
-var date= new Date().Format("yyyy-MM-dd");//Format("输入你想要的时间格式:yyyy-MM-dd,yyyyMMdd")  
 
-$("#form_start_Date").datetimepicker({
-    language : 'zh-CN',
-	weekStart : 1,
-	todayBtn : 1,
-	autoclose : 1,
-	startDate: '${requestScope.beginDate }',
-	todayHighlight : 1,
-	startView : 2,
-	minuteStep : 5,
-	minView : 2,
-	forceParse : 0
-}).on('change', function (ev) {
-	var index = "${requestScope.redio.sum }";
-    index = Number(index);
-    var etime = $("#beginDate").val();
-    var date = new Date($("#beginDate").val());//获取当前时间  
-    date.setDate(date.getDate()+index);//设置天数xx天  
-    $("#form_end_Date").datetimepicker('setStartDate', etime);
-    $("#form_end_Date").datetimepicker('setEndDate', date.Format("yyyy-MM-dd"));
-    $("#endDate").val(etime);
-});
-$("#form_end_Date").datetimepicker({
-    language : 'zh-CN',
-	weekStart : 1,
-	todayBtn : 1,
-	autoclose : 1,
-	todayHighlight : 1,
-	startDate: '${requestScope.beginDate }',
-	endDate: '${requestScope.endDate }',
-	startView : 2,
-	minuteStep : 5,
-	minView : 2,
-	forceParse : 0
-}).on('change', function (ev) {
-    var etime = $("#beginDate").val();
-    var endTime = $("#endDate").val();
-    $("#form_end_Date").datetimepicker('setStartDate', etime);
-    if($("#beginDate").val()> $("#endDate").val()){
-    	$("#endDate").val($("#beginDate").val());
-    }
-});
+		function DateValidate(where, time) {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "${ctx}/swust/order/dateValidate",
+				data : {
+					time : time,
+					beginDate : '${requestScope.beginDate}',
+					endDate : '${requestScope.endDate}'
+				},
+				dataType : 'json',
+				error : function(request) {
+					alert(request);
+				},
+				success : function(data) {
+					if (!data.success) {
+						index = !data.success;
+						$("#" + where).html(data.msg);
+					} else {
+						index = !data.success;
+						$("#" + where).html(data.msg);
+						$("#" + where).attr("style", "color: red;");
+					}
+				}
+			});
+		}
 
+		function formsubmit() {
+			$("#form").validate({
+				rules : {
+					orderName : {
+						rangelength : [ 2, 20 ]
+					},
+					"company.name" : "required",
+					"office.id" : "required",
+					carType : "required"
+				},
+				messages : {
+					orderName : {
+						rangelength : "请输入长度在{0}到{1}之间的汉字或者字母"
+					},
+					"company.name" : "请输入单位名称",
+					orderPhone : {
+						required : "请输入玩家手机号码"
+					},
+					"office.id" : "请选择接剧本",
+					carType : "请选择开本房间"
 
-$("#form_start_time").datetimepicker({
-    language : 'zh-CN',
-	weekStart : 1,
-	todayBtn : 1,
-	autoclose : 1,
-	startDate: new Date("${requestScope.beginTimeShow }").Format("yyyy-MM-dd")+" "+$("#requestBeginTime").html(),
-	todayHighlight : 1,
-	startView : 2,
-	minuteStep : 1,
-	minView : 0,
-	forceParse : 0
-}).on('change', function (ev) {
-    var time = new Date($("#beginTime").val());
-    $("#form_end_time").datetimepicker('setStartDate', time);
-    var etime = new Date($("#beginTime").val()).Format("yyyy-MM-dd")+" "+$("#requestEndTime").html();
-//     etime.setHours(23);
-//     etime.setMinutes(59);
-console.log(new Date("${requestScope.beginTimeShow }").Format("yyyy-MM-dd")+" "+$("#requestBeginTime").html());
-console.log(etime);
-    $("#form_end_time").datetimepicker('setEndDate',etime);
-    if(time>$("#endTime").val()){
-    	$("#endTime").val($("#beginTime").val().Format("yyyy-MM-dd hh:mm:ss"));
-    }
-    $("#endTime").val(time.Format("yyyy-MM-dd hh:mm:ss"));
-});
-$("#form_end_time").datetimepicker({
-    language : 'zh-CN',
-	weekStart : 1,
-	todayBtn : 1,
-	autoclose : 1,
-	todayHighlight : 1,
-	startDate: new Date("${requestScope.beginTimeShow }").Format("yyyy-MM-dd")+" "+$("#requestBeginTime").html(),
-	endDate: new Date($("#beginTime").val()).Format("yyyy-MM-dd")+" "+$("#requestEndTime").html(),
-	startView : 2,
-	minuteStep : 1,
-	minView : 0,
-	forceParse : 0
-}).on('change', function (ev) {
-	var nowTime = new Date("${requestScope.endTimeShow }");
-    var etime = $("#beginTime").val();
-    var endTime = $("#endTime").val();
-    $("#form_end_time").datetimepicker('setStartDate', etime);
-    if($("#beginTime").val()> $("#endTime").val()){
-    	$("#endTime").val($("#beginTime").val().Format("yyyy-MM-dd hh:mm:ss"));
-    }
-});
+				}
+			});
+			order = $("#form").valid();
+			if (index && order) {
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url : "${ctx}/swust/order/addOrder",
+					data : $('#form').serialize(),// 你的formid
+					async : false,
+					dataType : 'json',
+					error : function(request) {
+						alert("Connection error");
+					},
+					success : function(data) {
+						location.href = "${ctx}";
+					}
+				});
+			}
+		}
+		Date.prototype.Format = function(fmt) {
+			var o = {
+				"M+" : this.getMonth() + 1, //月份   
+				"d+" : this.getDate(), //日   
+				"h+" : this.getHours(), //小时   
+				"m+" : this.getMinutes(), //分   
+				"s+" : this.getSeconds(), //秒   
+				"q+" : Math.floor((this.getMonth() + 3) / 3),
+				"S" : this.getMilliseconds()
+			};
+			if (/(y+)/.test(fmt))
+				fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "")
+						.substr(4 - RegExp.$1.length));
+			for ( var k in o)
+				if (new RegExp("(" + k + ")").test(fmt))
+					fmt = fmt.replace(RegExp.$1,
+							(RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k])
+									.substr(("" + o[k]).length)));
+			return fmt;
+		};
 
- 
-		function init(){
+		var date = new Date().Format("yyyy-MM-dd");//Format("输入你想要的时间格式:yyyy-MM-dd,yyyyMMdd")  
+
+		$("#form_start_Date").datetimepicker({
+			language : 'zh-CN',
+			weekStart : 1,
+			todayBtn : 1,
+			autoclose : 1,
+			startDate : '${requestScope.beginDate }',
+			todayHighlight : 1,
+			startView : 2,
+			minuteStep : 5,
+			minView : 1,
+			forceParse : 0
+		}).on('change', function(ev) {
+			var index = "${requestScope.redio.sum }";
+			index = Number(index);
+			var etime = $("#beginDate").val();
+			var date = new Date($("#beginDate").val());//获取当前时间  
+			date.setDate(date.getDate() + index);//设置天数xx天  
+			$("#form_end_Date").datetimepicker('setStartDate', etime);
+			$("#form_end_Date").datetimepicker('setEndDate', date);
+			$("#endDate").val(etime);
+		});
+		$("#form_end_Date").datetimepicker({
+			language : 'zh-CN',
+			weekStart : 1,
+			todayBtn : 1,
+			autoclose : 1,
+			todayHighlight : 1,
+			startDate : '${requestScope.beginDate }',
+			endDate : '${requestScope.endDate }',
+			startView : 2,
+			minuteStep : 5,
+			minView : 1,
+			forceParse : 0
+		}).on('change', function(ev) {
+			var etime = $("#beginDate").val();
+			var endTime = $("#endDate").val();
+			$("#form_end_Date").datetimepicker('setStartDate', etime);
+			if ($("#beginDate").val() > $("#endDate").val()) {
+				$("#endDate").val($("#beginDate").val());
+			}
+		});
+
+		$("#form_start_time").datetimepicker(
+				{
+					language : 'zh-CN',
+					weekStart : 1,
+					todayBtn : 1,
+					autoclose : 1,
+					startDate : new Date("${requestScope.beginTimeShow }")
+							+ " " + $("#requestBeginTime").html(),
+					todayHighlight : 1,
+					startView : 2,
+					minuteStep : 1,
+					minView : 0,
+					forceParse : 0
+				}).on(
+				'change',
+				function(ev) {
+					var time = new Date($("#beginTime").val());
+					$("#form_end_time").datetimepicker('setStartDate', time);
+					var etime = new Date($("#beginTime").val()) + " "
+							+ $("#requestEndTime").html();
+					//     etime.setHours(23);
+					//     etime.setMinutes(59);
+					// console.log(new Date("${requestScope.beginTimeShow }")+" "+$("#requestBeginTime").html());
+					console.log(etime);
+					$("#form_end_time").datetimepicker('setEndDate', etime);
+					if (time > $("#endTime").val()) {
+						$("#endTime").val(
+								$("#beginTime").val().Format(
+										"yyyy-MM-dd hh:mm:ss"));
+					}
+					$("#endTime").val(time.Format("yyyy-MM-dd hh:mm:ss"));
+				});
+		$("#form_end_time").datetimepicker(
+				{
+					language : 'zh-CN',
+					weekStart : 1,
+					todayBtn : 1,
+					autoclose : 1,
+					todayHighlight : 1,
+					startDate : new Date("${requestScope.beginTimeShow }")
+							+ " " + $("#requestBeginTime").html(),
+					endDate : new Date($("#beginTime").val()) + " "
+							+ $("#requestEndTime").html(),
+					startView : 2,
+					minuteStep : 1,
+					minView : 0,
+					forceParse : 0
+				}).on(
+				'change',
+				function(ev) {
+					var nowTime = new Date("${requestScope.endTimeShow }");
+					var etime = $("#beginTime").val();
+					var endTime = $("#endTime").val();
+					$("#form_end_time").datetimepicker('setStartDate', etime);
+					if ($("#beginTime").val() > $("#endTime").val()) {
+						$("#endTime").val(
+								$("#beginTime").val().Format(
+										"yyyy-MM-dd hh:mm:ss"));
+					}
+				});
+
+		function init() {
 			$("#authentication").html("");
 			$("#new-pwd").val("");
 			$("#old-pwd").val("");
 			$("#inputPassword3").val("");
 			$("#old-pwd-error").html("");
-		$("#new-pwd-error").html("");
-		$("#inputPassword3-error").html("");
+			$("#new-pwd-error").html("");
+			$("#inputPassword3-error").html("");
 			$("#modal-pwd").modal("show");
-			}
-    </script>
+		}
+	</script>
 </body>
 </html>

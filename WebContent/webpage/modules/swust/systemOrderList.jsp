@@ -95,10 +95,10 @@
 				<td>${row.orderPhone}</td>
 				<td>${row.carNumber}</td>
 				<td>
-				<c:if test="${row.carType eq '1'}">恐怖主题房（6）</c:if>
-			 <c:if test="${row.carType eq '2'}">古风主题房（7）</c:if>
-			 <c:if test="${row.carType eq '3'}">摩洛哥主题房（8）</c:if>
-			 <c:if test="${row.carType eq '4'}">不给钱，蹲客厅</c:if>
+				<c:if test="${row.carType eq '1'}">深邃恐怖黑（6）</c:if>
+			 <c:if test="${row.carType eq '2'}">典雅复古风（7）</c:if>
+			 <c:if test="${row.carType eq '3'}">激情摩洛哥（8）</c:if>
+			 <c:if test="${row.carType eq '4'}">没钱蹲客厅（9+）</c:if>
 				</td>
 				<td>${row.office.name}</td>
 				<td>${fns:formatDateTime(row.beginTime)}</td>

@@ -283,7 +283,6 @@ public class AppointmentController extends BaseController {
 	 * @return
 	 * @author com.mhout.dhn
 	 */
-	@ResponseBody
 	@RequestMapping(value = "export", method = RequestMethod.GET)
 	public AjaxJson exportFile(SysOrderlist sysOrderlist, HttpServletRequest request, HttpServletResponse response,
 			RedirectAttributes redirectAttributes) {
@@ -291,18 +290,18 @@ public class AppointmentController extends BaseController {
 		boolean issuccess = true;
 		String msg = "操作成功!";
 		try {
-			String fileName = "预约数据" + DateUtils.getDate("yyyyMMddHHmmss") + ".xlsx";
+			String fileName = "沉谜探案馆预约数据" + DateUtils.getDate("MM-dd-HH-mm") + ".xlsx";
 			Page<SysOrderlist> page = service.findPage(new Page<SysOrderlist>(request, response, -1), sysOrderlist);
-			new ExportExcel("预约数据", SysOrderlist.class).setDataList(page.getList()).write(response, fileName).dispose();
+			new ExportExcel("沉谜探案馆预约数据", SysOrderlist.class).setDataList(page.getList()).write(response, fileName).dispose();
 			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			issuccess = false;
 			msg = "导出数据失败!";
+			ajaxJson.setSuccess(issuccess);
+			ajaxJson.setMsg(msg);
+			return ajaxJson;
 		}
-		ajaxJson.setSuccess(issuccess);
-		ajaxJson.setMsg(msg);
-		return ajaxJson;
 	}
 
 	/**

@@ -12,9 +12,9 @@
     border:1px solid #3eaab7;
 }
 @media (max-width:768px) {
-	button.collapsed{
-		display:none;
-	}
+/* 	button.collapsed{ */
+/* 		display:none; */
+/* 	} */
 }
     </style>
 <nav class="navbar navbar-default navbar-fixed-top" id="nav">
@@ -29,31 +29,53 @@
                 成都沉迷推理探案馆预约管理系统
             </a>
         </div>
+        <div id="my-collapse" class="collapse navbar-collapse">
+            <!--导航栏右侧-->
+            <ul class="nav navnar-nav navbar-right" id="login-head">
+               <li class="pull-left">
+                   <input type="search" id="reaserch" onchange="reaserch()" placeholder="输入姓名或电话">
+                   <button class="search" >
+                   		<img src="${ctxStatic }/swust/images/whiteSearch.png"/>
+                   </button>
+                   <input type="hidden" value="" id="hiddenType"/>
+                   <input type="hidden" value="" id="hiddenkey"/>
+                   <input type="hidden" value="" id="statekey"/>
+               </li>
+               <li class="pull-left">
+                   <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+<%--                        <img src="${ctxStatic }/swust/images/user-head.png"> --%>
+                       <span>
+                       <c:choose>
+                       	<c:when test="${empty fns:getSysUser().office.name||fns:getSysUser().office.name eq ''||fns:getSysUser().office.name eq null}">
+                       		未命名
+                       	</c:when>
+                       	<c:otherwise>
+                       	${fns:getSysUser().office.name}	
+                       	</c:otherwise>
+                       </c:choose>
+                       </span>
+                       <span class="caret"></span>
+                   </a>
+                   <ul class="dropdown-menu">
+                       <li>
+                           <a href="#" class="modifyPwd" onclick="init()">
+                               <img src="${ctxStatic }/swust/images/modifyPwd.png" alt="">
+                               &nbsp;修改密码
+                           </a>
+                       </li>
+                       <li>
+                           <a href="${ctx}/logout">
+                               <img src="${ctxStatic }/swust/images/exit.png" alt="">
+                               &nbsp;注销
+                           </a>
+                       </li>
+                   </ul>
+               </li>
+            </ul>
+        </div>
     </div>
 </nav>
 <script type="text/javascript">
-function request () {
-    $.ajax({
-       url:'https:api.weishao.com.cn/oauth/token',
-        type:'POST',
-        dataType:"json",
-        data:{
-            grant_type:"client_credentials",
-            app_key:"a1df9a1985bc3b85",
-            app_secret:"86149db2bcac4ba5df2bb3cd296a2328",
-            scope:"base_api"
-         },
-        success:function(res){
-            console.log(res.access_token);
-        },
-        error:function(err){
-            console.log(err);
-        }
-    })
-}
-$(function(){
-	request();
-})
 		//初始化修改密码模态框
 		function init(){
 			$("#authentication").html("");

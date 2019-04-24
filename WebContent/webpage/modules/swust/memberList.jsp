@@ -85,7 +85,7 @@
 
 <div class="modal fade" tabindex="-1" id="continue">
 	<div class="modal-dialog modal-md">
-		<div class="modal-content">
+		<div class="modal-content" style="margin-top: 240px;">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"
 					aria-label="Close">
@@ -157,8 +157,6 @@
 				<button type="button" class="btn btn-md confirm"
 					onclick="rechargeFormSubmit()" data-dismiss="modal">确认</button>
 				<input type="hidden" id="inputSubmit">
-				<button type="button" class="btn btn-md confirm"
-					data-dismiss="modal">关闭</button>
 			</div>
 		</div>
 	</div>
@@ -166,7 +164,7 @@
 <!--编辑  -->
 <div class="modal fade" tabindex="-1" id="msg-reminder-change">
 	<div class="modal-dialog modal-md">
-		<div class="modal-content">
+		<div class="modal-content" style="margin-top: 240px">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"
 					aria-label="Close">
@@ -242,8 +240,6 @@
 			<div class="modal-footer text-center">
 				<button type="button" class="btn btn-md confirm"
 					onclick="doSubmitChange()">确认</button>
-				<button type="button" class="btn btn-md confirm"
-					data-dismiss="modal">关闭</button>
 			</div>
 		</div>
 	</div>

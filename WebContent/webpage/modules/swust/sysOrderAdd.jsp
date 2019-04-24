@@ -163,7 +163,8 @@ label.error {
 							<div class="form-group">
 								<label for="car-number"><span class="red">*&nbsp;</span>截止日期：
 									预约时长请于${requestScope.redio.sum }天之内
-									</td> </label>
+									</td> 
+								</label>
 								<div id="form_end_Date"
 									class="input-group date form_datetime required"
 									data-date-format="yyyy-mm-dd hh:ii:ss" data-link-format="yyyy-mm-dd hh:ii:ss">

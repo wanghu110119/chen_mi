@@ -9,13 +9,13 @@ package com.mht.common.enumutils;
  */
 public enum CarTypeEnum {
 	
-	SMALL("黄金会员", "1"), 
+	SMALL("深邃恐惧黑", "1"), 
     
-	LARGE("铂金会员", "2"),
+	LARGE("典雅复古风", "2"),
     
-    VERYLARGE("钻石会员", "3"),
+    VERYLARGE("激情摩洛哥", "3"),
 	
-	SUPER("土豪爸爸","4");
+	SUPER("没钱蹲客厅","4");
 	
     private String name;  
     private String param;  

@@ -82,7 +82,6 @@ label.error {
 		<button class="right-hand" onclick="isDisable(id, '4')" id="delAll">批量删除</button>
 		<button class="right-hand" id="addManager">新增</button>
 		<button class="right-hand" onclick="exportOffice()" id="exportOffice">导出</button>
-		<button class="right-hand" id="import-table">导入</button>
 	</p>
 	<div class="table-responsive">
 		<table class="table table-striped">
@@ -141,8 +140,7 @@ label.error {
 						<div class="col-xs-12 col-sm-6">
 							<div class="form-group">
 								<label for="companyName"
-									class="col-sm-5 control-label input-width"><span
-									style="color: red">* </span>剧本用户名:</label>
+									class="col-sm-5 control-label input-width"> 剧本用户名:</label>
 								<div class="col-sm-7">
 									<input type="text" class="form-control required" value=""
 										name="primaryPerson.loginName" id="companyName"> <input
@@ -247,63 +245,6 @@ label.error {
 </div>
 
 
-<!--导入-->
-<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
-	id="import">
-	<div class="modal-dialog modal-sm" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-				<h3 class="modal-title text-center">请选择导入的EXCEL</h3>
-			</div>
-			<div class="modal-body text-center">
-				<label for="choose-excel" id="choose-label"> <span
-					class="glyphicon glyphicon-plus"></span>
-				</label>
-
-				<form class="form-horizontal" id="jvForm"
-					action="${ctx}/swust/manager/import" method="post"
-					enctype="multipart/form-data">
-					<input type="file" name="file" id="choose-excel"
-						accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
-					<span id="file-name"></span>
-				</form>
-
-			</div>
-			<div class="modal-footer text-center">
-				<input type="hidden" id="submitOnly" />
-				<button type="button" class="btn btn-md confirm"
-					data-dismiss="modal" id="import-result">确认</button>
-				<button class="btn btn-md confirm" onclick="exportManager()">下载模板</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
-	id="import-info">
-	<div class="modal-dialog modal-md">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-				<h3 class="modal-title text-center">导入结果</h3>
-			</div>
-			<div class="modal-body text-center">
-				<p class='text-danger' id="getResult"></p>
-			</div>
-			<div class="modal-footer text-center">
-				<!--             	<input type="hidden" id="submitOnly" /> -->
-				<button type="button" class="btn btn-md confirm"
-					data-dismiss="modal">确认</button>
-			</div>
-		</div>
-	</div>
-</div>
 <!--重置密码模态框-->
 <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
 	id="reset">
@@ -356,15 +297,13 @@ $(".checkAll1").click(function(){
   });
   $(".t1 input").each(function(){
     $(this).click(function(){
-    	console.log($(".t1 input:checked").length+"!!!!!!!"+$(".t1 input").length);
-    	console.log($(this).parent().next().html())
       if($(".t1 input:checked").length===$(".t1 input[type='checkbox']").length){
         $(".checkAll1").prop("checked",true)
       }
       else{
         $(".checkAll1").prop("checked",false)
       }
-    })
+    });
   });
 
 
@@ -461,7 +400,7 @@ function deleteQrCode (id){
 				},
 				"primaryPerson.loginName":{
 					checkLoginName:true,
-					required:true,
+					required:false,
 					rangelength:[2,10],
 					remote:{                                          
 		               type:"POST",//验证剧本是否存在

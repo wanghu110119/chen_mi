@@ -163,8 +163,8 @@ public class ManagerService extends CrudService<SysOfficeDao, Office> {
 	private User saveUser(Office office, String oldloginName) {
 		if(officeDao.get(office.getId())!=null){
 			return userDao.get(office.getPrimaryPerson().getId());
-		}
-		if (!oldloginName.equals(office.getPrimaryPerson().getLoginName())) {
+		} 
+		if (oldloginName!=null&&!"".equals(oldloginName)&&!oldloginName.equals(office.getPrimaryPerson().getLoginName())) {
 			User user = new User();
 			BeanUtils.copyProperties(office.getPrimaryPerson(), user);
 			user.setId(IdGen.uuid());

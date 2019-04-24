@@ -30,10 +30,10 @@
 	 			width:100% !important;
 	 		}
 	 		.change-width h3{
-	 			padding:2rem 0;
+	 			padding:3rem 0;
 	 		}
 	 		.change-width .settings{
-	 			padding:2rem 0;
+	 			padding:3rem 0;
 	 		}
 	 	}
 	 	.error{
@@ -59,14 +59,14 @@
 					style="width:100%;height:100%;" class="img-responsive img-circle"> <span class="show-name" id="loginName">${fns:getUser().name}</span>
 			</div>
 			<ul class="settings">
-				<li><a href="#" title="修改头像 " class="edit-user"> <img
-						src="${ctxStatic}/swust/images/user-back.png" alt="">
-				</a></li>
 				<li><a href="#" title="修改密码" class="modify-password" onclick="init()"> <img
 						src="${ctxStatic}/swust/images/reset.png" alt="">
 				</a></li>
 				<li><a href="${ctx}/logout" title="退出登录"> <img
 						src="${ctxStatic}/swust/images/exit-back.png" alt="">
+				</a></li>
+				<li><a href="#" title="修改头像 " class="edit-user"> <img
+						src="${ctxStatic}/swust/images/user-back.png" alt="">
 				</a></li>
 			</ul>
 			<ul class="book-list">

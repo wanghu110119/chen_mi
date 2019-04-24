@@ -227,8 +227,8 @@
 							<table class="table">
 								<thead>
 									<tr>
-										<th>车辆分类</th>
-										<th>临时停车</th>
+										<th>房间选择</th>
+										<th>收费设置</th>
 									</tr>
 								</thead>
 								<tbody>

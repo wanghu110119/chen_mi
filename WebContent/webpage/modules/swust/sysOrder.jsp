@@ -149,7 +149,6 @@
             <div class="modal-footer text-center">
             	<input type="hidden" id="ordersubmitOnly" />
                 <button type="button" class="btn btn-md confirm" data-dismiss="modal" id="orderimport-result">确认</button>
-                <button  class="btn btn-md confirm" onclick="exportOrder()">下载模板</button>
             </div>
         </div>
     </div>

@@ -12,9 +12,9 @@
     border:1px solid #3eaab7;
 }
 @media (max-width:768px) {
-	button.collapsed{
-		display:none;
-	}
+/* 	button.collapsed{ */
+/* 		display:none; */
+/* 	} */
 }
     </style>
 <nav class="navbar navbar-default navbar-fixed-top" id="nav">

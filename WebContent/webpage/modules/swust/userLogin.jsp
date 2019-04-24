@@ -50,7 +50,7 @@
             <div class="col-xs-12">
                 <div class="login-box">
                 	<p>
-                		<img src="${ctxStatic }/swust/images/logo.png" style="width: 100%" class="logo">
+                		<img src="${ctxStatic }/swust/images/logo.png" style="width: 60%" class="logo">
                 	</p>
                     <h2>成都沉迷推理探案馆预约管理平台 </h2>
                     <form action="${ctx}/login" method="post"  id="loginform">

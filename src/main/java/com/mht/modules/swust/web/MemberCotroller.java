@@ -69,7 +69,11 @@ public class MemberCotroller extends BaseController {
 			return new SysCar();
 		}
 	}
-
+	@ResponseBody
+	@RequestMapping(value = { "checkCardID" })
+	public String checkCardID(String name, Model model) {
+		return carService.checkCardID(name);
+	}
 	
 	@RequestMapping(value = { "portalList" })
 	public String hallList(String name, HttpServletRequest request, SysCar sysCar, HttpServletResponse response,

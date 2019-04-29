@@ -210,7 +210,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="money-change" class="col-sm-5 control-label">添加费用:</label>
+								<label for="money-change" class="col-sm-5 control-label">编辑费用:</label>
 								<div class="col-sm-7">
 									<input type="text" class="form-control " name="money-change" id="money-change">
 								</div>
@@ -307,7 +307,14 @@ $(function(){
 			name:{
 				checkName:false,
 				required:true,
-				number:true
+				number:true,
+				remote:{                                          
+		               type:"POST",//验证卡号是否存在
+		               url:"${ctx}/swust/car/checkCardID",
+		               data:{
+								name:function(){return $("#smsCarId").val();}
+			               } 
+		            }
 			},
 			owner:{
 				checkName:false,
@@ -330,7 +337,8 @@ $(function(){
 		messages:{
 			name:{
 				rangelength:"请输入正确的会员卡号",
-				number:"请输入正确会员卡号"
+				number:"请输入正确会员卡号",
+				remote:"输入的会员卡号已经存在"
 			},
 			owner:{
 				required:"请输入会员姓名"
@@ -457,7 +465,7 @@ function doSubmitChange(){
 			$("#smsCarId-change").attr("class","form-control required valid");
 			$("#smsCarId-change-error").html("");
 			carId=true;
-				$("#textChange-change").html("编辑短信提醒服务");
+				$("#textChange-change").html("编辑会员信息");
 			$('#msg-reminder-change').modal('show');
 			
 	});
@@ -466,10 +474,10 @@ function doSubmitChange(){
 	function rechargeFormSubmit(){//回调函数，在编辑和保存动作时，供openDialog调用提交表单。
 	if($("#recharge-Money").val()===""||$("#recharge-Money").val()==null){
 		$("#recharge-Money").val(0)
-	}
+	};
 	if($("#recharge-Time").val()===""||$("#recharge-Time").val()==null){
 		$("#recharge-Time").val(0)
-	}
+	};
 		$('#continue').modal('hide');
 		  $.ajax({
 				type : "POST",

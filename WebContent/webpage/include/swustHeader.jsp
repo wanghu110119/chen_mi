@@ -26,7 +26,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a href="${ctx}/swust/order" class="navbar-brand">
-               成都沉迷推理探案馆预约管理系统
+               成都沉谜推理探案馆预约管理系统
             </a>
         </div>
         <div id="my-collapse" class="collapse navbar-collapse">

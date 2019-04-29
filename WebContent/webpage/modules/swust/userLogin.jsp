@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
     <!--3、x-ua-compatible-->
     <meta http-equiv="x-ua-compatible" content="IE=edge">
-    <title>成都沉迷推理探案馆预约管理平台</title>
+    <title>成都沉谜推理探案馆预约管理平台</title>
     <!--4、引入两个兼容文件-->
     <!--[if lt IE 9]>
     <script src="js/html5shiv.min.js"></script>
@@ -52,7 +52,7 @@
                 	<p>
                 		<img src="${ctxStatic }/swust/images/logo.png" style="width: 60%" class="logo">
                 	</p>
-                    <h2>成都沉迷推理探案馆预约管理平台 </h2>
+                    <h2>成都沉谜推理探案馆预约管理平台 </h2>
                     <form action="${ctx}/login" method="post"  id="loginform">
                     	<div class="pr">
                     		<input type="text" name="username" placeholder="请输入用户名" id="username" required="required">

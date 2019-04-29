@@ -1,5 +1,7 @@
 package com.mht.modules.swust.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,9 +32,27 @@ public class SysCarService extends CrudService<SysCarDao, SysCar> {
 				sysCar = carDao.get(sysCar);
 				exist = sysCar != null ? "false":"true";
 		}
+		//false:目标存在不可用 true:目标不存在可用
 		return exist;
 	}
 
+	public String checkCardID( String carId) {
+		String exist = "true";
+		//校验单位名称
+		//登录名
+		if (StringUtils.isNotBlank(carId)) {
+				
+				SysCar sysCar = new SysCar();
+				sysCar.setCarId(carId);
+				List<SysCar> sysCarList = carDao.findList(sysCar);
+				exist = sysCarList.size() > 0 ? "false":"true";
+		}
+		//false:目标存在不可用 true:目标不存在可用
+		return exist;
+	}
+	
+	
+	
 	public String insertCarId() {
 		int carId=1;
 		String code = "00";

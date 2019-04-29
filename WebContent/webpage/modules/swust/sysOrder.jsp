@@ -71,7 +71,7 @@
     <div class="container-fluid change-padding">
         <div class="row">
             <div class="col-xs-12">
-                <p class="my-booking" style="cursor: pointer;"><span onclick="model('1')">我的预约  </span>      &nbsp;   &nbsp;      <span onclick="model('2')">会员管理</span></p>
+                <p class="my-booking" ><span onclick="model('1')" style="cursor: pointer;">我的预约  </span>      &nbsp;   &nbsp;      <span onclick="model('2')" style="cursor: pointer;">会员管理</span></p>
                 
                 <ul class="state-menu">
                     <li class="active">

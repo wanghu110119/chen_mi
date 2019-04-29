@@ -373,22 +373,6 @@ p {
 		location.href = "${ctx}/swust/appointment/export?state=" + type
 				+ "&orderName=" + name+ "&color=" + $('#orderSelect option:selected').val()+ "&carType=" + $('#carTypeSelect option:selected').val()
 				+ "&beginTime=" + $("#beginTime").val()+ "&endTime=" + $("#endTime").val()+ "&pageSize=2000";
-// 		var name = $("#name").val();
-// 		$.ajax({
-// 			type : "GET",
-// 			url : "${ctx}/swust/appointment/export",
-// 			data : {
-// 				state : type,
-// 				orderName : name,
-// 				pageSize : "0",
-// 				color : $('#orderSelect option:selected').val(),
-// 				carType : $('#carTypeSelect option:selected').val(),
-// 				beginTime : $("#beginTime").val(),
-// 				endTime : $("#endTime").val()
-// 			},
-// 			success : function(date) {
-// 			}
-// 		});
 		
 	}
 

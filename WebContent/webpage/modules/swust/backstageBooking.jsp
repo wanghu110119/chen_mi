@@ -9,7 +9,7 @@
 	content="width=device-width,initial-scale=1,user-scalable=no">
 <!--3、x-ua-compatible-->
 <meta http-equiv="x-ua-compatible" content="IE=edge">
-<title>成都沉迷推理探案馆预约管理平台</title>
+<title>成都沉谜推理探案馆预约管理平台</title>
 <!--4、引入两个兼容文件-->
 <!--[if lt IE 9]>
     <script src="js/html5shiv.min.js"></script>

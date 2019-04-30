@@ -11,8 +11,8 @@
         </commentGenerator>  
         <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->  
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"  
-            connectionURL="jdbc:mysql://192.168.1.233:3306/mht_oeg" userId="root"  
-            password="root">  
+            connectionURL="jdbc:mysql://localhost:3306/mht_oeg" userId="root"  
+            password="123456">  
         </jdbcConnection>  
         <!-- <jdbcConnection driverClass="oracle.jdbc.OracleDriver"  
             connectionURL="jdbc:oracle:thin:@127.0.0.1:1521:yycg"   
@@ -28,25 +28,25 @@
         </javaTypeResolver>  
   
         <!-- targetProject:生成PO类的位置 -->  
-        <javaModelGenerator targetPackage="com.mht.modules.swust.entity"   targetProject="E:\git\mht_oeg\src\main\java">  
+        <javaModelGenerator targetPackage="com.mht.modules.swust.entity"   targetProject="F:\wzwWorkSpace\chenmi_club_card\mht_oeg\src\main\java">  
             <!-- enableSubPackages:是否让schema作为包的后缀 -->  
             <property name="enableSubPackages" value="false" />  
             <!-- 从数据库返回的值被清理前后的空格 -->  
             <property name="trimStrings" value="true" />  
         </javaModelGenerator>  
         <!-- targetProject:mapper映射文件生成的位置 -->  
-        <sqlMapGenerator targetPackage="com.mht.modules.swust.dao"   
-            targetProject="E:\git\mht_oeg\src\main\java">  
+        <sqlMapGenerator targetPackage="mappings.modules.swust"   
+            targetProject="F:\wzwWorkSpace\chenmi_club_card\mht_oeg\src\main\resources">  
             <!-- enableSubPackages:是否让schema作为包的后缀 -->  
             <property name="enableSubPackages" value="false" />  
         </sqlMapGenerator>  
         <!-- targetPackage：mapper接口生成的位置 -->  
-        <javaClientGenerator type="XMLMAPPER"   targetPackage="com.mht.modules.swust.dao"   targetProject="E:\git\mht_oeg\src\main\java">  
+        <javaClientGenerator type="XMLMAPPER"   targetPackage="com.mht.modules.swust.dao"   targetProject="F:\wzwWorkSpace\chenmi_club_card\mht_oeg\src\main\java">  
             <!-- enableSubPackages:是否让schema作为包的后缀 -->  
             <property name="enableSubPackages" value="false" />  
         </javaClientGenerator>  
         <!-- 指定数据库表 -->  
-        <table tableName="sys_car"></table>  
+        <table tableName="member_detail"></table>  
         <!-- <table tableName="oa_notify"></table>   -->
         <!-- <table tableName="resume"></table>  
         <table tableName="user"></table> 

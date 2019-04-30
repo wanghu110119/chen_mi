@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ include file="/webpage/include/taglib.jsp"%>
 <style>
-.continue, .edit-info {
+.continue, .edit-info,.detail {
 	width: 45px;
 	height: 25px;
 	border-radius: 12px;
@@ -9,12 +9,12 @@
 	color: #5398ff;
 }
 
-.continue:hover, .edit-info:hover {
+.continue:hover, .edit-info:hover,.detail:hover {
 	background: #5398ff;
 	color: #fff;
 }
 
-.continue-add, .edit-info {
+.continue-add, .edit-info,.detail {
 	width: 45px;
 	height: 25px;
 	border-radius: 12px;
@@ -22,7 +22,7 @@
 	color: #5398ff;
 }
 
-.continue-add:hover, .edit-info:hover {
+.continue-add:hover, .edit-info:hover,.detail:hover {
 	background: #5398ff;
 	color: #fff;
 }
@@ -66,6 +66,9 @@
 					<button class="edit-info">
 						<input type="hidden" value="${row.id}" /> 消费
 					</button>
+					<button class="detail">
+						<input type="hidden" value="${row.id}" /> 明细
+					</button>
 				</td>
 			</tr>
 		</c:forEach>
@@ -81,6 +84,7 @@
 	</tbody>
 	</tbody>
 </table>
+
 
 
 <div class="modal fade" tabindex="-1" id="continue">
@@ -245,6 +249,74 @@
 	</div>
 </div>
 
+
+
+<div class="modal fade" tabindex="-1" id="detail">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content" style="margin-top: 240px;">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h3 class="modal-title text-center">会员充值消费详情</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<form class="form-horizontal" id="charge-Form"
+						novalidate="novalidate">
+						<input type="hidden" name="id" id="detail-change" value="">
+						<div class="col-xs-12 col-sm-6">
+							<div class="form-group">
+								<label for="detail-CarId" class="col-sm-5 control-label"
+									style="text-align: center"><span style="color: red">*
+								</span>会员卡号:</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control required valid"
+										readonly="readonly" name="detail-CarId" id="detail-CarId"
+										aria-required="true">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="detail-Phone" class="col-sm-5 control-label">消费总计:</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control " readonly="readonly"
+										name="detail-Phone" id="detail-Phone">
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-6">
+							<div class="form-group">
+								<label for="recharge-Owner" class="col-sm-5 control-label"><span
+									style="color: red">* </span>会员姓名:</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control required valid" value=""
+										readonly="readonly" name="detail-Owner" id="detail-Owner"
+										aria-required="true"> <input type="hidden"
+										id="detailName" value="ltlx">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="detail-Time" class="col-sm-5 control-label">充值总计:</label>
+								<div class="col-sm-7">
+									<input type="text" class="form-control " readonly="readonly"
+										name="detail-Time" id="detail-Time">
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="modal-footer text-center">
+<!-- 				<button type="button" class="btn btn-md confirm" -->
+<!-- 					onclick="rechargeFormSubmit()" data-dismiss="modal">确认</button> -->
+					<button type="button" class="btn btn-md confirm"
+					onclick="detailRechargeExport()" data-dismiss="modal">导出</button>
+				<input type="hidden" id="detailSubmit">
+			</div>
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
 
 function page(a,b,detail) {
@@ -264,11 +336,12 @@ function page(a,b,detail) {
 } 
 
 
-
+	function detailRechargeExport() {
+		location.href = "${ctx}/swust/car/exportDetail?id=" + $("#detailSubmit").val();
+	}
 
 
 	function detail(id){
-// 		$.post("${ctx}/swust/order/UserSelectOrderReason?id="+id);
 		$.ajax({
 			type:"POST",
 			url:"${ctx}/swust/order/UserSelectOrderReason",
@@ -356,6 +429,23 @@ $(function () {
 					}
 				});
 			}
+		).on('click','.detail',function(){
+			var sid=$(this).children().val();
+			$("#inputSubmit").val(sid);
+				$.ajax({
+					type:"post",
+					url : "${ctx}/swust/car/getCar",
+					data: {id:sid},
+					success : function(data) {
+						$("#detail-CarId").val(data.body.sysCar.carId);
+						$("#detail-Phone").val(data.body.sysCar.memberDetail.costMoney);
+						$("#detail-Owner").val(data.body.sysCar.userName);
+						$("#detail-Time").val(data.body.sysCar.memberDetail.addMoney);
+						$("#detailSubmit").val(data.body.sysCar.id);
+						$('#detail').modal('show');
+					}
+				});
+			}
 		).on('click','.edit-info',function(){
 			var ssid=$(this).children().val();
 				$.ajax({
@@ -367,8 +457,6 @@ $(function () {
 						$("#smsCarType-change").val(data.body.sysCar.carType);
 						$("#smsPhone-change").val(data.body.sysCar.phone);
 						$("#smsOwner-change").val(data.body.sysCar.userName);
-						//$("#smsServiceTime-change").val(data.body.sysCar.effectiveTime);
-						//$("#money-change").val(data.body.sysCar.money);
 						$("#oid-change").val(data.body.sysCar.id);
 					}
 				});

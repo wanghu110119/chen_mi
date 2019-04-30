@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mht.modules.swust.dao.MemberDetailMapper">
+  <resultMap id="BaseResultMap" type="com.mht.modules.swust.entity.MemberDetail">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="type" jdbcType="CHAR" property="type" />
+    <result column="card_id" jdbcType="CHAR" property="cardId" />
+    <result column="cost_money" jdbcType="VARCHAR" property="costMoney" />
+    <result column="add_money" jdbcType="VARCHAR" property="addMoney" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <association javaType="com.mht.modules.swust.entity.SysCar" property="car" >
+   		 <result column="id" jdbcType="VARCHAR" property="id" />
+    </association>
+    <association javaType="com.mht.modules.sys.entity.User" property="createBy" >
+   		 <result column="id" jdbcType="VARCHAR" property="id" />
+    	<result column="create_by" property="id" />
+    </association>
+    <association javaType="com.mht.modules.sys.entity.User" property="updateBy" >
+    	<result column="id" jdbcType="VARCHAR" property="id" />
+    	<result column="update_by" property="id" />
+    </association>
+    
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, 
+    update_date, 
+    del_flag, 
+    card_id, 
+    type, 
+    cost_money,
+    add_money, 
+    create_by, 
+    create_date, 
+    update_by, 
+    remarks
+  </sql>
+			
+	<select id="findList" parameterType="com.mht.modules.swust.entity.MemberDetail" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mht_oeg.member_detail a
+    <where>
+    <if test="cardId!=null and cardId!=''">
+    		AND a.card_id = #{cardId}
+    </if>
+     <if test="year==true">
+		AND year(a.create_date)=year(curdate())
+			</if>
+		AND del_flag = '0'
+    </where>
+  </select>
+			
+			
+			
+  <select id="get" parameterType="com.mht.modules.swust.entity.MemberDetail" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mht_oeg.member_detail a
+    where id = #{id,jdbcType=VARCHAR}
+      and del_flag = '0'
+  </select>
+  
+   <select id="sumCostOrCharge" parameterType="com.mht.modules.swust.entity.MemberDetail"  resultMap="BaseResultMap">
+    select 
+    SUM(add_money) AS add_money,
+    SUM(cost_money) AS cost_money
+    from mht_oeg.member_detail a
+   <where>
+		and a.card_id = #{car.carId,jdbcType=VARCHAR}
+		and del_flag = '0'
+   </where>
+  </select>
+  
+  <insert id="insert" parameterType="com.mht.modules.swust.entity.MemberDetail">
+    insert into mht_oeg.member_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="car != null">
+        card_id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="costMoney != null">
+        cost_money,
+      </if>
+      <if test="addMoney != null">
+        add_money,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=CHAR},
+      </if>
+      <if test="car != null">
+        #{car.carId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=CHAR},
+      </if>
+      <if test="costMoney != null">
+        #{costMoney,jdbcType=VARCHAR},
+      </if>
+      <if test="addMoney != null">
+        #{addMoney,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy.id,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy.id,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="com.mht.modules.swust.entity.MemberDetail">
+    update mht_oeg.member_detail
+    <set>
+      <if test="car != null">
+        card_id = #{car.carId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=CHAR},
+      </if>
+      <if test="costMoney != null">
+        cost_money = #{costMoney,jdbcType=VARCHAR},
+      </if>
+      <if test="addMoney != null">
+        add_money = #{addMoney,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy.id,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy.id,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -77,16 +77,6 @@
                     <li class="active">
                     	<p style=" font-size: 23px"   >会员列表</p>
                     </li>
-<!--                     <li> -->
-<!-- 						<a style="cursor: pointer;"  btype="2" data-toggle="tab">已审核</a> -->
-<!--                     </li> -->
-<!--                     <li> -->
-<!-- 						<select  id="orderSelect" style="text-align: center"> -->
-<!-- 							<option style="text-align: center" onchange="search('',1)" value="" >全部</option> -->
-<!-- 							<option onchange="search('',1)" value="0">正常预约</option> -->
-<!-- 							<option onchange="search('red',1)" value="red">超时预约</option> -->
-<!-- 						</select> -->
-<!--                     </li> -->
                     <li>
                         <button class="glyphicon glyphicon-plus"  > 新增会员</button>
                     </li>

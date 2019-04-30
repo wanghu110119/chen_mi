@@ -74,7 +74,7 @@
   <select id="findList" parameterType="com.mht.modules.swust.entity.SysCar" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from mht_oeg.sys_car 
+    from mht_oeg.sys_car
    <where>
 			mht_oeg.sys_car.del_flag = #{delFlag}
 			<if test="carId != null and carId != ''">
@@ -87,7 +87,6 @@
 					<if test="dbName == 'mssql'">'%'+#{carId}+'%'</if>
 					<if test="dbName == 'mysql'">CONCAT('%', #{carId}, '%')</if>
 					)
-					
 			</if>
 			<if test="createBy != null and createBy.id != null and createBy.id != ''">
 				AND mht_oeg.sys_car.create_by  = #{createBy.id}

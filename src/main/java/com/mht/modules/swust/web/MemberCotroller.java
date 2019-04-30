@@ -31,16 +31,21 @@ import com.mht.common.utils.StringUtils;
 import com.mht.common.utils.excel.ExportExcel;
 import com.mht.common.utils.excel.ImportExcel;
 import com.mht.common.web.BaseController;
+import com.mht.modules.swust.entity.MemberDetail;
 import com.mht.modules.swust.entity.SysCar;
 import com.mht.modules.swust.entity.SysOrderlist;
+import com.mht.modules.swust.service.MemberDetailService;
 import com.mht.modules.swust.service.SysCarService;
 import com.mht.modules.sys.entity.Office;
+import com.mht.modules.sys.utils.UserUtils;
 
 @Controller
 @RequestMapping(value = "a/swust/car")
 public class MemberCotroller extends BaseController {
 	@Autowired
 	private SysCarService carService;
+	@Autowired
+	private MemberDetailService memberService;
 
 	/**
 	 * @Title: index
@@ -50,6 +55,8 @@ public class MemberCotroller extends BaseController {
 	 */
 	@RequestMapping(value = { "" })
 	public String index(Model model) {
+		
+		
 		return "modules/swust/smsSend";
 	}
 
@@ -90,9 +97,10 @@ public class MemberCotroller extends BaseController {
 	
 	@ResponseBody
 	@RequestMapping(value = { "getCar" })
-	public AjaxJson getCarMessage(String name, String state, HttpServletRequest request, SysCar sysCar,
-			HttpServletResponse response, Model model) {
+	public AjaxJson getCarMessage(  SysCar sysCar ) {
 		AjaxJson json = new AjaxJson();
+		MemberDetail memberDetail = memberService.sumCostAndCharge(sysCar);
+		sysCar.setMemberDetail(memberDetail);
 		json.put("sysCar", sysCar);
 		return json;
 	}
@@ -167,201 +175,37 @@ public class MemberCotroller extends BaseController {
 		return ajaxJson;
 	}
 
-	@ResponseBody
-	@RequestMapping(value = "exportModel", method = RequestMethod.GET)
-	public AjaxJson exportModel(SysCar sysCar, HttpServletRequest request, HttpServletResponse response,
-			RedirectAttributes redirectAttributes) {
-		AjaxJson ajaxJson = new AjaxJson();
-		boolean issuccess = true;
-		String msg = "操作成功!";
-		try {
-			String fileName = "短信提醒服务车辆导入模板.xlsx";
-			List<SysCar> list = Lists.newArrayList();
-			sysCar = new SysCar();
-			sysCar.setRemarks("");
-			sysCar.setCarId("（必填）");
-			sysCar.setCarType("1");
-			sysCar.setBeginTime(new Date());
-			sysCar.setEffectiveTimeList("1");
-			sysCar.setEndTime(new Date());
-			sysCar.setMoneyList("1");
-			sysCar.setPhone("18000000000");
-			sysCar.setUserName("姓名");
-			list.add(sysCar);
-			new ExportExcel("短信提醒", SysCar.class, 2).setDataList(list).write(response, fileName).dispose();
-			return ajaxJson;
-		} catch (Exception e) {
-			e.printStackTrace();
-			issuccess = false;
-			msg = "导出模板失败!";
-		}
-		ajaxJson.setSuccess(issuccess);
-		ajaxJson.setMsg(msg);
-		return ajaxJson;
-	}
-
 	/**
-	 * @Title: importFile
-	 * @Description: TODO excel导入
+	 * 
+	 * @Title: exportDetail
+	 * @Description: 把符合条件的预约信息以excel文件格式导出
 	 * @param file
 	 * @param redirectAttributes
 	 * @return
 	 * @author com.mhout.wzw
 	 */
 	@ResponseBody
-	@RequestMapping(value = "import", method = RequestMethod.POST)
-	public AjaxJson importFile(MultipartFile file, RedirectAttributes redirectAttributes) {
-		AjaxJson ajax = new AjaxJson();
-		if (Global.isDemoMode()) {
-			addMessage(redirectAttributes, "演示模式，不允许操作！");
-			ajax.setMsg("演示模式，不允许操作！");
-			return ajax;
-		}
+	@RequestMapping(value = "exportDetail", method = RequestMethod.GET)
+	public AjaxJson exportDetail(SysCar sysCar, HttpServletRequest request, HttpServletResponse response ) {
+		AjaxJson ajaxJson = new AjaxJson();
+		boolean issuccess = true;
+		String msg = "操作成功!";
 		try {
-			int successNum = 0;
-			int failureNum = 0;
-			StringBuilder failureMsg = new StringBuilder();
-			ImportExcel ei = new ImportExcel(file, 1, 0);
-			String val = (String) ei.getCellValue(ei.getRow(0), 0);
-			if (!"短信提醒".equals(val)) {
-				addMessage(redirectAttributes, "导入车辆安全信息失败！导入信息有误");
-				ajax.setMsg("抱歉：请下载正确的模板后再次导入数据！");
-				return ajax;
-			}
-			List<SysCar> list = ei.getDataList(SysCar.class);
-			for (SysCar sysCar : list) {
-				sysCar.synchronizationTime();
-				try {
-					if (sysCar.getCarId() == null || "".equals(sysCar.getCarId().replaceAll(" ", ""))) {
-						failureMsg.append("<br/>导入车辆的车牌不能为空; ");
-						failureNum++;
-						continue;
-					} else if (sysCar.getUserName() == null || "".equals(sysCar.getUserName().replaceAll(" ", ""))) {
-						failureMsg.append("<br/>导入车辆" + sysCar.getCarId() + "的车主姓名不能为空; ");
-						failureNum++;
-					} else if (checkNameAndTime(sysCar)) {
-						failureMsg.append(returnNameAndTime(sysCar));
-						failureNum++;
-					} else if ("true".equals(checkSysCar(sysCar))) {
-						if (checkInput(sysCar)) {
-							if (checkCarType(sysCar.getCarType())) {
-								String code = carService.findCarMaxRemarks();
-								String year = DateUtils.getYearBack();
-								if (code != null) {
-									code = code.replaceAll(" ", "");
-								}
-								if (StringUtils.isNotBlank(code)) {
-									if (code.indexOf(year) > -1) {
-										// 序号加1
-										String end = String.valueOf(Integer.parseInt(code) + 1);
-										sysCar.setRemarks(end);
-									} else {
-										sysCar.setRemarks(DateUtils.getYearBack() + "001");
-									}
-								} else {
-									sysCar.setRemarks(DateUtils.getYearBack() + "001");
-								}
-								carService.save(sysCar);
-								successNum++;
-							} else {
-								failureMsg.append("<br/>导入车辆 " + sysCar.getCarId() + " 的车辆类型不正确; ");
-								failureNum++;
-							}
-						} else {
-							failureMsg.append("<br/>导入车辆 " + sysCar.getCarId() + " 的车牌信息输入不合规则; ");
-							failureNum++;
-						}
-					} else {
-						failureMsg.append("<br/>导入车辆 " + sysCar.getCarId() + " 的相关信息已存在; ");
-						failureNum++;
-					}
-				} catch (ConstraintViolationException ex) {
-					failureMsg.append("<br/>车辆 " + sysCar.getCarId() + " 导入失败");
-					List<String> messageList = BeanValidators.extractPropertyAndMessageAsList(ex, ": ");
-					for (String message : messageList) {
-						failureMsg.append(message + "; ");
-						failureNum++;
-					}
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					failureMsg.append("<br/>车辆" + sysCar.getCarId() + " 导入失败");
-				}
-			}
-			if (failureNum > 0) {
-				failureMsg.insert(0, "，失败 " + failureNum + " 条车辆信息");
-			}
-			System.out.println(failureMsg);
-			addMessage(redirectAttributes, "已成功导入 " + successNum + " 条车辆信息；失败：" + failureNum + "条，原因：" + failureMsg);
-			ajax.setMsg("已成功导入 " + successNum + " 条车辆信息" + failureMsg.toString());
+			String fileName = "沉迷探案馆会员"+sysCar.getUserName()+"一年内消费详情" + DateUtils.getDate("MMdd-HH") + ".xlsx";
+			MemberDetail member = new MemberDetail();
+			member.setYear(true);
+			member.setCardId(sysCar.getCarId());
+			List<MemberDetail> page = memberService.findList( member);
+			new ExportExcel("沉迷探案馆会员——"+sysCar.getUserName()+"一年内消费详情", MemberDetail.class).setDataList(page ).write(response, fileName).dispose();
+			return null;
 		} catch (Exception e) {
-			addMessage(redirectAttributes, "导入车辆信息失败！失败信息：" + e.getMessage());
-			ajax.setMsg("导入车辆信息失败！");
+			e.printStackTrace();
+			issuccess = false;
+			msg = "导出数据失败!";
 		}
-		return ajax;
-	}
-
-	private boolean checkNameAndTime(SysCar sysCar) {
-		// TODO Auto-generated method stub
-		String name = sysCar.getUserName().replaceAll(" ", "");
-		String synx = "^[a-zA-Z\u4E00-\u9FA5]+$";
-		Pattern pattern = Pattern.compile(synx);
-		Matcher match = pattern.matcher(name);
-		boolean b = match.matches();
-		// if(sysCar.getBeginTime().getTime()>sysCar.getEndTime().getTime()){
-		// return true;
-		// }
-		if (sysCar.getPhone().replaceAll(" ", "").length() != 11) {
-			return true;
-		}
-		if (!b) {
-			return true;
-		}
-
-		return false;
-	}
-
-	private String returnNameAndTime(SysCar sysCar) {
-		// TODO Auto-generated method stub
-		String name = sysCar.getUserName().replaceAll(" ", "");
-		String synx = "^[a-zA-Z\u4E00-\u9FA5]+$";
-		Pattern pattern = Pattern.compile(synx);
-		Matcher match = pattern.matcher(name);
-		boolean b = match.matches();
-		// if(sysCar.getBeginTime().getTime()>sysCar.getEndTime().getTime()){
-		// return "<br/>导入车辆 " + sysCar.getCarId() + " 的截止日期应该在开始日期之后; ";
-		// }
-		if (sysCar.getPhone().replaceAll(" ", "").length() != 11) {
-			return "<br/>导入车辆 " + sysCar.getCarId() + " 的电话号码输入有误; ";
-		}
-		if (!b) {
-			return "<br/>导入车辆 " + sysCar.getCarId() + " 的车主姓名只能为汉字和字母; ";
-		}
-
-		return "<br/>导入车辆 " + sysCar.getCarId() + " 的信息输入不合规则; ";
-	}
-
-	private String checkSysCar(SysCar sysCar) {
-		if (sysCar.getCarId() == null || "".equals(sysCar.getCarId()) || sysCar.getUserName() == null
-				|| "".equals(sysCar.getUserName())) {
-			return "false";
-		}
-		return carService.checkName(sysCar.getCarId());
-	}
-
-	/**
-	 * 检查输入EXCEL输入是否有误
-	 * 
-	 * @param user
-	 * @return
-	 */
-	private boolean checkInput(SysCar sysCar) {
-		Pattern patternCarId = Pattern.compile("^[\u4e00-\u9fa5|WJ]{1}[A-Z0-9]{6}$");
-		boolean check = false;
-		boolean a = patternCarId.matcher(sysCar.getCarId()).matches();
-		if (a) {
-			check = true;
-		}
-		return check;
+		ajaxJson.setSuccess(issuccess);
+		ajaxJson.setMsg(msg);
+		return ajaxJson;
 	}
 
 	/**
@@ -436,6 +280,11 @@ public class MemberCotroller extends BaseController {
 	@RequestMapping("consumption")
 	public AjaxJson consumption(SysCar sysCar) {
 		AjaxJson ajaxJson = new AjaxJson();
+		MemberDetail member = new MemberDetail();
+		member.setCostMoney(""+-sysCar.getCostMoney());
+		member.setType("0");
+		member.setCar(sysCar);
+		memberService.save(member);
 		int money = sysCar.getMoney();
 		sysCar.setMoney(money+sysCar.getCostMoney());
 		carService.save(sysCar);
@@ -450,6 +299,11 @@ public class MemberCotroller extends BaseController {
 	@RequestMapping("rechargeTime")
 	public AjaxJson rechargeTime(SysCar sysCar, int rechargeTime, int rechargeMoney) {
 		AjaxJson ajaxJson = new AjaxJson();
+		MemberDetail member = new MemberDetail();
+		member.setAddMoney(rechargeMoney+"");
+		member.setType("1");
+		member.setCar(sysCar);
+		memberService.save(member);
 		sysCar.setMoney(sysCar.getMoney() + rechargeMoney);
 		sysCar.setEffectiveTime(sysCar.getEffectiveTime() + rechargeTime);
 		carService.save(sysCar);
@@ -458,14 +312,6 @@ public class MemberCotroller extends BaseController {
 		return ajaxJson;
 	}
 
-	@ResponseBody
-	@RequestMapping("continue")
-	public AjaxJson recharge(SysCar sysCar) {
-		AjaxJson ajaxJson = new AjaxJson();
-		ajaxJson.setMsg("修改成功");
-		ajaxJson.setSuccess(true);
-		return ajaxJson;
-	}
 
 	@ResponseBody
 	@RequestMapping(value = { "batchDelete" }, method = RequestMethod.POST)
@@ -477,12 +323,5 @@ public class MemberCotroller extends BaseController {
 		return ajaxJson;
 	}
 
-	private boolean checkCarType(String carType) {
-		boolean b = false;
-		if ("1".equals(carType) || "2".equals(carType) || "3".equals(carType)) {
-			b = true;
-		}
-		return b;
-	}
 
 }

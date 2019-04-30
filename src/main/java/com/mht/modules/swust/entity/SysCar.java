@@ -49,12 +49,23 @@ public class SysCar extends  DataEntity<SysCar>{
 
     private String disable;//1为可用，2为不可用
 
+    private MemberDetail memberDetail;
+    
 
     @Override
 	public String toString() {
 		return "SysCar [id=" + id + ", carId=" + carId + ", userName=" + userName + ", phone=" + phone + ", carType="
 				+ carType + ", effectiveTime=" + effectiveTime + ", money=" + money + ", beginTime=" + beginTime
 				+ ", endTime=" + endTime + ", updateBy=" + updateBy + ", createBy=" + createBy  + ", disable=" + disable + "]";
+	}
+
+
+	public MemberDetail getMemberDetail() {
+		return memberDetail;
+	}
+
+	public void setMemberDetail(MemberDetail memberDetail) {
+		this.memberDetail = memberDetail;
 	}
 
 	public int getCostMoney() {

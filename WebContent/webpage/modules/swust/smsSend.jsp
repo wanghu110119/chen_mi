@@ -56,7 +56,7 @@
 <div class="col-xs-12">
 	<p class="header">
 	<span style="width:200px;display:inlin-block;height:35px;line-height:35px;position:relative;" id="unique">
-		<input type="search" style="height:35px;line-height:35px;border-radius:33px;width:200px;" placeholder="请输入会员卡号" id="named"> <span></span>
+		<input type="search" style="height:35px;line-height:35px;border-radius:33px;width:200px;" placeholder="请输入会员卡号或姓名" id="named"> <span></span>
 		<button style="position:absolute;right:13px;top:-3px;" onclick="searchMsg()">
 			<img src="${ctxStatic }/swust/images/graySearch.png"/>
 		</button>
@@ -67,6 +67,7 @@
 			<button onclick="batchDeleteSms()"> 批量删除</button>
 			<button onclick="clearList()"> 新增</button>
 			<button onclick="exportSysOrder()" id="exportButton">导出</button>
+			<button style="width: 110px" onclick="exportCostOrChargeDetailList()">导出历史记录</button>
 <!-- 			<button style="margin-top: 8px" onclick="importSysOrder()" id="importButton">导入</button> -->
 			<input type="hidden" id="cacheId" value="" />
 		</li>
@@ -242,25 +243,33 @@
     </div>
 </div>
 
-<!-- 导出结果  -->
-<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
-	id="smsimport-info">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title text-center">
-                	导入结果
-                </h3>
-            </div>
-            <div class="modal-body text-center">
-            	<p class='text-danger' id = "smsgetResult"></p>
-            </div>
-            <div class="modal-footer text-center">
-                <button type="button" class="btn btn-md confirm" data-dismiss="modal" >确认</button>
-            </div>
-        </div>
-    </div>
+<!--新增  -->
+<div class="modal fade" tabindex="-1" id="history-list">
+	<div class="modal-dialog modal-md" style="width: 332px">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h3 class="modal-title text-center" id="textHistory">导出会员卡历史详情</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<form class="form-horizontal" id="formSubmitHistory" action="" novalidate="novalidate">
+						<div class="col-xs-12 col-sm-12">
+							 <input id="startHistoryDate" type='text' style="border: 1px solid #3eaab7; height: 30px !important;width: 100%;margin: 10px"  placeholder="选择时间">
+							 <input type="hidden" id = "beginHistoryTime"/>
+							<input type="hidden" id = "endHistoryTime"/>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="modal-footer text-center">
+			<button type="button" class="btn btn-md confirm" onclick="HistorySubmit()">导出</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -282,6 +291,10 @@
  */
 function exportSMS() {
 	location.href="${ctx}/swust/car/exportModel";
+}
+
+function HistorySubmit() {
+	location.href="${ctx}/swust/car/exportCostOrChargeHistory?beginTime="+$("#beginHistoryTime").val()+"&endTime="+$("#endHistoryTime").val();
 }
 	var type = "0";
 	var btype = "1";
@@ -550,9 +563,12 @@ function exportSMS() {
 			$("#smsCarId").removeData("previousValue"); 
 			$('#msg-reminder').modal('show');
 		});
+		$('button:contains("历史")').click(function(){
+			$("#startHistoryDate").val("");
+			$('#history-list').modal('show');
+		});
 		
 		
-		
-	})
+	});
 </script>
 

@@ -1,6 +1,7 @@
 package com.mht.modules.swust.entity;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.mht.common.persistence.DataEntity;
 import com.mht.common.utils.excel.annotation.ExcelField;
@@ -13,6 +14,10 @@ public class MemberDetail extends DataEntity<MemberDetail> {
     private String costMoney;
 
     private String addMoney;
+    
+    private String costTotalMoney;
+    
+    private String addTotalMoney;
 
     private String cardId;
     
@@ -20,9 +25,51 @@ public class MemberDetail extends DataEntity<MemberDetail> {
     
     private User user;
     
+    private Date beginTime;
+    
+    private Date endTime;
+    
     private boolean year;
+    
+    private String createByName;
 
-    public boolean isYear() {
+    public MemberDetail(){
+    	
+    }
+    @ExcelField(title = "消费总计", align = 2, sort = 10)
+    public String getCostTotalMoney() {
+		return costTotalMoney;
+	}
+
+	public void setCostTotalMoney(String costTotalMoney) {
+		this.costTotalMoney = costTotalMoney;
+	}
+	@ExcelField(title = "充值总计", align = 2, sort = 12)
+	public String getAddTotalMoney() {
+		return addTotalMoney;
+	}
+	
+	public void setAddTotalMoney(String addTotalMoney) {
+		this.addTotalMoney = addTotalMoney;
+	}
+
+	public Date getBeginTime() {
+		return beginTime;
+	}
+
+	public void setBeginTime(Date beginTime) {
+		this.beginTime = beginTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public boolean isYear() {
 		return year;
 	}
 
@@ -55,7 +102,14 @@ public class MemberDetail extends DataEntity<MemberDetail> {
 	}
 	@ExcelField(title = "充值/消费", align = 2, sort = 3)
 	public String getCostOrAdd () {
-        return "1".equals(type)?"充值":"消费";
+		if("1".equals(type)){
+			return "充值";
+		}else if("0".equals(type)){
+			return "消费";
+		}else{
+			return null;
+		}
+        
     }
 	
 	@ExcelField(title = "金额", align = 2, sort = 4)
@@ -70,6 +124,24 @@ public class MemberDetail extends DataEntity<MemberDetail> {
     		return dateString;
     	}
         return null;
+    }
+	
+	@ExcelField(title = "操作", align = 2, sort = 6)
+	public String getCreateByName () {
+		if(createByName!=null &&!"".equals(createByName)){
+			return createByName;
+		}else if(createBy!=null &&!"".equals(createBy.getLoginName())){
+			return createBy.getLoginName();
+		}
+		
+		return "";
+        
+    }
+	
+	public void setCreateByName ( ) {
+		if(createBy!=null &&createBy.getLoginName()!=null){
+			createByName = createBy.getLoginName();
+		}
     }
 	
 	public String getType() {

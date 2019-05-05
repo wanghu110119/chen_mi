@@ -9,12 +9,15 @@
     <result column="add_money" jdbcType="VARCHAR" property="addMoney" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="costTotalMoney" jdbcType="TIMESTAMP" property="costTotalMoney" />
+    <result column="addTotalMoney" jdbcType="TIMESTAMP" property="addTotalMoney" />
     <association javaType="com.mht.modules.swust.entity.SysCar" property="car" >
    		 <result column="id" jdbcType="VARCHAR" property="id" />
     </association>
     <association javaType="com.mht.modules.sys.entity.User" property="createBy" >
    		 <result column="id" jdbcType="VARCHAR" property="id" />
     	<result column="create_by" property="id" />
+    	<result column="createByLoginNamen" property="loginName" />
     </association>
     <association javaType="com.mht.modules.sys.entity.User" property="updateBy" >
     	<result column="id" jdbcType="VARCHAR" property="id" />
@@ -24,31 +27,43 @@
   </resultMap>
   
   <sql id="Base_Column_List">
-    id, 
-    update_date, 
-    del_flag, 
-    card_id, 
-    type, 
-    cost_money,
-    add_money, 
-    create_by, 
-    create_date, 
-    update_by, 
-    remarks
+    a.id, 
+    a.update_date, 
+    a.del_flag, 
+    a.card_id, 
+    a.type, 
+    a.cost_money,
+    a.add_money, 
+    a.create_by, 
+    a.create_date, 
+    a.update_by, 
+    a.remarks
   </sql>
 			
 	<select id="findList" parameterType="com.mht.modules.swust.entity.MemberDetail" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
+    ,
+    b.login_name  AS "createByLoginNamen"
     from mht_oeg.member_detail a
+    LEFT JOIN mht_oeg.sys_user b ON a.create_by = b.id
     <where>
     <if test="cardId!=null and cardId!=''">
     		AND a.card_id = #{cardId}
     </if>
+    	<if test="beginTime!=null and endTime==null">
+    		AND a.create_date <![CDATA[>]]> #{beginTime}
+    	</if>
+    	<if test="beginTime==null and endTime!=null">
+    		AND a.create_date <![CDATA[<]]> #{endTime}
+    	</if>
+    	<if test="beginTime!=null and endTime!=null">
+    		AND a.create_date between #{beginTime} AND #{endTime}
+    	</if>
      <if test="year==true">
 		AND year(a.create_date)=year(curdate())
 			</if>
-		AND del_flag = '0'
+		AND a. del_flag = '0'
     </where>
   </select>
 			
@@ -61,7 +76,20 @@
     where id = #{id,jdbcType=VARCHAR}
       and del_flag = '0'
   </select>
-  
+
+<select id="sumCostAndCharge" parameterType="com.mht.modules.swust.entity.MemberDetail"  resultMap="BaseResultMap">
+     SELECT 
+SUM(CASE WHEN a.type ='0' THEN cost_money END) AS "costTotalMoney" ,
+SUM(CASE WHEN a.type ='1' THEN add_money END) AS "addTotalMoney"
+FROM mht_oeg.member_detail a 
+<where>
+AND a.del_flag='0'
+</where> 
+  </select>
+
+
+
+
    <select id="sumCostOrCharge" parameterType="com.mht.modules.swust.entity.MemberDetail"  resultMap="BaseResultMap">
     select 
     SUM(add_money) AS add_money,

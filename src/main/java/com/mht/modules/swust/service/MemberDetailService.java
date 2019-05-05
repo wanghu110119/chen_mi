@@ -22,4 +22,9 @@ public class MemberDetailService extends CrudService<MemberDetailMapper, MemberD
 		return mapper.sumCostOrCharge(memberDetail);
 	}
 
+	public MemberDetail sum() {
+		// TODO Auto-generated method stub
+		return mapper.sumCostAndCharge();
+	}
+
 }

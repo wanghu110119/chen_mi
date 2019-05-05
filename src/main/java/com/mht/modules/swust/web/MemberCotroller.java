@@ -1,5 +1,6 @@
 package com.mht.modules.swust.web;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -175,8 +176,44 @@ public class MemberCotroller extends BaseController {
 		return ajaxJson;
 	}
 
+	
 	/**
 	 * 
+	 * @Title: exportDetail
+	 * @Description: 把符合条件的预约信息以excel文件格式导出
+	 * @param file
+	 * @param redirectAttributes
+	 * @return
+	 * @author com.mhout.wzw
+	 */
+	@ResponseBody
+	@RequestMapping(value = "exportCostOrChargeHistory", method = RequestMethod.GET)
+	public AjaxJson exportCostOrChargeHistory( MemberDetail member,HttpServletRequest request, HttpServletResponse response ) {
+		AjaxJson ajaxJson = new AjaxJson();
+		boolean issuccess = true;
+		SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd");
+		String begin =  format.format(member.getBeginTime());
+		String end =  format.format(member.getEndTime());
+		String msg = "操作成功!";
+		try {
+			String fileName = "沉迷探案馆会员"+begin+"~~"+end+"消费详情.xlsx";
+			List<MemberDetail> page = memberService.findList( member);
+			page.add(memberService.sum());
+			new ExportExcel("沉迷探案馆会员"+begin+"~~"+end+"消费详情", MemberDetail.class).setDataList(page ).write(response, fileName).dispose();
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			issuccess = false;
+			msg = "导出数据失败!";
+		}
+		ajaxJson.setSuccess(issuccess);
+		ajaxJson.setMsg(msg);
+		return ajaxJson;
+	}
+	
+	
+	/**
+	 * exportCostOrChargeHistory
 	 * @Title: exportDetail
 	 * @Description: 把符合条件的预约信息以excel文件格式导出
 	 * @param file
@@ -196,7 +233,7 @@ public class MemberCotroller extends BaseController {
 			member.setYear(true);
 			member.setCardId(sysCar.getCarId());
 			List<MemberDetail> page = memberService.findList( member);
-			new ExportExcel("沉迷探案馆会员——"+sysCar.getUserName()+"一年内消费详情", MemberDetail.class).setDataList(page ).write(response, fileName).dispose();
+			new ExportExcel("沉迷探案馆会员——"+sysCar.getUserName()+"  一年内消费详情", MemberDetail.class).setDataList(page ).write(response, fileName).dispose();
 			return null;
 		} catch (Exception e) {
 			e.printStackTrace();

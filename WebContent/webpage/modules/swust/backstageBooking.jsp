@@ -533,14 +533,11 @@
 						type:'datetime',
 						range: true,
 						done: function(value, date, endDate){  	
-							console.log(date);
-							console.log(value);
 							var index =  value.split(" - ");
 							$("#beginTime").val(index[0]);
 							$("#endTime").val(index[1]);
 							searchSysOrder($("#stateKey").val());
 							}
-						//	changeTime(value, $("#overDate").val());
 					});
 // 					laydate.render({
 // 						elem: '#startDate',
@@ -573,13 +570,28 @@
 			});
 		}
 		function SMSSend() {
-			
 			$.ajax({
 				type : "POST",
 				url : "${ctx}/swust/car",
 				success : function(date) {
 					$("#smsSend").empty();
 					$("#smsSend").html(date);
+					
+					laydate.render({
+						elem: '#startHistoryDate',
+						type:'datetime',
+						range: true,
+						done: function(value, date, endDate){  	
+							var index =  value.split(" - ");
+							$("#beginHistoryTime").val(index[0]);
+							$("#endHistoryTime").val(index[1]);
+							console.log($("#beginHistoryTime").val(index[0])+"!!!"+$("#endHistoryTime").val(index[1]));
+// 							searchSysOrder($("#stateKey").val());
+							}
+					});
+					
+					
+					
 				}
 			});
 		}

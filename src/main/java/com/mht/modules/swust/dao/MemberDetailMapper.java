@@ -8,5 +8,7 @@ import java.util.List;
 public interface MemberDetailMapper extends CrudDao<MemberDetail> {
 	
 		public MemberDetail sumCostOrCharge(MemberDetail memberDetail);
+		
+		public MemberDetail sumCostAndCharge();
 	
 }

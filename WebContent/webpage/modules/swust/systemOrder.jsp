@@ -92,7 +92,7 @@ p {
 		<input type="text" style="border: 1px solid #3eaab7; height: 20px"
 			placeholder="截止时间" /> -->
 
-				<input id="startDate" type='text' style="border: 1px solid #3eaab7; height: 20px !important;width: 290px"
+				<input id="startDate" type='text'  style="border: 1px solid #3eaab7; height: 20px !important;width: 290px"
 					class=" " placeholder="选择时间">
 				<input type="hidden" id = "beginTime"/>
 				<input type="hidden" id = "endTime"/>
@@ -300,12 +300,12 @@ p {
 			alert("请上传正确的文件格式（.xlsx文件）");
 		}
 		return;
-	})
+	});
 
 	$('#orderWarningBox').on('click', 'button[data-dismiss="modal"]',
 			function() {
 				$('.modal-backdrop').hide();
-			})
+			});
 	var type = "0";
 	var btype = "1";
 	$(function() {

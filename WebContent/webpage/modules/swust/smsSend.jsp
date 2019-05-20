@@ -294,6 +294,7 @@ function exportSMS() {
 }
 
 function HistorySubmit() {
+	$("#history-list").modal("hide");
 	location.href="${ctx}/swust/car/exportCostOrChargeHistory?beginTime="+$("#beginHistoryTime").val()+"&endTime="+$("#endHistoryTime").val();
 }
 	var type = "0";

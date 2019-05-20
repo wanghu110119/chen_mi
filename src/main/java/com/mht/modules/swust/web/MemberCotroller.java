@@ -233,6 +233,7 @@ public class MemberCotroller extends BaseController {
 			member.setYear(true);
 			member.setCardId(sysCar.getCarId());
 			List<MemberDetail> page = memberService.findList( member);
+			page.add(memberService.sum());
 			new ExportExcel("沉迷探案馆会员——"+sysCar.getUserName()+"  一年内消费详情", MemberDetail.class).setDataList(page ).write(response, fileName).dispose();
 			return null;
 		} catch (Exception e) {
@@ -359,6 +360,18 @@ public class MemberCotroller extends BaseController {
 		ajaxJson.setMsg("操作成功");
 		return ajaxJson;
 	}
-
+	public static void main(String[] args) {
+		System.out.println(1^2);
+		System.out.println(1^1);
+		System.out.println(5^3);
+		System.out.println(3&3);
+		System.out.println(1^122);
+		String a = "a";
+		String b = "a";
+		StringBuffer sba = new StringBuffer("a");
+		StringBuffer sbb = new StringBuffer("a");
+		System.out.println(a==b);
+		System.out.println(sba==sbb);
+	}
 
 }

@@ -197,41 +197,6 @@ p {
 
 
 
-<!--导入-->
-<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
-	id="orderimport">
-	<div class="modal-dialog modal-sm" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-				<h3 class="modal-title text-center">请选择导入的EXCEL</h3>
-			</div>
-			<div class="modal-body text-center">
-				<label for="orderchoose-excel" id="orderchoose-label"> <span
-					class="glyphicon glyphicon-plus"></span>
-				</label>
-
-				<form class="form-horizontal" id="orderjvForm"
-					action="${ctx}/swust/appointment/import" method="post"
-					enctype="multipart/form-data">
-					<input type="file" name="file" id="orderchoose-excel"
-						accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
-					<span id="orderfile-name"></span>
-				</form>
-			</div>
-			<div class="modal-footer text-center">
-				<input type="hidden" id="ordersubmitOnly" />
-				<button type="button" class="btn btn-md confirm"
-					data-dismiss="modal" id="orderimport-result">确认</button>
-				<button class="btn btn-md confirm" onclick="exportOrder()">下载模板</button>
-			</div>
-		</div>
-	</div>
-</div>
-
 <!-- 导出结果  -->
 <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
 	id="orderimport-info">
@@ -256,12 +221,6 @@ p {
 </div>
 <script src="${ctxStatic }/swust/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-	/**
-	 * 导出模板
-	 */
-	function exportOrder() {
-		location.href = "${ctx}/swust/appointment/exportModel";
-	}
 	function importSysOrder() {
 		$("#orderfile-name").html("");
 		$("#orderchoose-excel").val("");

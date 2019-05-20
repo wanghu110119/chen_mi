@@ -27,4 +27,9 @@ public class MemberDetailService extends CrudService<MemberDetailMapper, MemberD
 		return mapper.sumCostAndCharge();
 	}
 
+	public MemberDetail sumCostAndChargeByID(MemberDetail sysCar) {
+		// TODO Auto-generated method stub
+		return mapper.sumCostOrChargeByID(sysCar);
+	}
+
 }

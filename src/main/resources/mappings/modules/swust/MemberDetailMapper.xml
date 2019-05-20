@@ -87,7 +87,16 @@ AND a.del_flag='0'
 </where> 
   </select>
 
-
+ <select id="sumCostOrChargeByID" parameterType="com.mht.modules.swust.entity.MemberDetail"  resultMap="BaseResultMap">
+     SELECT 
+SUM(CASE WHEN a.type ='0' THEN cost_money END) AS "costTotalMoney" ,
+SUM(CASE WHEN a.type ='1' THEN add_money END) AS "addTotalMoney"
+FROM mht_oeg.member_detail a 
+   <where>
+		and a.card_id = #{cardId,jdbcType=VARCHAR}
+		and del_flag = '0'
+   </where>
+  </select>
 
 
    <select id="sumCostOrCharge" parameterType="com.mht.modules.swust.entity.MemberDetail"  resultMap="BaseResultMap">

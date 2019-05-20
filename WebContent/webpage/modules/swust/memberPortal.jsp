@@ -137,24 +137,31 @@
 								</div>
 							</div>
 							<div class="form-group">
+								<label for="wechat" class="col-sm-5 control-label">微信号码:</label>
+								<div class="col-sm-7">
+									<input  class="form-control " name="wechat" id="wechat" maxlength="15"  >
+								</div>
+							</div>
+							<div class="form-group">
 								<label for="smsCarType" class="col-sm-5 control-label">会员等级:</label>
 								<div class="col-sm-7">
 									<select name="carType" id="smsCarType" class="form-control">
+										<option>普通用户</option>
 										<option value="1">黄金会员</option>
 										<option value="2">铂金会员</option>
 										<option value="3">钻石会员</option>
 										<option value="4">爸爸豁茶</option>
 									</select>
-<!-- 									<input type="text" class="form-control " name="carType" id="carType"> -->
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="smsServiceTime" class="col-sm-5 control-label">剩余次数(次):</label>
+								<label for="smsServiceTime" class="col-sm-5 control-label">剩余次数:</label>
 								<div class="col-sm-7">
-									<input  class="form-control " name="serviceTime" id="smsServiceTime" maxlength="15"  >
+									<input  class="form-control " type="number" name="serviceTime" id="smsServiceTime" maxlength="15"  >
 								</div>
 							</div>
 						</div>
+						
 						<div class="col-xs-12 col-sm-6">
 							<div class="form-group">
 								<label for="smsOwner" class="col-sm-5 control-label"><span style="color:red">* </span>会员姓名:</label>
@@ -171,7 +178,13 @@
 							<div class="form-group">
 								<label for="money" class="col-sm-5 control-label">添加金额:</label>
 								<div class="col-sm-7">
-									<input type="text" class="form-control " maxlength="15" name="money" id="money">
+									<input   class="form-control " type="number"  maxlength="15" name="money" id="money"  >
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="gift" class="col-sm-5 control-label">赠送金额:</label>
+								<div class="col-sm-7">
+									<input  class="form-control "   name="gift" id="gift" value = "0">
 								</div>
 							</div>
 						</div>
@@ -236,9 +249,11 @@ function clearList(){
 	$("#smsCarId").val("");
 	$("#smsOwner").val("");
 	$("#smsPhone").val("");
+	$("#wechat").val("");
 	$("#smsServiceTime").val("");
 	$("#smsCarType").val("");
 	$("#money").val("");
+	$("#gift").val("");
 }
 
 function changePwdS() {
@@ -479,7 +494,7 @@ function changePwdS() {
 				name:{
 					checkName:false,
 					required:true,
-					number:true,
+					number:false,
 					remote:{                                          
 			               type:"POST",//验证卡号是否存在
 			               url:"${ctx}/swust/car/checkCardID",
@@ -504,6 +519,9 @@ function changePwdS() {
 				},
 				money:{
 					number:true
+				},
+				gift:{
+					number:true
 				}
 			},
 			messages:{
@@ -525,6 +543,9 @@ function changePwdS() {
 				},
 				money:{
 					number:"请输入数字"
+				},
+				gift:{
+					number:"请输入数字"
 				}
 
 			}
@@ -539,6 +560,7 @@ function changePwdS() {
 		
 		
 	  if($("#formSubmitAdd").valid()){
+		  console.log($("#gift").val()+"!!!!!");
 		  $.ajax({
 				type : "POST",
 				url : "${ctx}/swust/car/insertSysCar",
@@ -547,6 +569,8 @@ function changePwdS() {
 					money:$("#money").val(),
 					carId:$("#smsCarId").val(),
 					userName:$("#smsOwner").val(),
+					giftMoney:$("#gift").val(),
+					wechat:$("#wechat").val(),
 					phone:$("#smsPhone").val(),
 					disable:'1',
 					carType:$("#smsCarType").val(),

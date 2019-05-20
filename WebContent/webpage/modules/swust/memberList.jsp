@@ -35,6 +35,7 @@
 			<th>会员姓名</th>
 			<th>会员等级</th>
 			<th>手机号码</th>
+			<th>微信号</th>
 			<th>剩余次数（次）</th>
 			<th>剩余费用（元）</th>
 			<th>起始时间</th>
@@ -53,8 +54,9 @@
 						test="${row.carType eq '3'}">钻石会员</c:if> <c:if
 						test="${row.carType eq '4'}">土豪爸爸</c:if></td>
 				<td>${row.phone}</td>
+				<td>${row.wechat}</td>
 				<td>${row.effectiveTime}</td>
-				<td>${row.money}</td>
+				<td>${row.totalMoney}</td>
 				<td><fmt:formatDate value="${row.beginTime }"
 						pattern="yyyy-MM-dd" /></td>
 				<td><fmt:formatDate value="${row.endTime }"
@@ -102,6 +104,7 @@
 					<form class="form-horizontal" id="charge-Form"
 						novalidate="novalidate">
 						<input type="hidden" name="id" id="oid-change" value="">
+						<input type="hidden" name="id" id="addMoney" value="">
 						<div class="col-xs-12 col-sm-6">
 							<div class="form-group">
 								<label for="recharge-CarId" class="col-sm-5 control-label"
@@ -121,10 +124,17 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="recharge-Time" class="col-sm-5 control-label">续约次数(次):</label>
+								<label for="recharge-Time" class="col-sm-5 control-label">续约次数:</label>
 								<div class="col-sm-7">
 									<input type="number" class="form-control " min="0" step="1"
 										name="recharge-Time" id="recharge-Time">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="giftTime" class="col-sm-5 control-label">赠送次数:</label>
+								<div class="col-sm-7">
+									<input type="number" class="form-control " min="0" step="1"
+										name="giftTime" id="giftTime">
 								</div>
 							</div>
 						</div>
@@ -147,10 +157,17 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="recharge-Money" class="col-sm-5 control-label">续费费用:</label>
+								<label for="recharge-Money" class="col-sm-5 control-label">续费金额:</label>
 								<div class="col-sm-7">
-									<input type="number" class="form-control " min="0"
+									<input type="number" class="form-control " value="0"
 										name="recharge-Money" id="recharge-Money">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="giftMoney" class="col-sm-5 control-label">赠送金额:</label>
+								<div class="col-sm-7">
+									<input type="number" class="form-control "   value="0"
+										name="giftsMoney" id="giftsMoney">
 								</div>
 							</div>
 						</div>
@@ -185,6 +202,7 @@
 								<label for="smsCarId-change" class="col-sm-5 control-label"><span
 									style="color: red">* </span>会员卡号:</label>
 								<div class="col-sm-7">
+									<input type="hidden" id="leaveMoney">
 									<input type="text" class="form-control required valid"
 										readonly="readonly" onchange="" name="name"
 										id="smsCarId-change" aria-required="true">
@@ -263,7 +281,7 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
-					<form class="form-horizontal" id="charge-Form"
+					<form class="form-horizontal" id="recharge-Form"
 						novalidate="novalidate">
 						<input type="hidden" name="id" id="detail-change" value="">
 						<div class="col-xs-12 col-sm-6">
@@ -378,6 +396,9 @@ function page(a,b,detail) {
 						id:$("#inputSubmit").val(),
 						rechargeMoney:$("#recharge-Money").val(),
 						carId:$("#recharge-CarId").val(),
+						giftTime:$("#giftTime").val(),
+						giftMoney:$("#giftsMoney").val(),
+						totalMoney:$("#addMoney").val(),
 						userName:$("#recharge-Owner").val(),
 						rechargeTime:$("#recharge-Time").val(),
 						carType:$("#recharge-Cartype").val(),
@@ -413,6 +434,7 @@ $(function () {
 	  });
 		$('table').on('click','.continue-add',function(){
 			var sid=$(this).children().val();
+			$("#addMoney").val($(this).parent().prev().prev().prev().html());
 			$("#inputSubmit").val(sid);
 				$.ajax({
 					type:"post",
@@ -448,6 +470,7 @@ $(function () {
 			}
 		).on('click','.edit-info',function(){
 			var ssid=$(this).children().val();
+			$("#leaveMoney").val($(this).parent().prev().prev().prev().html());
 				$.ajax({
 					type:"post",
 					url : "${ctx}/swust/car/getCar",
@@ -499,7 +522,6 @@ function doSubmitChange(){
 validateChangeForm = $("#formsubmit-change").validate({
 	rules:{
 		name:{
-			checkName:false,
 			required:true,
 			number:true
 		},
@@ -517,14 +539,14 @@ validateChangeForm = $("#formsubmit-change").validate({
 			rangelength:[11,11],
 			number:true
 		},
-		money:{
-			number:true
+		"smsServiceTime-change":{
+			checkMoney:true
 		}
 	},
 	messages:{
 		name:{
 			rangelength:"请输入正确的会员卡号",
-			number:"请输入正确会员卡号"
+			number:"请输入正确会员卡号",
 		},
 		owner:{
 			required:"请输入会员姓名"
@@ -535,9 +557,6 @@ validateChangeForm = $("#formsubmit-change").validate({
 		"phone-change":{
 			rangelength:"请输入正确的联系方式",
 			number:"请输入正确的联系方式"
-		},
-		money:{
-			number:"请输入数字"
 		}
 
 	},
@@ -547,6 +566,14 @@ jQuery.validator.addMethod("checkName", function(value, element) {
     return this.optional(element) || char.test(value);   
 }, $.validator.format("只能输入中文、英文"));
 
+jQuery.validator.addMethod("checkMoney", function(value, element) {
+	console.log(-value);
+    if((-value)<$("#leaveMoney").val()){
+    	return true;
+    }else{
+    	return false; 
+    }
+}, $.validator.format("余额不足！请充值"));
 
 </script>
 

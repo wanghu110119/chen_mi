@@ -15,6 +15,12 @@ public class MemberDetail extends DataEntity<MemberDetail> {
 
     private String addMoney;
     
+    private Integer giftMoney;
+    
+    private Integer totalMoney;
+    
+    private String wechat;
+    
     private String costTotalMoney;
     
     private String addTotalMoney;
@@ -36,7 +42,26 @@ public class MemberDetail extends DataEntity<MemberDetail> {
     public MemberDetail(){
     	
     }
-    @ExcelField(title = "消费总计", align = 2, sort = 10)
+    @ExcelField(title = "赠送金额", align = 2, sort = 17)
+    public Integer getGiftMoney() {
+		return giftMoney;
+	}
+	public void setGiftMoney(Integer giftMoney) {
+		this.giftMoney = giftMoney;
+	}
+	public Integer getTotalMoney() {
+		return totalMoney;
+	}
+	public void setTotalMoney(Integer totalMoney) {
+		this.totalMoney = totalMoney;
+	}
+	public String getWechat() {
+		return wechat;
+	}
+	public void setWechat(String wechat) {
+		this.wechat = wechat;
+	}
+	@ExcelField(title = "消费总计", align = 2, sort = 110)
     public String getCostTotalMoney() {
 		return costTotalMoney;
 	}
@@ -44,7 +69,7 @@ public class MemberDetail extends DataEntity<MemberDetail> {
 	public void setCostTotalMoney(String costTotalMoney) {
 		this.costTotalMoney = costTotalMoney;
 	}
-	@ExcelField(title = "充值总计", align = 2, sort = 12)
+	@ExcelField(title = "充值总计", align = 2, sort = 112)
 	public String getAddTotalMoney() {
 		return addTotalMoney;
 	}

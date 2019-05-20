@@ -288,7 +288,6 @@ public class MemberCotroller extends BaseController {
 	@RequestMapping("insertSysCar")
 	public AjaxJson insertSysCar(SysCar sysCar) {
 		AjaxJson ajaxJson = new AjaxJson();
-		// sysCar.setRemarks(carService.insertCarId());
 		if (sysCar.getRemarks() == null || "".equals(sysCar.getRemarks())) {
 			String code = carService.findCarMaxRemarks();
 			String year = DateUtils.getYearBack();
@@ -307,7 +306,16 @@ public class MemberCotroller extends BaseController {
 				sysCar.setRemarks(DateUtils.getYearBack() + "001");
 			}
 		}
+		sysCar.setTotalMoney(sysCar.getMoney()+sysCar.getGiftMoney());
 		carService.save(sysCar);
+		
+		MemberDetail member = new MemberDetail();
+		member.setGiftMoney(sysCar.getGiftMoney());
+		member.setAddMoney(sysCar.getMoney()+"");
+		member.setType("1");
+		member.setCar(sysCar);
+		memberService.save(member);
+		
 		ajaxJson.setMsg("添加成功");
 		ajaxJson.setSuccess(true);
 		return ajaxJson;
@@ -323,8 +331,8 @@ public class MemberCotroller extends BaseController {
 		member.setType("0");
 		member.setCar(sysCar);
 		memberService.save(member);
-		int money = sysCar.getMoney();
-		sysCar.setMoney(money+sysCar.getCostMoney());
+		int money = sysCar.getTotalMoney();
+		sysCar.setTotalMoney(money+sysCar.getCostMoney());
 		carService.save(sysCar);
 		ajaxJson.setMsg("消费完成");
 		ajaxJson.setSuccess(true);
@@ -339,11 +347,13 @@ public class MemberCotroller extends BaseController {
 		AjaxJson ajaxJson = new AjaxJson();
 		MemberDetail member = new MemberDetail();
 		member.setAddMoney(rechargeMoney+"");
+		member.setGiftMoney(sysCar.getGiftMoney());
 		member.setType("1");
 		member.setCar(sysCar);
 		memberService.save(member);
 		sysCar.setMoney(sysCar.getMoney() + rechargeMoney);
 		sysCar.setEffectiveTime(sysCar.getEffectiveTime() + rechargeTime);
+		sysCar.setTotalMoney(sysCar.getTotalMoney() + sysCar.getGiftMoney()+rechargeMoney);
 		carService.save(sysCar);
 		ajaxJson.setMsg("修改成功");
 		ajaxJson.setSuccess(true);

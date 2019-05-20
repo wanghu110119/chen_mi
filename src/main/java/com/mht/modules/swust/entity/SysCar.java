@@ -24,6 +24,12 @@ public class SysCar extends  DataEntity<SysCar>{
     private String userName;
 
     private String phone;
+    
+    private int giftMoney = 0;
+    
+    private int totalMoney;
+    
+    private String wechat;
 
     private String carType;
     
@@ -35,7 +41,7 @@ public class SysCar extends  DataEntity<SysCar>{
     
     private String effectiveTimeList;
 
-    private Integer money;
+    private Integer money = 0;
     
     private String moneyList;
 
@@ -57,6 +63,36 @@ public class SysCar extends  DataEntity<SysCar>{
 		return "SysCar [id=" + id + ", carId=" + carId + ", userName=" + userName + ", phone=" + phone + ", carType="
 				+ carType + ", effectiveTime=" + effectiveTime + ", money=" + money + ", beginTime=" + beginTime
 				+ ", endTime=" + endTime + ", updateBy=" + updateBy + ", createBy=" + createBy  + ", disable=" + disable + "]";
+	}
+
+
+	public int getTotalMoney() {
+		return totalMoney;
+	}
+
+
+	public void setTotalMoney(int totalMoney) {
+		this.totalMoney = totalMoney;
+	}
+
+
+	public int getGiftMoney() {
+		return giftMoney;
+	}
+
+
+	public void setGiftMoney(int giftMoney) {
+		this.giftMoney = giftMoney;
+	}
+
+
+	public String getWechat() {
+		return wechat;
+	}
+
+
+	public void setWechat(String wechat) {
+		this.wechat = wechat;
 	}
 
 

@@ -6,6 +6,9 @@
     <result column="type" jdbcType="CHAR" property="type" />
     <result column="card_id" jdbcType="CHAR" property="cardId" />
     <result column="cost_money" jdbcType="VARCHAR" property="costMoney" />
+    <result column="gift_money" jdbcType="INTEGER" property="giftMoney" />
+    <result column="total_money" jdbcType="INTEGER" property="giftMoney" />
+    <result column="wechat" jdbcType="VARCHAR" property="wechat" />
     <result column="add_money" jdbcType="VARCHAR" property="addMoney" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
@@ -31,6 +34,9 @@
     a.update_date, 
     a.del_flag, 
     a.card_id, 
+    a.gift_money,
+<!--     a.total_money, -->
+<!--     a.wechat, -->
     a.type, 
     a.cost_money,
     a.add_money, 
@@ -125,8 +131,17 @@ FROM mht_oeg.member_detail a
       <if test="car != null">
         card_id,
       </if>
-      <if test="type != null">
+      <if test="giftMoney != null">
+        gift_money,
+      </if>
+      <if test="totalMoney != null">
+        total_money,
+      </if>
+       <if test="type != null">
         type,
+      </if>
+      <if test="wechat != null">
+        wechat,
       </if>
       <if test="costMoney != null">
         cost_money,
@@ -160,8 +175,17 @@ FROM mht_oeg.member_detail a
       <if test="car != null">
         #{car.carId,jdbcType=VARCHAR},
       </if>
+      <if test="giftMoney != null">
+        #{giftMoney,jdbcType=INTEGER},
+      </if>
+      <if test="totalMoney != null">
+        #{totalMoney,jdbcType=INTEGER},
+      </if>
       <if test="type != null">
         #{type,jdbcType=CHAR},
+      </if>
+      <if test="wechat != null">
+        #{wechat,jdbcType=VARCHAR},
       </if>
       <if test="costMoney != null">
         #{costMoney,jdbcType=VARCHAR},
@@ -192,6 +216,15 @@ FROM mht_oeg.member_detail a
       </if>
       <if test="type != null">
         type = #{type,jdbcType=CHAR},
+      </if>
+      <if test="wechat != null">
+        wechat = #{wechat,jdbcType=VARCHAR},
+      </if>
+      <if test="giftMoney != null">
+        gift_money = #{giftMoney,jdbcType=VARCHAR},
+      </if>
+      <if test="totalMoney != null">
+        total_money = #{totalMoney,jdbcType=VARCHAR},
       </if>
       <if test="costMoney != null">
         cost_money = #{costMoney,jdbcType=VARCHAR},

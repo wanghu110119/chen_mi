@@ -9,6 +9,9 @@
     <result column="car_type" jdbcType="CHAR" property="carType" />
     <result column="effective_time" jdbcType="INTEGER" property="effectiveTime" />
     <result column="money" jdbcType="INTEGER" property="money" />
+    <result column="gift_money" jdbcType="INTEGER" property="giftMoney" />
+    <result column="total_money" jdbcType="INTEGER" property="totalMoney" />
+    <result column="wechat" jdbcType="VARCHAR" property="wechat" />
     <result column="begin_time" jdbcType="DATE" property="beginTime" />
     <result column="end_time" jdbcType="DATE" property="endTime" />
     <result column="disable" jdbcType="VARCHAR" property="disable" />
@@ -26,7 +29,11 @@
     </association>
   </resultMap>
   <sql id="Base_Column_List">
-    id, car_id, user_name, phone, car_type, effective_time, money, begin_time, end_time, 
+    id, car_id, user_name, phone, car_type,
+    gift_money,
+    total_money,
+    wechat,
+     effective_time, money, begin_time, end_time, 
     disable, create_by, create_date, update_by, update_date, remarks, del_flag
   </sql>
   <sql id="sysCarJoins">
@@ -106,12 +113,30 @@
   <insert id="insert" parameterType="com.mht.modules.swust.entity.SysCar">
     insert into mht_oeg.sys_car (id, car_id, user_name, 
       phone, car_type, effective_time, 
+      <if test="giftMoney != null">
+        gift_money,
+      </if>
+      <if test="totalMoney != null">
+        total_money,
+      </if>
+      <if test="wechat != null">
+        wechat,
+      </if>
       money, begin_time, end_time, 
       disable, create_by, create_date, 
       update_by, update_date, remarks, 
       del_flag)
     values (#{id,jdbcType=VARCHAR}, #{carId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
       #{phone,jdbcType=VARCHAR}, #{carType,jdbcType=CHAR}, #{effectiveTime,jdbcType=INTEGER}, 
+      <if test="giftMoney != null">
+        #{giftMoney,jdbcType=INTEGER},
+      </if>
+      <if test="totalMoney != null">
+        #{totalMoney,jdbcType=INTEGER},
+      </if>
+      <if test="wechat != null">
+        #{wechat,jdbcType=VARCHAR},
+      </if>
       #{money,jdbcType=INTEGER}, #{beginTime,jdbcType=DATE}, #{endTime,jdbcType=DATE}, 
       #{disable,jdbcType=VARCHAR}, #{createBy.id,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
       #{updateBy.id,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, 
@@ -140,6 +165,15 @@
       </if>
       <if test="beginTime != null">
         begin_time = #{beginTime,jdbcType=DATE},
+      </if>
+      <if test="wechat != null">
+        wechat = #{wechat,jdbcType=VARCHAR},
+      </if>
+      <if test="giftMoney != null">
+        gift_money = #{giftMoney,jdbcType=VARCHAR},
+      </if>
+      <if test="totalMoney != null">
+        total_money = #{totalMoney,jdbcType=VARCHAR},
       </if>
       <if test="endTime != null">
         end_time = #{endTime,jdbcType=DATE},

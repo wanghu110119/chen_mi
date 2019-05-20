@@ -49,10 +49,17 @@
 				<td>${row.remarks}</td>
 				<td>${row.carId}</td>
 				<td>${row.userName}</td>
-				<td><c:if test="${row.carType eq '1'}">黄金会员</c:if> <c:if
-						test="${row.carType eq '2'}">铂金会员</c:if> <c:if
-						test="${row.carType eq '3'}">钻石会员</c:if> <c:if
-						test="${row.carType eq '4'}">土豪爸爸</c:if></td>
+				<td>
+				<c:choose>
+					<c:when test="${row.carType eq '1'}">黄金会员</c:when> <c:when
+						test="${row.carType eq '2'}">铂金会员</c:when> <c:when
+						test="${row.carType eq '3'}">钻石会员</c:when> <c:when
+						test="${row.carType eq '4'}">土豪爸爸</c:when>
+						<c:otherwise>
+							普通用户
+						</c:otherwise>
+				</c:choose>
+				</td>
 				<td>${row.phone}</td>
 				<td>${row.wechat}</td>
 				<td>${row.effectiveTime}</td>
@@ -213,6 +220,7 @@
 								<div class="col-sm-7">
 									<select name="carType-change" id="smsCarType-change"
 										class="form-control">
+										<option value="0">普通用户</option>
 										<option value="1">黄金会员</option>
 										<option value="2">铂金会员</option>
 										<option value="3">钻石会员</option>

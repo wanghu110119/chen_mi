@@ -146,7 +146,7 @@
 								<label for="smsCarType" class="col-sm-5 control-label">会员等级:</label>
 								<div class="col-sm-7">
 									<select name="carType" id="smsCarType" class="form-control">
-										<option>普通用户</option>
+										<option value="0">普通用户</option>
 										<option value="1">黄金会员</option>
 										<option value="2">铂金会员</option>
 										<option value="3">钻石会员</option>

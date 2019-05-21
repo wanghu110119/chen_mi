@@ -394,65 +394,6 @@
 	var submit = false;
 	var password = false;
 	var newandold = false;
-// 	$("#dosubmit").click(function(){
-// 		if(submit&&newandold){
-// 			$.ajax({
-// 				type:"POST",
-// 				url:"${ctx}/swust/order/updateUserByPassword",
-// 				data:"newPassword="+$("#new-pwd").val()+"&oldPassword="+$("#old-pwd").val(),
-// 				success:function(date){
-// 				$("#authentication").html(date.msg);
-// 				if(date.success){
-// 					$("#authentication").attr("style","font-size: 20px; text-align: center;color: green;");
-// 					submit = true;
-// 					setTimeout(function(){
-// 					$('#modal-pwd').modal('hide');
-// 				},800);
-// 					}else{
-// 					$("#authentication").attr("style","font-size: 20px; text-align: center;color: red;");
-// 					submit = false;
-// 						}	
-// 						}
-// 					});
-// 			}
-// 	});
-// 	$("#old-pwd").change(function(){
-// 		$.ajax({
-// 		type:"POST",
-// 		url:"${ctx}/swust/order/UserSelectPassword",
-// 		data:"newPassword="+$("#new-pwd").val()+"&oldPassword="+$("#old-pwd").val(),
-// 		success:function(date){
-// 		$("#authentication").html(date.msg);
-// 		if(date.success){
-// 			$("#authentication").attr("style","font-size: 20px; text-align: center;color: green;");
-// 			submit = true;
-// 			}else{
-// 			$("#authentication").attr("style","font-size: 20px; text-align: center;color: red;");
-// 			submit = false;
-// 				}
-// 				}
-// 			});
-// 		});
-// 	function premitPassword(){
-// 		$("#authentication").attr("style","font-size: 20px; text-align: center;color: red;");
-// 		if(!submit){
-// 			$("#authentication").html("原密码输入有误");
-// 			return;
-// 		}else if($("#new-pwd").val()==$("#old-pwd").val()){
-// 			$("#authentication").html("新密码不能与原密码一致");
-// 			newandold = false;
-// 			return;
-// 		} else if($("#new-pwd").val()!=$("#inputPassword3").val()){
-// 			newandold = false;
-// 			$("#authentication").html("两次输入密码有误");
-// 			return;
-// 		}else{
-// 			newandold=true;
-// 			$("#authentication").attr("style","font-size: 20px; text-align: center;color: green;");
-// 			$("#authentication").html("修改密码可以使用");
-// 			return;
-// 			}
-// 	}
 
 	
 		$(document).ready(function() {
@@ -465,24 +406,22 @@
 				success : function(date) {
 					$("#system").empty();
 					$("#system").html(date);
-					
 						laydate.render({
 							elem: '#beginTime',
 							type:'time',
 							done: function(value, date, endDate){  		
 								var endTime = $("#endTime").val();
-								if(value > endTime){
-									alert("起始时间不能大于结束时间!");
-									return;
-								}
+								console.log(endTime+"@@@@@111"+value+"@@@@@111"+$("#beginTime").val());
 								changeTime(value, $("#endTime").val());
 					        }
 						});
+						
 						laydate.render({
 							elem: '#endTime',
 							type:'time',
 							done: function(value, date, endDate){  
 								var beginTime = $("#beginTime").val();
+								console.log(beginTime+"@@@@@222"+value);
 								if(value < beginTime){
 									alert("起始时间不能大于结束时间!");
 									return;
@@ -490,6 +429,7 @@
 								changeTime($("#beginTime").val(), value);
 					        }
 						});
+						
 						laydate.render({
 							elem: '#endDate',
 							type:'date',
@@ -505,6 +445,9 @@
 				}
 			})
 		};
+		
+		
+		
 		function companyControler() {
 			$.ajax({
 				type : "POST",
@@ -539,36 +482,11 @@
 							searchSysOrder($("#stateKey").val());
 							}
 					});
-// 					laydate.render({
-// 						elem: '#startDate',
-// 						type:'datetime',
-// 						done: function(value, date){  		
-// 							var overDate = $("#overDate").val();
-// 							if(value > overDate){
-// 								$("#overDate").val("");
-// 						//		alert("起始时间不能大于结束时间!");
-// 								return;
-// 							}
-// 						//	changeTime(value, $("#overDate").val());
-// 				        }
-// 					});
-// 					laydate.render({
-// 						elem: '#overDate',
-// 						type:'datetime',
-// 						done: function(value, date){  
-// 							var startDate = $("#startDate").val();
-// 							if(value < startDate){
-// 								$("#startDate").val("");
-// 						//		alert("起始时间不能大于结束时间!");
-// 								return;
-// 							}
-// 						//	changeTime($("#startDate").val(), value);
-// 				        }
-// 					});
 					
 				}
 			});
 		}
+		
 		function SMSSend() {
 			$.ajax({
 				type : "POST",

@@ -507,6 +507,15 @@ public String selectSmsPhone() {
 	// TODO Auto-generated method stub
 	return orderDao.selectSmsPhone();
 }
+
+
+public SysOrderlist sumPayMoney(SysOrderlist sysOrderlist) {
+	// TODO Auto-generated method stub
+	sysOrderlist = orderDao.sumPayMoney(sysOrderlist);
+	sysOrderlist.setBeginTime(null);
+	sysOrderlist.setEndTime(null);
+	return sysOrderlist;
+}
 }
 
 

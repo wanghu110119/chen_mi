@@ -216,6 +216,12 @@ public void changeTime(String beginTime,String endTime ,String day){
 	if(day==null||"".equals(day)){
 		day=ConstantUtil.default_pageCode;
 	}
+	if(beginTime==null||"".equals(beginTime)){
+		beginTime = "00:00:00";
+	}
+	if(endTime==null||"".equals(endTime)){
+		endTime = "23:59:59";
+	}
 	double dayNum = Double.parseDouble(day);
 	SysBackstageTime sysBackstageTime = timeService.get("1");
 	Calendar calendar = Calendar.getInstance();

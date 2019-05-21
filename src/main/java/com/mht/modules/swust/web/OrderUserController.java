@@ -115,7 +115,6 @@ public class OrderUserController extends BaseController{
 		}else{
 			sysOrderlist.setState(state);
 		}
-		sysOrderlist.setUserId(UserUtils.getUser().getId());
 		sysOrderlist.setOrderName(name);
 		sysOrderlist.setColor(color);
 		Page<SysOrderlist> page = service.findPage(new Page<SysOrderlist>(request, response), sysOrderlist);

@@ -89,7 +89,6 @@
                     </li>
                     <li>
                         <button class="glyphicon glyphicon-plus" onclick="add()"> 新增预约</button>
-                        <button class="glyphicon glyphicon-plus" onclick="importOrder()" id="hide-it"> 批量导入</button>
                     </li>
                 </ul>
                 <div class="tab-content">

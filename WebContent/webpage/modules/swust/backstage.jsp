@@ -174,7 +174,7 @@
 									</c:otherwise>
 								</c:choose>
 								<input id="beginTime" type='text'
-									class="form-control parameter required md first-choice"
+									class="form-control md first-choice"
 									readonly value="${requestScope.beginTime }">
 							</div>
 						</div>
@@ -466,6 +466,7 @@
 	}
 
 	function changeTime(beginTime, endTime) {
+		console.log(beginTime+"!!!!!!!!"+endTime);
 		$.ajax({
 			url : "${ctx}/swust/system/changeTime",
 			type : 'post',

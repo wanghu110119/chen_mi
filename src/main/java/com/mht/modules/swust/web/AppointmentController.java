@@ -1,5 +1,6 @@
 package com.mht.modules.swust.web;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -264,6 +265,7 @@ public class AppointmentController extends BaseController {
 	@RequestMapping(value = { "reject" }, method = RequestMethod.POST)
 	public AjaxJson reject(SysOrderlist sysOrderlist) {
 		AjaxJson ajaxJson = new AjaxJson();
+		sysOrderlist.setPayMoney("未收款");;
 		sysOrderlist.setPass(SysOrderEnum.NOTPASS.getParam());
 		sysOrderlist.setState(SysOrderEnum.AUDITED.getParam());
 		service.save(sysOrderlist);
@@ -290,9 +292,11 @@ public class AppointmentController extends BaseController {
 		boolean issuccess = true;
 		String msg = "操作成功!";
 		try {
-			String fileName = "沉谜探案馆预约数据" + DateUtils.getDate("MM-dd-HH-mm") + ".xlsx";
+			SimpleDateFormat formatterDate = new SimpleDateFormat("yyyy年MM月dd日");
+			String fileName = "沉谜探案馆预约数据--" + formatterDate.format(new Date()) + ".xlsx";
 			Page<SysOrderlist> page = service.findPage(new Page<SysOrderlist>(request, response, -1), sysOrderlist);
-			new ExportExcel("沉谜探案馆预约数据", SysOrderlist.class).setDataList(page.getList()).write(response, fileName).dispose();
+			page.getList().add(service.sumPayMoney(sysOrderlist));
+			new ExportExcel("沉谜探案馆--"+formatterDate.format(new Date()) , SysOrderlist.class).setDataList(page.getList()).write(response, fileName).dispose();
 			return null;
 		} catch (Exception e) {
 			e.printStackTrace();

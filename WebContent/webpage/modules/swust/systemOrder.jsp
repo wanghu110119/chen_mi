@@ -103,7 +103,6 @@ p {
 
 		<li id="batch">
 			<button onclick="batch(this)" btype="3">批量删除</button>
-			<button onclick="batch(this)" btype="1">批量收款</button>
 			<button onclick="batch(this)" btype="2">批量未收款</button>
 		</li>
 	</ul>
@@ -171,20 +170,22 @@ p {
 
 <div class="modal fade bs-example-modal-lg warning-box" tabindex="-1"
 	role="dialog" id="orderWarningBox">
-	<div class="modal-dialog modal-sm" role="document">
-		<div class="modal-content">
+	<div class="modal-dialog modal-sm " role="document">
+		<div class="modal-content ">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"
 					aria-label="Close">
 					<span aria-hidden="true">&times;</span>
-				</button>
-				<h3 class="modal-title text-center" id="orderwarningModal">确认操作？</h3>
+				</button> 
+				<h3 class="modal-title text-center" id="orderwarningModal">确认入账？</h3>
 			</div>
 			<div class="modal-body">
 				<h5 class="text-center text-danger" id="orderreminder"></h5>
 			</div>
-			<div class="modal-footer text-center">
+			<div class="modal-footer text-center ">
 				<input type="hidden" id="ordersubmitOnly" />
+				<input type="hidden" class="form-control required text-center " name="payMoney" style="width:60%;margin: 4% auto;" placeholder="请输入金额！！！"
+										id="payMoney"> 
 				<button type="button" class="btn btn-md confirm"
 					onclick="batchSubmit()" id="ordersubmitModal">确认</button>
 				<button type="button" class="btn btn-md confirm"
@@ -367,12 +368,15 @@ p {
 		stateOnly = state;
 		$("#ordersubmitOnly").val("2");
 		var msg = "未收款";
+		$("#payMoney").attr("type","hidden");
 		//通过
 		if (state == "1") {
 			msg = "收款";
+			$("#payMoney").attr("type","number");
 		}
 		$("#orderreminder").html("确认" + msg + "？")
-		$("#orderwarningModal").html("确认提示！");
+		$("#orderwarningModal").html("实收金额");
+		$("#payMoney").val("");
 		$("#ordersubmitModal").show();
 		$("#orderWarningBox").modal("show");
 	};
@@ -386,8 +390,8 @@ p {
 				.each(function() {
 					var msg = $(this).val();
 					selectIds.push(msg);
-				})
-		console.log(selectIds.length);
+				});
+				$("#payMoney").attr("type","hidden");
 		if (selectIds.length > 0) {
 			var msg = $(param).html();
 			btype = $(param).attr("btype");
@@ -403,6 +407,7 @@ p {
 		}
 	}
 	function deleteOrder(param) {
+		$("#payMoney").attr("type","hidden");
 		$("#ordersubmitOnly").val("1");
 		selectIds.push(param);
 		btype = '3';
@@ -437,6 +442,7 @@ p {
 				success : function(data) {
 					$("#ordersubmitModal").hide();
 					$("#orderwarningModal").html("消息提示！");
+					$("#payMoney").attr("type","hidden");
 					$("#orderreminder").html(data.msg);
 					$("#orderWarningBox").modal("show");
 					setTimeout(function() {
@@ -451,16 +457,26 @@ p {
 			//驳回
 			if (stateOnly == "0") {
 				url = "${ctx}/swust/appointment/reject";
+				$("#payMoney").attr("type","hidden");
+			}else{
+				var money = $("#payMoney").val();
+					if(money==null||money==''){
+						alert("请输入金额!!!");
+						return
+					}
 			}
 			$.ajax({
 				type : "post",
 				url : url,
 				data : {
-					id : onlyId
+					id : onlyId,
+					"payMoney" : money
 				},
 				success : function(data) {
 					$("#ordersubmitModal").hide();
 					$("#orderwarningModal").html("消息提示！");
+					$("#payMoney").attr("type","hidden");
+					$("#payMoney").val("");
 					$("#orderreminder").html(data.msg);
 					$("#orderWarningBox").modal("show");
 					setTimeout(function() {

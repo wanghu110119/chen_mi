@@ -197,6 +197,9 @@
 			<if test="qrCodeAddress!=null and qrCodeAddress!=''">
 			qr_code_address,
 			</if>
+			<if test="payMoney!=null and payMoney!=''">
+			pay_money,
+			</if>
 			end_time,
 			accredit_time, 
 			order_reason, 
@@ -231,6 +234,9 @@
 			<if test="qrCodeAddress!=null and qrCodeAddress!=''">
 			#{qrCodeAddress},
 			</if>
+			<if test="payMoney!=null and payMoney!=''">
+			#{payMoney},
+			</if>
 			#{endTime}, 
 			#{accreditTime}, 
 			#{orderReason}, 
@@ -257,6 +263,7 @@
 			order_phone = #{orderPhone},
 			car_number = #{carNumber},
 			qr_code_image = #{qrCodeImage},
+			pay_money = #{payMoney},
 			car_type = #{carType},
 			begin_time = #{beginTime},
 			qr_code_address = #{qrCodeAddress},
@@ -307,4 +314,77 @@
 	</select>
 	
 	
+	
+	<select id="sumPayMoney" resultType="SysOrderlist">
+		SELECT
+			SUM(pay_money) AS "sumPayMoney"
+		FROM mht_oeg.sys_orderlist a
+		LEFT JOIN mht_oeg.sys_office b ON a.office_id = b.id
+		LEFT JOIN mht_oeg.sys_car_money c ON a.car_type = c.car_type_id
+		WHERE a.office_id=b.id AND a.del_flag = '0'
+		<if test="orderName != null and orderName != ''">
+			AND (a.order_name like 
+					<if test="dbName == 'oracle'">'%'||#{orderName}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{orderName}, '%')</if>
+				 or a.order_phone like
+				 	<if test="dbName == 'oracle'">'%'||#{orderName}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{orderName}, '%')</if>
+				 or a.car_number like
+				 	<if test="dbName == 'oracle'">'%'||#{orderName}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{orderName}, '%')</if>
+				 or b.name like
+				 	<if test="dbName == 'oracle'">'%'||#{orderName}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{orderName}, '%')</if>
+					or a.order_reason like
+				 	<if test="dbName == 'oracle'">'%'||#{orderName}||'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{orderName}, '%')</if>
+				 )
+		</if>
+		<if test="state != null and state !=''">
+			AND a.state =#{state}
+		</if>
+		<if test="userId != null and userId !=''">
+			AND a.user_id =#{userId}
+		</if>
+		<if test="carNumber != null and carNumber !=''">
+			AND a.car_number =#{carNumber}
+		</if>
+		<if test="color != null and color !=''">
+			AND a.color =#{color}
+		</if>
+		<if test="disable != null and disable !=''">
+			AND a.disable =#{disable}
+		</if>
+		<if test="carType != null and carType !=''">
+			AND a.car_type = #{carType}
+		</if>
+		<if test="beginTime != null and beginTime !=''">
+			AND a.begin_time <![CDATA[>]]> #{beginTime}
+		</if>
+		<if test="endTime != null and endTime !=''">
+			AND a.end_time  <![CDATA[<]]>  #{endTime}
+		</if>
+		<choose>
+			<when test="qrCodeImage != null and qrCodeImage =='notNull'">
+			AND a.qr_code_image IS NOT NULL
+			</when>
+			<otherwise>
+			AND (a.qr_code_image IS  NULL OR a.qr_code_image='')
+			</otherwise>
+		</choose>
+		<!-- 数据范围过滤 -->
+		ORDER BY a.create_date DESC
+	</select>
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+

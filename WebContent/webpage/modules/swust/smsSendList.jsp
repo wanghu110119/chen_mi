@@ -68,7 +68,7 @@
 								</div>
 							</div>	
 							<div class="form-group">
-								<label for="surplus-Time" class="col-sm-5 control-label">剩余次数(次):</label>
+								<label for="surplus-Time" class="col-sm-5 control-label">剩余次数:</label>
 								<div class="col-sm-7">
 									<input type="text" class="form-control " readonly="readonly" name="surplus-Time" id="surplus-Time">
 								</div>
@@ -117,10 +117,15 @@
 				<td>${row.carId}</td>
 				<td>${row.userName}</td>
 				<td>
-				<c:if test="${row.carType eq '1'}">黄金会员</c:if>
-			 <c:if test="${row.carType eq '2'}">铂金会员</c:if>
-			 <c:if test="${row.carType eq '3'}">钻石会员</c:if>
-			 <c:if test="${row.carType eq '4'}">土豪爸爸</c:if>
+				<c:choose>
+					<c:when test="${row.carType eq '1'}">黄金会员</c:when> <c:when
+						test="${row.carType eq '2'}">铂金会员</c:when> <c:when
+						test="${row.carType eq '3'}">钻石会员</c:when> <c:when
+						test="${row.carType eq '4'}">土豪爸爸</c:when>
+						<c:otherwise>
+							普通用户
+						</c:otherwise>
+				</c:choose>
 				</td>
 				<td>${row.phone}</td>
 				<td>${row.effectiveTime}</td>
@@ -180,6 +185,7 @@
 								<label for="smsCarType-change" class="col-sm-5 control-label">会员等级:</label>
 								<div class="col-sm-7">
 									<select name="carType-change" id="smsCarType-change" class="form-control">
+										<option value="0">普通用户</option>
 										<option value="1">黄金会员</option>
 										<option value="2">铂金会员</option>
 										<option value="3">钻石会员</option>
@@ -189,7 +195,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="smsServiceTime-change" class="col-sm-5 control-label">添加次数(次):</label>
+								<label for="smsServiceTime-change" class="col-sm-5 control-label">编辑次数:</label>
 								<div class="col-sm-7">
 									<input  class="form-control " name="serviceTime-change" id="smsServiceTime-change" placeholder="请输入天数">
 								</div>
@@ -305,9 +311,7 @@ $(function(){
 	validateChangeForm = $("#formsubmit-change").validate({
 		rules:{
 			name:{
-				checkName:false,
 				required:true,
-				number:true,
 				remote:{                                          
 		               type:"POST",//验证卡号是否存在
 		               url:"${ctx}/swust/car/checkCardID",
@@ -317,7 +321,6 @@ $(function(){
 		            }
 			},
 			owner:{
-				checkName:false,
 				required:true
 			},
 			serviceTime:{
@@ -326,9 +329,7 @@ $(function(){
 				checkName:false
 			},
 			"phone-change":{
-				required:true,
-				rangelength:[11,11],
-				number:true
+				required:true
 			},
 			money:{
 				number:true
@@ -336,8 +337,7 @@ $(function(){
 		},
 		messages:{
 			name:{
-				rangelength:"请输入正确的会员卡号",
-				number:"请输入正确会员卡号",
+				required:"请输入会员卡号",
 				remote:"输入的会员卡号已经存在"
 			},
 			owner:{
@@ -347,8 +347,7 @@ $(function(){
 				number:"请输入数字"
 			},
 			"phone-change":{
-				rangelength:"请输入正确的联系方式",
-				number:"请输入正确的联系方式"
+				required:"请输入联系方式"
 			},
 			money:{
 				number:"请输入数字"

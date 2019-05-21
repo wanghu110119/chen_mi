@@ -506,10 +506,12 @@ function deleteQrCode (id){
 				$("#oid").val(data.id);
 				$("#company").val(data.name);
 				$("#oldcompany").val(data.name);
-				$("#contact").val(data.primaryPerson.name);
-				$("#companyName").val(data.primaryPerson.loginName);
-				$("#oldcompanyName").val(data.primaryPerson.loginName);
-				$("#phone").val(data.primaryPerson.phone);  
+				if(data.primaryPerson!=null){
+					$("#contact").val(data.primaryPerson.name);
+					$("#companyName").val(data.primaryPerson.loginName);
+					$("#oldcompanyName").val(data.primaryPerson.loginName);
+					$("#phone").val(data.primaryPerson.phone);  
+				}
 				$("#managerModal").modal("show")
 				$("#changetitle").html("编辑剧本");
 // 				$("#finishChange").html("成功");form-control isMobile error

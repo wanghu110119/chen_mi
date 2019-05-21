@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import com.mht.common.persistence.DataEntity;
 import com.mht.common.utils.excel.annotation.ExcelField;
 import com.mht.common.utils.excel.fieldtype.CarType;
+import com.mht.common.utils.excel.fieldtype.MemberType;
 import com.mht.modules.sys.entity.User;
 
 public class SysCar extends  DataEntity<SysCar>{
@@ -149,7 +150,7 @@ public class SysCar extends  DataEntity<SysCar>{
     }
     
     @JsonIgnore
-    @ExcelField(title = "会员等级", align = 2, sort = 40 , fieldType = CarType.class)
+    @ExcelField(title = "会员等级", align = 2, sort = 40 , fieldType = MemberType.class)
     public List<String> getCarTypeList() {
     	List<String> carTypeList = Lists.newArrayList();
     	carTypeList.add(carType);
@@ -163,7 +164,7 @@ public class SysCar extends  DataEntity<SysCar>{
     public void setCarType(String carType) {
         this.carType = carType == null ? null : carType.trim();
     }
-    @ExcelField(title = "剩余次数（次）", align = 2, sort = 60 )
+    @ExcelField(title = "剩余次数", align = 2, sort = 60 )
     public String getEffectiveTimeList() {
     	if(String.valueOf(effectiveTime)==null||"".equals(String.valueOf(effectiveTime))){
     		effectiveTimeList = "0";

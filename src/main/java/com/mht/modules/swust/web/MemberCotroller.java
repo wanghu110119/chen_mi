@@ -230,11 +230,11 @@ public class MemberCotroller extends BaseController {
 		try {
 			String fileName = "沉迷探案馆会员"+sysCar.getUserName()+"一年内消费详情" + DateUtils.getDate("MMdd-HH") + ".xlsx";
 			MemberDetail member = new MemberDetail();
-			member.setYear(true);
+//			member.setYear(true);
 			member.setCardId(sysCar.getCarId());
 			List<MemberDetail> page = memberService.findList( member);
 			page.add(memberService.sum());
-			new ExportExcel("沉迷探案馆会员——"+sysCar.getUserName()+"  一年内消费详情", MemberDetail.class).setDataList(page ).write(response, fileName).dispose();
+			new ExportExcel("沉谜探案馆会员——"+sysCar.getUserName()+"  消费历史", MemberDetail.class).setDataList(page ).write(response, fileName).dispose();
 			return null;
 		} catch (Exception e) {
 			e.printStackTrace();

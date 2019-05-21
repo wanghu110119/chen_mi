@@ -64,6 +64,8 @@ public class SysOrderlist extends TreeEntity<SysOrderlist> {
 	private Date endTime;//结束时间
     
     private String endTimeExample;//结束时间
+    
+    private String sumPayMoney;
 
     private String accreditTime;//授权时限
 
@@ -97,7 +99,20 @@ public class SysOrderlist extends TreeEntity<SysOrderlist> {
 				+ ", state=" + state + "]";
 	}
 
-	
+	@ExcelField(title = "总计收款", align = 2, sort = 93)
+	public String getSumPayMoney() {
+		if(sumPayMoney==null||"".equals(sumPayMoney)){
+			return "";
+		}
+		return sumPayMoney;
+	}
+
+
+	public void setSumPayMoney(String sumPayMoney) {
+		this.sumPayMoney = sumPayMoney;
+	}
+
+
 	@ExcelField(title = "预约剧本", align = 2, sort = 40,fieldType = OfficeType.class )
 	public Office getOfficeExcel() {
 		officeExcel = office;
@@ -165,7 +180,7 @@ public class SysOrderlist extends TreeEntity<SysOrderlist> {
 		this.company = company;
 	}
 
-
+	@ExcelField(title = "收款金额", align = 2, sort = 92)
 	public String getPayMoney() {
 		return payMoney;
 	}
@@ -299,7 +314,7 @@ public class SysOrderlist extends TreeEntity<SysOrderlist> {
     		String dateString = formatter.format(beginTime);
     		return dateString;
     	}
-    	return "2018-01-01 00:00:00";
+    	return " ";
 	}
 
 
@@ -315,7 +330,7 @@ public class SysOrderlist extends TreeEntity<SysOrderlist> {
 			String dateString = formatter.format(endTime);
 			return dateString;
 		}
-		return"2018-01-01 00:00:00";
+		return" ";
 	}
 
 
@@ -323,7 +338,6 @@ public class SysOrderlist extends TreeEntity<SysOrderlist> {
 		this.endTimeExample = endTimeExample;
 	}
 
-    @ExcelField(title = "预估时间", align = 2, sort = 92)
     public String getAccreditTime() {
         return accreditTime;
     }

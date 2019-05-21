@@ -375,8 +375,7 @@ label.error {
 			}
 		});
 
-		$("#form_start_time").datetimepicker(
-				{
+		$("#form_start_time").datetimepicker({
 					language : 'zh-CN',
 					weekStart : 1,
 					todayBtn : 1,
@@ -385,54 +384,47 @@ label.error {
 							+ " " + $("#requestBeginTime").html(),
 					todayHighlight : 1,
 					startView : 2,
-					minuteStep : 1,
+					minuteStep : 10,
 					minView : 0,
 					forceParse : 0
-				}).on(
-				'change',
+				}).on('change',
 				function(ev) {
 					var time = new Date($("#beginTime").val());
 					$("#form_end_time").datetimepicker('setStartDate', time);
 					var etime = new Date($("#beginTime").val()) + " "
 							+ $("#requestEndTime").html();
-					//     etime.setHours(23);
-					//     etime.setMinutes(59);
-					// console.log(new Date("${requestScope.beginTimeShow }")+" "+$("#requestBeginTime").html());
-					console.log(etime);
 					$("#form_end_time").datetimepicker('setEndDate', etime);
 					if (time > $("#endTime").val()) {
+						var indexTime = $("#beginTime").val();
 						$("#endTime").val(
-								$("#beginTime").val().Format(
-										"yyyy-MM-dd hh:mm:ss"));
+								indexTime.Format("yyyy-MM-dd hh:mm:ss"));
 					}
 					$("#endTime").val(time.Format("yyyy-MM-dd hh:mm:ss"));
 				});
-		$("#form_end_time").datetimepicker(
-				{
+		$("#form_end_time").datetimepicker({
 					language : 'zh-CN',
 					weekStart : 1,
 					todayBtn : 1,
 					autoclose : 1,
 					todayHighlight : 1,
-					startDate : new Date("${requestScope.beginTimeShow }")
+					startDate : new Date("${requestScope.beginTimeShow }").Format("yyyy-MM-dd")
 							+ " " + $("#requestBeginTime").html(),
-					endDate : new Date($("#beginTime").val()) + " "
-							+ $("#requestEndTime").html(),
+					endDate : new Date($("#beginTime").val()).Format("yyyy-MM-dd") + " " + $("#requestEndTime").html(),
 					startView : 2,
-					minuteStep : 1,
+					minuteStep : 10,
 					minView : 0,
 					forceParse : 0
-				}).on(
-				'change',
+				}).on('change',
 				function(ev) {
+					console.log(new Date("${requestScope.beginTimeShow }")
+					+ " " + $("#requestBeginTime").html())
 					var nowTime = new Date("${requestScope.endTimeShow }");
 					var etime = $("#beginTime").val();
 					var endTime = $("#endTime").val();
 					$("#form_end_time").datetimepicker('setStartDate', etime);
 					if ($("#beginTime").val() > $("#endTime").val()) {
-						$("#endTime").val(
-								$("#beginTime").val().Format(
-										"yyyy-MM-dd hh:mm:ss"));
+						var indexTime = $("#beginTime").val();
+						$("#endTime").val(indexTime.Format("yyyy-MM-dd hh:mm:ss"));
 					}
 				});
 

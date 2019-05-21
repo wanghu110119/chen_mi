@@ -50,6 +50,8 @@ public interface SysOrderlistDao extends CrudDao<SysOrderlist> {
 	void deleteRemoveOrder(List<SysOrderlist> list);
 
 	String selectSmsPhone();
+
+	SysOrderlist sumPayMoney(SysOrderlist sysOrderlist);
 	
 }
 

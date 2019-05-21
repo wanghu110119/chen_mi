@@ -240,6 +240,8 @@
 										<option value="-108">108</option>
 										<option value="-118">118</option>
 										<option value="-128">128</option>
+										<option value="-88">88</option>
+										<option value="-78">78</option>
 										<option value="-49">49</option>
 										<option value="-64">64</option>
 									</select>
@@ -531,7 +533,6 @@ validateChangeForm = $("#formsubmit-change").validate({
 	rules:{
 		name:{
 			required:true,
-			number:true
 		},
 		owner:{
 			checkName:false,
@@ -553,8 +554,7 @@ validateChangeForm = $("#formsubmit-change").validate({
 	},
 	messages:{
 		name:{
-			rangelength:"请输入正确的会员卡号",
-			number:"请输入正确会员卡号",
+			required:"请输入",
 		},
 		owner:{
 			required:"请输入会员姓名"

@@ -20,7 +20,7 @@
 			<th>剧本主题</th>
 			<th>起始时间</th>
 			<th>截止时间</th>
-			<th>预估时限</th>
+			<th>收款金额</th>
 			<th>特殊备注</th>
 			<c:choose>
              	<c:when test="${sysOrderlist.state eq '0' }">
@@ -58,14 +58,19 @@
 				<td><span style="color:red;">${row.office.name}</span></td>
 				<td><span style="color:red;">${fns:formatDateTime(row.beginTime)}</span></td>
 				<td><span style="color:red;">${fns:formatDateTime(row.endTime)}</span></td>
-				<td><span style="color:red;">${row.accreditTime}</span></td>
+				<td><span style="color:red;">
+				<c:choose>
+					<c:when test="${row.payMoney ne null && not empty row.payMoney}">${row.payMoney }</c:when>
+					<c:otherwise>未付款</c:otherwise>
+				</c:choose>
+				</span></td>
 				<td><span style="color:red;"><button class="check-view" onclick="reason('${row.id}')">查看</button></span></td>
 				<td><c:choose>
 						<c:when test="${sysOrderlist.state eq '0' }">
 							<li>
 								<button class="allow" onclick="rebut('${row.id}',1)">已收款</button>
 								<button class="refuse" onclick="rebut('${row.id}',0)">未收款</button>
-								<button class="refuse" onclick="deleteOrder('${row.id}')">取订</button>
+								<button class="refuse" onclick="deleteOrder('${row.id}')">删除</button>
 							</li>
 						</c:when>
 						<c:otherwise>

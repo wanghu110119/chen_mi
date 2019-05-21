@@ -494,7 +494,6 @@ function changePwdS() {
 				name:{
 					checkName:false,
 					required:true,
-					number:false,
 					remote:{                                          
 			               type:"POST",//验证卡号是否存在
 			               url:"${ctx}/swust/car/checkCardID",
@@ -527,7 +526,6 @@ function changePwdS() {
 			messages:{
 				name:{
 					required:"请输入会员卡号",
-					rangelength:"请输入正确的会员卡号",
 					remote:"输入的会员卡号已经存在"
 				},
 				owner:{

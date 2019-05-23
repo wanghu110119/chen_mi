@@ -210,6 +210,7 @@
 									style="color: red">* </span>会员卡号:</label>
 								<div class="col-sm-7">
 									<input type="hidden" id="leaveMoney">
+									<input type="hidden" id="leaveTime">
 									<input type="text" class="form-control required valid"
 										readonly="readonly" onchange="" name="name"
 										id="smsCarId-change" aria-required="true">
@@ -236,6 +237,7 @@
 									<!-- 									<input  class="form-control " name="serviceTime-change" id="smsServiceTime-change"  > -->
 									<select name="smsServiceTime-change" id="smsServiceTime-change"
 										class="form-control">
+										<option value="0">0</option>
 										<option value="-98">98</option>
 										<option value="-108">108</option>
 										<option value="-118">118</option>
@@ -481,6 +483,7 @@ $(function () {
 		).on('click','.edit-info',function(){
 			var ssid=$(this).children().val();
 			$("#leaveMoney").val($(this).parent().prev().prev().prev().html());
+			$("#leaveTime").val($(this).parent().prev().prev().prev().prev().html());
 				$.ajax({
 					type:"post",
 					url : "${ctx}/swust/car/getCar",
@@ -513,7 +516,9 @@ function doSubmitChange(){
 					carId:$("#smsCarId-change").val(),
 					userName:$("#smsOwner-change").val(),
 					carType:$("#smsCarType-change").val(),
-					costMoney:$("#smsServiceTime-change").val()
+					costMoney:$("#smsServiceTime-change").val(),
+					costTime:$("#money-change").val()
+					
 				},
 				success : function(data) {
 					$("#msg-reminder-change").modal("hide");
@@ -538,10 +543,10 @@ validateChangeForm = $("#formsubmit-change").validate({
 			checkName:false,
 			required:true
 		},
-		serviceTime:{
+		"money-change":{
 			required:false,
 			number:true,
-			checkName:false
+			checkTimes:true
 		},
 		"phone-change":{
 			required:true,
@@ -559,7 +564,7 @@ validateChangeForm = $("#formsubmit-change").validate({
 		owner:{
 			required:"请输入会员姓名"
 		},
-		serviceTime:{
+		"money-change":{
 			number:"请输入数字"
 		},
 		"phone-change":{
@@ -575,13 +580,20 @@ jQuery.validator.addMethod("checkName", function(value, element) {
 }, $.validator.format("只能输入中文、英文"));
 
 jQuery.validator.addMethod("checkMoney", function(value, element) {
-	console.log(-value);
     if((-value)<$("#leaveMoney").val()){
     	return true;
     }else{
     	return false; 
     }
 }, $.validator.format("余额不足！请充值"));
+
+jQuery.validator.addMethod("checkTimes", function(value, element) {
+    if((value)<$("#leaveTime").val()){
+    	return true;
+    }else{
+    	return false; 
+    }
+}, $.validator.format("消费次数不足！请充值"));
 
 </script>
 

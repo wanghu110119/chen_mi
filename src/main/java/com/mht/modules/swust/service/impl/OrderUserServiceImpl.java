@@ -270,7 +270,7 @@ public class OrderUserServiceImpl extends CrudService<SysOrderlistDao, SysOrderl
 	 * @author com.mhout.xyb
 	 */
 	private String getStartId() {
-		String startId = DateUtils.getYearBack() + "001";
+		String startId = DateUtils.getYearBack() + "00001";
 		return startId;
 	}
 

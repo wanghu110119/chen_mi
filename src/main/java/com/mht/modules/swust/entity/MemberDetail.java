@@ -15,6 +15,10 @@ public class MemberDetail extends DataEntity<MemberDetail> {
 
     private String addMoney;
     
+    private int costTime;
+
+    private int addTime;
+    
     private Integer giftMoney;
     
     private Integer totalMoney;
@@ -42,7 +46,19 @@ public class MemberDetail extends DataEntity<MemberDetail> {
     public MemberDetail(){
     	
     }
-    @ExcelField(title = "赠送金额", align = 2, sort = 17)
+    public int getCostTime() {
+		return costTime;
+	}
+	public void setCostTime(int costTime) {
+		this.costTime = costTime;
+	}
+	public int getAddTime() {
+		return addTime;
+	}
+	public void setAddTime(int addTime) {
+		this.addTime = addTime;
+	}
+	@ExcelField(title = "赠送金额", align = 2, sort = 18)
     public Integer getGiftMoney() {
 		return giftMoney;
 	}
@@ -141,7 +157,11 @@ public class MemberDetail extends DataEntity<MemberDetail> {
 	public String getCostOrAddMoney() {
         return (costMoney!=null&&!"".equals(costMoney))?costMoney:addMoney;
     }
-	@ExcelField(title = "时间", align = 2, sort = 5)
+	@ExcelField(title = "次数", align = 2, sort = 5)
+	public int getCostOrAddTime() {
+        return (costTime!=0)?costTime:addTime;
+    }
+	@ExcelField(title = "时间", align = 2, sort = 15)
 	public String getTime() {
 		SimpleDateFormat formatter = new SimpleDateFormat("yy-MM-dd HH:mm");
     	if(createDate!=null){
@@ -151,7 +171,7 @@ public class MemberDetail extends DataEntity<MemberDetail> {
         return null;
     }
 	
-	@ExcelField(title = "操作", align = 2, sort = 6)
+	@ExcelField(title = "操作", align = 2, sort = 16)
 	public String getCreateByName () {
 		if(createByName!=null &&!"".equals(createByName)){
 			return createByName;

@@ -6,10 +6,12 @@
     <result column="type" jdbcType="CHAR" property="type" />
     <result column="card_id" jdbcType="CHAR" property="cardId" />
     <result column="cost_money" jdbcType="VARCHAR" property="costMoney" />
+    <result column="add_money" jdbcType="VARCHAR" property="addMoney" />
+    <result column="cost_time" jdbcType="VARCHAR" property="costTime" />
+    <result column="add_time" jdbcType="VARCHAR" property="addTime" />
     <result column="gift_money" jdbcType="INTEGER" property="giftMoney" />
     <result column="total_money" jdbcType="INTEGER" property="giftMoney" />
     <result column="wechat" jdbcType="VARCHAR" property="wechat" />
-    <result column="add_money" jdbcType="VARCHAR" property="addMoney" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="costTotalMoney" jdbcType="TIMESTAMP" property="costTotalMoney" />
@@ -40,6 +42,8 @@
     a.type, 
     a.cost_money,
     a.add_money, 
+    a.cost_time,
+    a.add_time, 
     a.create_by, 
     a.create_date, 
     a.update_by, 
@@ -149,6 +153,12 @@ FROM mht_oeg.member_detail a
       <if test="addMoney != null">
         add_money,
       </if>
+      <if test="costTime != null">
+        cost_time,
+      </if>
+      <if test="addTime != null">
+        add_time,
+      </if>
       <if test="createBy != null">
         create_by,
       </if>
@@ -193,6 +203,12 @@ FROM mht_oeg.member_detail a
       <if test="addMoney != null">
         #{addMoney,jdbcType=VARCHAR},
       </if>
+      <if test=" costTime!=null">
+        #{costTime,jdbcType=INTEGER},
+      </if>
+      <if test="addTime!=null">
+        #{addTime,jdbcType=INTEGER},
+      </if>
       <if test="createBy != null">
         #{createBy.id,jdbcType=VARCHAR},
       </if>
@@ -230,6 +246,12 @@ FROM mht_oeg.member_detail a
         cost_money = #{costMoney,jdbcType=VARCHAR},
       </if>
       <if test="addMoney != null">
+        add_money = #{addMoney,jdbcType=VARCHAR},
+      </if>
+      <if test="costTime != null">
+        cost_money = #{costMoney,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
         add_money = #{addMoney,jdbcType=VARCHAR},
       </if>
       <if test="createBy != null">

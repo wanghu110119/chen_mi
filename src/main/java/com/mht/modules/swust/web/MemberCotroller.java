@@ -327,12 +327,18 @@ public class MemberCotroller extends BaseController {
 	public AjaxJson consumption(SysCar sysCar) {
 		AjaxJson ajaxJson = new AjaxJson();
 		MemberDetail member = new MemberDetail();
-		member.setCostMoney(""+-sysCar.getCostMoney());
+		if(sysCar.getCostMoney()!=0){
+			member.setCostMoney(""+-sysCar.getCostMoney());
+		}
+		if(sysCar.getCostTime()!=0){
+			member.setCostTime(sysCar.getEffectiveTime()-sysCar.getCostTime());
+		}
 		member.setType("0");
 		member.setCar(sysCar);
 		memberService.save(member);
 		int money = sysCar.getTotalMoney();
 		sysCar.setTotalMoney(money+sysCar.getCostMoney());
+		sysCar.setEffectiveTime(sysCar.getEffectiveTime()-sysCar.getCostTime());
 		carService.save(sysCar);
 		ajaxJson.setMsg("消费完成");
 		ajaxJson.setSuccess(true);

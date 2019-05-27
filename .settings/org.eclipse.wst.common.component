@@ -8,7 +8,7 @@
         <dependent-module archiveName="mht_sys-1.0.war" deploy-path="/WEB-INF/lib" handle="module:/resource/mht_sys/mht_sys">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="mht_common-1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/RemoteSystemsTempFiles/RemoteSystemsTempFiles">
+        <dependent-module archiveName="mht_common-1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/mht_common/mht_common">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module deploy-path="/" handle="module:/overlay/prj/mht_sys?includes=**/**&amp;excludes=META-INF/MANIFEST.MF">

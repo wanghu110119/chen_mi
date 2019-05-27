@@ -3,7 +3,6 @@ package com.mht.modules.swust.utils.thread;
 import java.util.ArrayList;
 
 import com.mht.common.config.Global;
-import com.sun.tools.javac.util.List;
 
 public class Thread2 implements Runnable {
 

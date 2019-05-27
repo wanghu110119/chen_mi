@@ -7,7 +7,6 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.sun.tools.javac.code.Attribute.Array;
 
 public class Client {  
 	   

@@ -233,7 +233,7 @@ public class MemberCotroller extends BaseController {
 //			member.setYear(true);
 			member.setCardId(sysCar.getCarId());
 			List<MemberDetail> page = memberService.findList( member);
-			page.add(memberService.sum());
+			page.add(memberService.sumCostAndChargeByID(member));
 			new ExportExcel("沉谜探案馆会员——"+sysCar.getUserName()+"  消费历史", MemberDetail.class).setDataList(page ).write(response, fileName).dispose();
 			return null;
 		} catch (Exception e) {
@@ -317,6 +317,17 @@ public class MemberCotroller extends BaseController {
 		memberService.save(member);
 		
 		ajaxJson.setMsg("添加成功");
+		ajaxJson.setSuccess(true);
+		return ajaxJson;
+
+	}
+	
+	@ResponseBody
+	@RequestMapping("editSysCar")
+	public AjaxJson editSysCar(SysCar sysCar) {
+		AjaxJson ajaxJson = new AjaxJson();
+		carService.save(sysCar);
+		ajaxJson.setMsg("编辑成功");
 		ajaxJson.setSuccess(true);
 		return ajaxJson;
 

@@ -263,7 +263,7 @@
 							<div class="form-group">
 								<label for="money-change" class="col-sm-5 control-label">消费次数:</label>
 								<div class="col-sm-7">
-									<input type="number" class="form-control " name="money-change"
+									<input type="number" class="form-control " name="money-change" value = "0"
 										id="money-change">
 								</div>
 							</div>
@@ -588,7 +588,7 @@ jQuery.validator.addMethod("checkMoney", function(value, element) {
 }, $.validator.format("余额不足！请充值"));
 
 jQuery.validator.addMethod("checkTimes", function(value, element) {
-    if((value)<$("#leaveTime").val()){
+    if((value)<=$("#leaveTime").val()){
     	return true;
     }else{
     	return false; 

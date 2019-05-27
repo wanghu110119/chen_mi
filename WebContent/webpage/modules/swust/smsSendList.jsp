@@ -129,7 +129,7 @@
 				</td>
 				<td>${row.phone}</td>
 				<td>${row.effectiveTime}</td>
-				<td>${row.money}</td>
+				<td>${row.totalMoney}</td>
 				<td><fmt:formatDate value="${row.beginTime }" pattern="yyyy-MM-dd"/></td>
 				<td><fmt:formatDate value="${row.endTime }" pattern="yyyy-MM-dd"/></td>
 				<td>
@@ -400,10 +400,10 @@ function doSubmitChange(){
   if(validateChangeForm.form()){
 	  $.ajax({
 			type : "POST",
-			url : "${ctx}/swust/car/insertSysCar",
+			url : "${ctx}/swust/car/editSysCar",
 			data : {
 				id:$("#oid-change").val(),
-				money:$("#money-change").val(),
+				totalMoney:$("#money-change").val(),
 				carId:$("#smsCarId-change").val(),
 				userName:$("#smsOwner-change").val(),
 				phone:$("#smsPhone-change").val(),
@@ -457,7 +457,7 @@ function doSubmitChange(){
 					$("#smsPhone-change").val(data.body.sysCar.phone);
 					$("#smsOwner-change").val(data.body.sysCar.userName);
 					$("#smsServiceTime-change").val(data.body.sysCar.effectiveTime);
-					$("#money-change").val(data.body.sysCar.money);
+					$("#money-change").val(data.body.sysCar.totalMoney);
 					$("#oid-change").val(data.body.sysCar.id)
 				}
 			});

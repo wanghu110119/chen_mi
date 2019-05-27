@@ -313,6 +313,7 @@ public class MemberCotroller extends BaseController {
 		member.setGiftMoney(sysCar.getGiftMoney());
 		member.setAddMoney(sysCar.getMoney()+"");
 		member.setType("1");
+		member.setAddTime(sysCar.getEffectiveTime());
 		member.setCar(sysCar);
 		memberService.save(member);
 		
@@ -341,8 +342,8 @@ public class MemberCotroller extends BaseController {
 		if(sysCar.getCostMoney()!=0){
 			member.setCostMoney(""+-sysCar.getCostMoney());
 		}
-		if(sysCar.getCostTime()!=0){
-			member.setCostTime(sysCar.getEffectiveTime()-sysCar.getCostTime());
+		if(sysCar.getCostTime()!=0) {
+			member.setCostTime(sysCar.getCostTime());
 		}
 		member.setType("0");
 		member.setCar(sysCar);

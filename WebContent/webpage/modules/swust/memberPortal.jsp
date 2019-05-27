@@ -178,13 +178,13 @@
 							<div class="form-group">
 								<label for="money" class="col-sm-5 control-label">添加金额:</label>
 								<div class="col-sm-7">
-									<input   class="form-control " type="number"  maxlength="15" name="money" id="money"  >
+									<input   class="form-control " type="number"  value="0" name="money" id="money"  >
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="gift" class="col-sm-5 control-label">赠送金额:</label>
 								<div class="col-sm-7">
-									<input  class="form-control "   name="gift" id="gift" value = "0">
+									<input  class="form-control " type="number"  name="gift" id="gift" value = "0">
 								</div>
 							</div>
 						</div>
@@ -250,10 +250,10 @@ function clearList(){
 	$("#smsOwner").val("");
 	$("#smsPhone").val("");
 	$("#wechat").val("");
-	$("#smsServiceTime").val("");
+	$("#smsServiceTime").val("0");
 	$("#smsCarType").val("");
-	$("#money").val("");
-	$("#gift").val("");
+	$("#money").val("0");
+	$("#gift").val("0");
 }
 
 function changePwdS() {
@@ -558,7 +558,6 @@ function changePwdS() {
 		
 		
 	  if($("#formSubmitAdd").valid()){
-		  console.log($("#gift").val()+"!!!!!");
 		  $.ajax({
 				type : "POST",
 				url : "${ctx}/swust/car/insertSysCar",

@@ -580,7 +580,7 @@ jQuery.validator.addMethod("checkName", function(value, element) {
 }, $.validator.format("只能输入中文、英文"));
 
 jQuery.validator.addMethod("checkMoney", function(value, element) {
-    if((-value)<$("#leaveMoney").val()){
+    if((-value)<=$("#leaveMoney").val()){
     	return true;
     }else{
     	return false; 
@@ -588,7 +588,9 @@ jQuery.validator.addMethod("checkMoney", function(value, element) {
 }, $.validator.format("余额不足！请充值"));
 
 jQuery.validator.addMethod("checkTimes", function(value, element) {
-    if((value)<=$("#leaveTime").val()){
+	console.log(value+"!!!!!!"+$("#leaveTime").val())
+	var ind = $("#leaveTime").val();
+    if(parseInt(value)<=parseInt(ind)){
     	return true;
     }else{
     	return false; 
